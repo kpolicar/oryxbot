@@ -19,9 +19,8 @@ namespace OryxBot.Client.Windows
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 
-            var form = new MainForm();
             // form.Load += _kernel.OnLoadForm;
-            Application.Run(form);
+            Application.Run(new ApplicationContext());
             Application.ApplicationExit += (sender, e) => _kernel.Dispose();
         }
     }

@@ -26,8 +26,10 @@
         /// the contents of this method with the code editor.
         /// </summary>
         private void InitializeComponent() {
+            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.gameWindowPanel = new System.Windows.Forms.Panel();
+            this.trayIcon = new System.Windows.Forms.NotifyIcon(this.components);
             this.SuspendLayout();
             // 
             // gameWindowPanel
@@ -40,6 +42,12 @@
             this.gameWindowPanel.Name = "gameWindowPanel";
             this.gameWindowPanel.Size = new System.Drawing.Size(1200, 731);
             this.gameWindowPanel.TabIndex = 0;
+            // 
+            // trayIcon
+            // 
+            this.trayIcon.Icon = ((System.Drawing.Icon) (resources.GetObject("trayIcon.Icon")));
+            this.trayIcon.Text = "OryxBot";
+            this.trayIcon.Visible = true;
             // 
             // MainForm
             // 
@@ -55,6 +63,8 @@
             this.ResumeLayout(false);
             this.PerformLayout();
         }
+
+        private System.Windows.Forms.NotifyIcon trayIcon;
 
         private System.Windows.Forms.Panel gameWindowPanel;
 

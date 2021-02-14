@@ -120,5 +120,9 @@ namespace OryxBot.Client.Windows
             var style = User32.GetWindowLong(window, User32.GWL_STYLE);
             User32.SetWindowLong(window, User32.GWL_STYLE, style & ~User32.WS_CAPTION);
         }
+
+        private void OnMainFormClosing(object sender, CancelEventArgs e) {
+            trayIcon.Dispose();
+        }
     }
 }
