@@ -1,7 +1,9 @@
 using System;
 using System.Threading;
 using Albion.Network;
+using OryxBot.Albion.Protocol;
 using OryxBot.Shared.Contracts;
+using OryxBot.Shared.Events;
 using PacketDotNet;
 using SharpPcap;
 
@@ -11,18 +13,18 @@ namespace OryxBot.Bot.Services
     {
         private IPhotonReceiver receiver = null!;
         
-        public event EventHandler Move;
+        public event EventHandler<MoveEventArgs>? Move;
 
         public NetworkAlbionDataProvider() =>
             Run();
         
 
-        public void Run() {
+        private void Run() {
             var builder = ReceiverBuilder.Create();
     
-            builder.AddRequestHandler(new MoveRequestHandler());
-            builder.AddEventHandler(new MoveEventHandler());
-            builder.AddEventHandler(new NewCharacterEventHandler());
+            builder.AddRequestHandler(new MoveRequestHandler(this));
+            // builder.AddEventHandler(new MoveEventHandler());
+            // builder.AddEventHandler(new NewCharacterEventHandler());
             
             receiver = builder.Build();
     

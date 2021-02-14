@@ -1,5 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
 using Albion.Network;
+using OryxBot.Shared.Events;
 
 namespace OryxBot.Albion.Protocol
 {
@@ -19,5 +22,8 @@ namespace OryxBot.Albion.Protocol
         public float Direction { get; }
         public float[] NewPosition { get; }
         public float Speed { get; }
+        
+        public static explicit operator MoveEventArgs(MoveOperation @this) =>
+            new(@this.Position[0], @this.Position[1]);
     }
 }

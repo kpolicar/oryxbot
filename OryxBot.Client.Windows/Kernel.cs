@@ -1,8 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Design;
-using System.Windows.Forms;
-using Bot.Services;
 using OryxBot.Bot.Services;
 using OryxBot.Client.Windows.Services;
 using OryxBot.Shared.Contracts;

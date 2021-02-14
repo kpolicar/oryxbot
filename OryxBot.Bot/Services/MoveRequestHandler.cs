@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Albion.Network;
 using OryxBot.Albion.Protocol;
 using OryxBot.Shared.Contracts;
+using OryxBot.Shared.Events;
 
 namespace OryxBot.Bot.Services
 {
@@ -13,10 +14,14 @@ namespace OryxBot.Bot.Services
     {
         internal class MoveRequestHandler : RequestPacketHandler<MoveOperation>
         {
-            public MoveRequestHandler() : base(OperationCodes.Move) {
-            }
+            private NetworkAlbionDataProvider DataProvider;
+
+            public MoveRequestHandler(NetworkAlbionDataProvider networkAlbionDataProvider) :
+                base(OperationCodes.Move) =>
+                DataProvider = networkAlbionDataProvider;
 
             protected override Task OnActionAsync(MoveOperation operation) {
+                DataProvider.Move?.Invoke(this, (MoveEventArgs) operation);
                 // var waypoint = Path.currentTarget;
                 // var position = new Point((int)operation.Position[0], (int)operation.Position[1]);
                 //

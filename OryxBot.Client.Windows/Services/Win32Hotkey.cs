@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Gma.System.MouseKeyHook;
 using OryxBot.Shared.Contracts;
 
-namespace Bot.Services
+namespace OryxBot.Client.Windows.Services
 {
     public class Win32Hotkey : Hotkey, IDisposable
     {

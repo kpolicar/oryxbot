@@ -1,7 +1,6 @@
 using System;
 using System.ComponentModel.Design;
 using System.Windows.Forms;
-using Bot;
 using OryxBot.Client.Windows.Native;
 
 namespace OryxBot.Client.Windows
