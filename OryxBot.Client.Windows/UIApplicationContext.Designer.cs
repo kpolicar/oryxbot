@@ -10,7 +10,6 @@ namespace OryxBot.Client.Windows
         public event EventHandler Load;
         
         private Container components;
-        private ComponentResourceManager resources;
 
         public ToolStripMenuItem ToolStipPanelButton { private set; get; }
         public ToolStripMenuItem ToolStipToggleBotButton { private set; get; }
@@ -20,14 +19,13 @@ namespace OryxBot.Client.Windows
 
         private void InitializeComponents() {
             components = new();
-            resources = new(typeof(Resources.UIApplicationContext));
 
             //
             // toolStipPanelButton
             //
             ToolStipPanelButton = new ToolStripMenuItem {
                 Name = "toolStipPanelButton",
-                Text = "Panel",
+                Text = Resources.UIApplicationContext.ToolStipPanelButton_Text,
             };
             ToolStipPanelButton.Click += OnPanelClicked;
             //
@@ -35,7 +33,7 @@ namespace OryxBot.Client.Windows
             //
             ToolStipToggleBotButton = new ToolStripMenuItem {
                 Name = "toolStipToggleBotButton",
-                Text = "Start (F2)",
+                Text = Resources.UIApplicationContext.ToolStipToggleBotButton_TextStart,
             };
             ToolStipToggleBotButton.Click += OnToggleBotClicked;
             //
@@ -43,7 +41,7 @@ namespace OryxBot.Client.Windows
             //
             ToolStripCloseButton = new ToolStripMenuItem {
                 Name = "toolStripCloseButton",
-                Text = "Exit",
+                Text = Resources.UIApplicationContext.ToolStripCloseButton_Text,
             };
             ToolStripCloseButton.Click += OnExitClicked;
             //
@@ -58,9 +56,9 @@ namespace OryxBot.Client.Windows
             // trayIcon
             //
             trayIcon = new NotifyIcon {
-                Icon = (System.Drawing.Icon) resources.GetObject("Icon")!,
+                Icon = Resources.UIApplicationContext.Icon,
                 ContextMenuStrip = contextMenuStrip,
-                Text = resources.GetString("Text"),
+                Text = Resources.UIApplicationContext.Text,
             };
         }
 

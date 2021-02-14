@@ -27,6 +27,9 @@
       <Compile Update="Services\MoveEventHandler.cs">
         <DependentUpon>NetworkDataProvider.cs</DependentUpon>
       </Compile>
+      <Compile Update="State.cs">
+        <DependentUpon>OryxBot.cs</DependentUpon>
+      </Compile>
     </ItemGroup>
 
 </Project>

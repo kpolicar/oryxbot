@@ -79,5 +79,41 @@ namespace OryxBot.Client.Windows.Resources {
                 return ResourceManager.GetString("Text", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Panel.
+        /// </summary>
+        internal static string ToolStipPanelButton_Text {
+            get {
+                return ResourceManager.GetString("ToolStipPanelButton.Text", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Start (F2).
+        /// </summary>
+        internal static string ToolStipToggleBotButton_TextStart {
+            get {
+                return ResourceManager.GetString("ToolStipToggleBotButton.TextStart", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Stop (F2).
+        /// </summary>
+        internal static string ToolStipToggleBotButton_TextStop {
+            get {
+                return ResourceManager.GetString("ToolStipToggleBotButton.TextStop", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Close.
+        /// </summary>
+        internal static string ToolStripCloseButton_Text {
+            get {
+                return ResourceManager.GetString("ToolStripCloseButton.Text", resourceCulture);
+            }
+        }
     }
 }

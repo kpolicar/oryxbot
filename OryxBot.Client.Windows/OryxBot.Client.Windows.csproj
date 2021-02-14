@@ -26,6 +26,9 @@
         <DependentUpon>ApplicationContext.resx</DependentUpon>
         <DesignTime>True</DesignTime>
       </Compile>
+      <Compile Update="UIApplicationContext.Domain..cs">
+        <DependentUpon>UIApplicationContext.cs</DependentUpon>
+      </Compile>
     </ItemGroup>
 
     <ItemGroup>

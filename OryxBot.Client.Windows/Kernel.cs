@@ -10,7 +10,7 @@ namespace OryxBot.Client.Windows
 {
     static partial class Program
     {
-        internal class Kernel : IDisposable
+        internal sealed class Kernel : IDisposable
         {
             public readonly ServiceContainer Services = new();
 
@@ -18,9 +18,15 @@ namespace OryxBot.Client.Windows
                 {typeof(Input), new Win32Input()},
                 {typeof(Hotkey), new Win32Hotkey()},
                 {typeof(AlbionDataProvider), new NetworkAlbionDataProvider()},
+                {typeof(BotManager), new Bot.OryxBot()},
             };
 
             public Kernel() {
+                BootstrapServices();
+                BindServices();
+            }
+
+            private void BootstrapServices() {
                 foreach (var serviceBinding in _services) {
                     var (@abstract, concrete) = (serviceBinding.Key, serviceBinding.Value);
 
@@ -47,7 +53,20 @@ namespace OryxBot.Client.Windows
             }
 
             public void OnLoadForm(object? sender, EventArgs e) {
-                var form = sender as UIApplicationContext;
+                var form = (sender as UIApplicationContext)!;
+                var botManager = ((BotManager) Services.GetService(typeof(BotManager)))!;
+                
+                form.ToolStipToggleBotButton.Click += (_, _) => botManager.ToggleRun();
+                form.ThreadExit += (_, _) => botManager.Stop();
+                botManager.Started += form.OnBotStarted;
+                botManager.Stopped += form.OnBotStopped;
+            }
+
+            private void BindServices() {
+                var hotkey = ((Hotkey) Services.GetService(typeof(Hotkey)))!;
+                var botManager = ((BotManager) Services.GetService(typeof(BotManager)))!;
+                
+                hotkey.F1 += (_, _) => botManager.ToggleRun();
             }
         }
     }

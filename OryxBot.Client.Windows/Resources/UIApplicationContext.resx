@@ -1780,4 +1780,16 @@
         <value>OryxBot
 v0.1.0</value>
     </data>
+    <data name="ToolStipToggleBotButton.TextStop" xml:space="preserve">
+        <value>Stop (F2)</value>
+    </data>
+    <data name="ToolStipToggleBotButton.TextStart" xml:space="preserve">
+        <value>Start (F2)</value>
+    </data>
+    <data name="ToolStipPanelButton.Text" xml:space="preserve">
+        <value>Panel</value>
+    </data>
+    <data name="ToolStripCloseButton.Text" xml:space="preserve">
+        <value>Close</value>
+    </data>
 </root>
