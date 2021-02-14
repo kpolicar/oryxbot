@@ -5,15 +5,15 @@ namespace OryxBot.Client.Windows.Native
 {
     public static class User32
     {
+        
         [DllImport("user32.dll")]
         public static extern bool GetCursorPos(out POINT lpPoint);
+        
         [DllImport("user32.dll")]
         public static extern bool SetCursorPos(int X, int Y);
-        public struct POINT
-        {
-            public int X;
-            public int Y;
-        }
+        
+        [DllImport("user32.dll")]
+        public static extern int GetSystemMetrics(int nIndex);
         
         [DllImport("user32.dll")]
         public static extern IntPtr SetParent(IntPtr hWndChild, IntPtr hWndNewParent);
@@ -53,6 +53,11 @@ namespace OryxBot.Client.Windows.Native
         public const int WM_KEYDOWN = 0x0100;
         public const int WM_KEYUP = 0x0101;
         public const int WM_CHAR = 0x0102;
+        
+        // https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getsystemmetrics
+        public const int SM_CMONITORS = 80;
+        public const int SM_CXFULLSCREEN = 0;
+        public const int SM_CYFULLSCREEN = 1;
 
 
         public struct Rect
@@ -61,6 +66,12 @@ namespace OryxBot.Client.Windows.Native
             public int Top { get; set; }
             public int Right { get; set; }
             public int Bottom { get; set; }
+        }
+        
+        public struct POINT
+        {
+            public int X;
+            public int Y;
         }
         
         //assorted constants needed

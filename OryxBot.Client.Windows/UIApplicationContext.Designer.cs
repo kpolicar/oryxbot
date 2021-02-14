@@ -1,54 +1,57 @@
+using System;
 using System.Windows.Forms;
 using System.ComponentModel;
 using System.Diagnostics;
 
 namespace OryxBot.Client.Windows
 {
-    internal partial class ApplicationContext
+    internal partial class UIApplicationContext
     {
+        public event EventHandler Load;
+        
         private Container components;
         private ComponentResourceManager resources;
-        
-        private ToolStripMenuItem toolStipPanelButton;
-        private ToolStripMenuItem toolStipToggleBotButton;
-        private ToolStripMenuItem toolStripCloseButton;
+
+        public ToolStripMenuItem ToolStipPanelButton { private set; get; }
+        public ToolStripMenuItem ToolStipToggleBotButton { private set; get; }
+        public ToolStripMenuItem ToolStripCloseButton { private set; get; }
         private ContextMenuStrip contextMenuStrip;
         private NotifyIcon trayIcon;
 
         private void InitializeComponents() {
             components = new();
-            resources = new(typeof(Resources.ApplicationContext));
+            resources = new(typeof(Resources.UIApplicationContext));
 
             //
             // toolStipPanelButton
             //
-            toolStipPanelButton = new ToolStripMenuItem {
+            ToolStipPanelButton = new ToolStripMenuItem {
                 Name = "toolStipPanelButton",
                 Text = "Panel",
             };
-            toolStipPanelButton.Click += OnPanelClicked;
+            ToolStipPanelButton.Click += OnPanelClicked;
             //
             // toolStipToggleBotButton
             //
-            toolStipToggleBotButton = new ToolStripMenuItem {
+            ToolStipToggleBotButton = new ToolStripMenuItem {
                 Name = "toolStipToggleBotButton",
                 Text = "Start (F2)",
             };
-            toolStipToggleBotButton.Click += OnToggleBotClicked;
+            ToolStipToggleBotButton.Click += OnToggleBotClicked;
             //
             // toolStripCloseButton
             //
-            toolStripCloseButton = new ToolStripMenuItem {
+            ToolStripCloseButton = new ToolStripMenuItem {
                 Name = "toolStripCloseButton",
                 Text = "Exit",
             };
-            toolStripCloseButton.Click += OnExitClicked;
+            ToolStripCloseButton.Click += OnExitClicked;
             //
             // contextMenuStrip
             //
             contextMenuStrip = new ContextMenuStrip(components) {
                 Name = "contextMenuStrip",
-                Items = { toolStipToggleBotButton, toolStipPanelButton, new ToolStripSeparator(), toolStripCloseButton },
+                Items = { ToolStipToggleBotButton, ToolStipPanelButton, new ToolStripSeparator(), ToolStripCloseButton },
                 ShowItemToolTips = false,
             };
             //
@@ -58,8 +61,12 @@ namespace OryxBot.Client.Windows
                 Icon = (System.Drawing.Icon) resources.GetObject("Icon")!,
                 ContextMenuStrip = contextMenuStrip,
                 Text = resources.GetString("Text"),
-                Visible = true,
             };
+        }
+
+        private void LoadUI() {
+            trayIcon.Visible = true;
+            Load?.Invoke(this, EventArgs.Empty);
         }
         
         protected override void Dispose(bool disposing) {

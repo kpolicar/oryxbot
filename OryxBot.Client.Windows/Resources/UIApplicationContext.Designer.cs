@@ -22,14 +22,14 @@ namespace OryxBot.Client.Windows.Resources {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class ApplicationContext {
+    internal class UIApplicationContext {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
         private static global::System.Globalization.CultureInfo resourceCulture;
         
         [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        internal ApplicationContext() {
+        internal UIApplicationContext() {
         }
         
         /// <summary>
@@ -39,7 +39,7 @@ namespace OryxBot.Client.Windows.Resources {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("OryxBot.Client.Windows.Resources.ApplicationContext", typeof(ApplicationContext).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("OryxBot.Client.Windows.Resources.UIApplicationContext", typeof(UIApplicationContext).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;

@@ -49,9 +49,7 @@ namespace OryxBot.Client.Windows
             }
 
             public void OnLoadForm(object? sender, EventArgs e) {
-                var win32Input = (Win32Input) Services.GetService(typeof(Input))!;
-                var form = (MainForm) sender!;
-                win32Input.BindToControl(form.GameWindowPanel);
+                var form = sender as UIApplicationContext;
             }
         }
     }

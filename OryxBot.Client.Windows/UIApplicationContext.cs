@@ -6,10 +6,11 @@ using SystemApplicationContext=System.Windows.Forms.ApplicationContext;
 
 namespace OryxBot.Client.Windows
 {
-    internal partial class ApplicationContext : SystemApplicationContext
+    internal partial class UIApplicationContext : SystemApplicationContext
     {
-        public ApplicationContext() {
+        public UIApplicationContext() {
             InitializeComponents();
+            LoadUI();
         }
 
         private void OnExitClicked(object? sender, EventArgs e) {

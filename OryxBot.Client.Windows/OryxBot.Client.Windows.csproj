@@ -21,7 +21,7 @@
       <Compile Update="Kernel.cs">
         <DependentUpon>Program.cs</DependentUpon>
       </Compile>
-      <Compile Update="Resources\ApplicationContext.Designer.cs">
+      <Compile Update="Resources\UIApplicationContext.Designer.cs">
         <AutoGen>True</AutoGen>
         <DependentUpon>ApplicationContext.resx</DependentUpon>
         <DesignTime>True</DesignTime>
@@ -29,9 +29,9 @@
     </ItemGroup>
 
     <ItemGroup>
-      <EmbeddedResource Update="Resources\ApplicationContext.resx">
+      <EmbeddedResource Update="Resources\UIApplicationContext.resx">
         <Generator>ResXFileCodeGenerator</Generator>
-        <LastGenOutput>ApplicationContext.Designer.cs</LastGenOutput>
+        <LastGenOutput>UIApplicationContext.Designer.cs</LastGenOutput>
       </EmbeddedResource>
     </ItemGroup>
 

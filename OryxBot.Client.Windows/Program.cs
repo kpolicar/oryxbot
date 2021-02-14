@@ -2,6 +2,7 @@ using System;
 using System.ComponentModel.Design;
 using System.Windows.Forms;
 using Bot;
+using OryxBot.Client.Windows.Native;
 
 namespace OryxBot.Client.Windows
 {
@@ -19,8 +20,9 @@ namespace OryxBot.Client.Windows
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 
-            // form.Load += _kernel.OnLoadForm;
-            Application.Run(new ApplicationContext());
+            var ui = new UIApplicationContext();
+            ui.Load += _kernel.OnLoadForm;
+            Application.Run(ui);
             Application.ApplicationExit += (sender, e) => _kernel.Dispose();
         }
     }
