@@ -1,5 +1,6 @@
 using System;
 using System.ComponentModel.Design;
+using System.Diagnostics;
 using System.Windows.Forms;
 using OryxBot.Client.Windows.Native;
 
@@ -21,8 +22,10 @@ namespace OryxBot.Client.Windows
 
             var ui = new UIApplicationContext();
             ui.Load += _kernel.OnLoadForm;
+            
+            ui.Show();
+            Application.ApplicationExit += (_, _) => _kernel.Dispose();
             Application.Run(ui);
-            Application.ApplicationExit += (sender, e) => _kernel.Dispose();
         }
     }
 }

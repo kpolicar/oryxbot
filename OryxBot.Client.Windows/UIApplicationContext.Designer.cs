@@ -62,7 +62,7 @@ namespace OryxBot.Client.Windows
             };
         }
 
-        private void LoadUI() {
+        public void Show() {
             trayIcon.Visible = true;
             Load?.Invoke(this, EventArgs.Empty);
         }
@@ -72,6 +72,7 @@ namespace OryxBot.Client.Windows
                 components.Dispose();
             }
 
+            ExitThread();
             base.Dispose(disposing);
         }
     }

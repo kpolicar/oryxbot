@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Design;
+using System.Diagnostics;
 using OryxBot.Bot.Services;
 using OryxBot.Client.Windows.Services;
 using OryxBot.Shared.Contracts;
@@ -21,6 +22,7 @@ namespace OryxBot.Client.Windows
                 {typeof(BotManager), new Bot.OryxBot()},
             };
 
+            
             public Kernel() {
                 BootstrapServices();
                 BindServices();
@@ -53,13 +55,12 @@ namespace OryxBot.Client.Windows
             }
 
             public void OnLoadForm(object? sender, EventArgs e) {
-                var form = (sender as UIApplicationContext)!;
+                var app = (sender as UIApplicationContext)!;
                 var botManager = ((BotManager) Services.GetService(typeof(BotManager)))!;
                 
-                form.ToolStipToggleBotButton.Click += (_, _) => botManager.ToggleRun();
-                form.ThreadExit += (_, _) => botManager.Stop();
-                botManager.Started += form.OnBotStarted;
-                botManager.Stopped += form.OnBotStopped;
+                app.ToolStipToggleBotButton.Click += (_, _) => botManager.ToggleRun();
+                botManager.Started += app.OnBotStarted;
+                botManager.Stopped += app.OnBotStopped;
             }
 
             private void BindServices() {

@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 using System.Threading;
 using Albion.Network;
 using OryxBot.Albion.Protocol;
@@ -9,9 +11,11 @@ using SharpPcap;
 
 namespace OryxBot.Bot.Services
 {
-    public partial class NetworkAlbionDataProvider : AlbionDataProvider
+    public partial class NetworkAlbionDataProvider : AlbionDataProvider, IDisposable
     {
+        private List<Thread> captureThreads = new();
         private IPhotonReceiver receiver = null!;
+        private event EventHandler? Disposing;
         
         public event EventHandler<MoveEventArgs>? Move;
 
@@ -28,17 +32,19 @@ namespace OryxBot.Bot.Services
             
             receiver = builder.Build();
     
-            foreach (var device in CaptureDeviceList.Instance)
-            {
-                new Thread(() =>
-                    {
-                        Console.WriteLine($"Open... {device.Description}");
-    
-                        device.OnPacketArrival += PacketHandler;
-                        device.Open(DeviceMode.Promiscuous, 1000);
-                        device.StartCapture();
-                    })
-                    .Start();
+            foreach (var device in CaptureDeviceList.Instance) {
+                var captureThread = new Thread(() => {
+                    Console.WriteLine($"Open... {device.Description}");
+
+                    device.OnPacketArrival += PacketHandler;
+                    device.Open(DeviceMode.Promiscuous, 1000);
+                    device.StartCapture();
+                    device.StopCapture();
+                    
+                    Disposing += (_, _) => device.StopCapture();
+                });
+                captureThreads.Add(captureThread);
+                captureThread.Start();
             }
         }
         
@@ -50,5 +56,8 @@ namespace OryxBot.Bot.Services
                 receiver.ReceivePacket(packet.PayloadData);
             }
         }
+
+        public void Dispose() =>
+            Disposing.Invoke(this, EventArgs.Empty);
     }
 }

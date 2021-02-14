@@ -90,7 +90,7 @@ namespace OryxBot.Client.Windows.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Start (F2).
+        ///   Looks up a localized string similar to Start (F1).
         /// </summary>
         internal static string ToolStipToggleBotButton_TextStart {
             get {
@@ -99,7 +99,7 @@ namespace OryxBot.Client.Windows.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Stop (F2).
+        ///   Looks up a localized string similar to Stop (F1).
         /// </summary>
         internal static string ToolStipToggleBotButton_TextStop {
             get {

@@ -8,10 +8,8 @@ namespace OryxBot.Client.Windows
 {
     internal partial class UIApplicationContext : SystemApplicationContext
     {
-        public UIApplicationContext() {
+        public UIApplicationContext() =>
             InitializeComponents();
-            LoadUI();
-        }
 
         private void OnExitClicked(object? sender, EventArgs e) {
             Application.Exit();
