@@ -19,7 +19,7 @@ namespace OryxBot.Client.Windows
                 {typeof(Input), new Win32Input()},
                 {typeof(Hotkey), new Win32Hotkey()},
                 {typeof(AlbionDataProvider), new NetworkAlbionDataProvider()},
-                {typeof(BotJob), new Bot.TradeMissionRun()},
+                {typeof(BotJob), new Bot.TradeMissionRecord()},
             };
 
             
@@ -56,18 +56,18 @@ namespace OryxBot.Client.Windows
 
             public void OnLoadForm(object? sender, EventArgs e) {
                 var app = (sender as UIApplicationContext)!;
-                var botManager = ((BotJob) Services.GetService(typeof(BotJob)))!;
+                var bot = ((BotJob) Services.GetService(typeof(BotJob)))!;
                 
-                app.ToolStipToggleBotButton.Click += (_, _) => botManager.ToggleStart();
-                botManager.Started += app.OnBotStarted;
-                botManager.Stopped += app.OnBotStopped;
+                app.ToolStipToggleBotButton.Click += (_, _) => bot.ToggleStart();
+                bot.Started += app.OnBotStarted;
+                bot.Stopped += app.OnBotStopped;
             }
 
             private void BindServices() {
                 var hotkey = ((Hotkey) Services.GetService(typeof(Hotkey)))!;
-                var botManager = ((BotJob) Services.GetService(typeof(BotJob)))!;
+                var bot = ((BotJob) Services.GetService(typeof(BotJob)))!;
                 
-                hotkey.F1 += (_, _) => botManager.ToggleStart();
+                hotkey.F1 += (_, _) => bot.ToggleStart();
             }
         }
     }

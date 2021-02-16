@@ -4,7 +4,6 @@ namespace OryxBot.Bot
     {
         public class TradeMissionRunState
         {
-            public bool Running = false;
         }
     }
 

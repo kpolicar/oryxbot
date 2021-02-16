@@ -1,10 +1,13 @@
+using System.Collections.Generic;
+using OryxBot.Shared.Design;
+
 namespace OryxBot.Bot
 {
     public partial class TradeMissionRecord
     {
         class TradeMissionRecordState
         {
-            public bool Running = false;
+            public LinkedList<Position> RecordedPositions = new();
         }
     }
 }

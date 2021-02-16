@@ -39,7 +39,6 @@ namespace OryxBot.Bot.Services
                     device.OnPacketArrival += PacketHandler;
                     device.Open(DeviceMode.Promiscuous, 1000);
                     device.StartCapture();
-                    device.StopCapture();
                     
                     Disposing += (_, _) => device.StopCapture();
                 });
@@ -58,6 +57,6 @@ namespace OryxBot.Bot.Services
         }
 
         public void Dispose() =>
-            Disposing.Invoke(this, EventArgs.Empty);
+            Disposing?.Invoke(this, EventArgs.Empty);
     }
 }

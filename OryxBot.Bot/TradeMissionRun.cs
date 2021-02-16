@@ -4,28 +4,10 @@ using OryxBot.Shared.Contracts;
 
 namespace OryxBot.Bot
 {
-    public partial class TradeMissionRun : BotJob
+    public partial class TradeMissionRun : Job
     {
         private TradeMissionRunState state = new();
 
 
-        public event EventHandler? Started;
-        public event EventHandler? Stopped;
-
-        public void ToggleStart() {
-            state.Running = !state.Running;
-            if (state.Running)
-                Started?.Invoke(this, EventArgs.Empty);
-            else
-                Stopped?.Invoke(this, EventArgs.Empty);
-        }
-
-        public void Stop() {
-            var previous = state.Running;
-            state.Running = false;
-            
-            if (state.Running != previous)
-                Stopped?.Invoke(this, EventArgs.Empty);
-        }
     }
 }
