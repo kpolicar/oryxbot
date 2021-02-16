@@ -6,7 +6,7 @@ using SystemApplicationContext=System.Windows.Forms.ApplicationContext;
 
 namespace OryxBot.Client.Windows
 {
-    internal partial class UIApplicationContext : SystemApplicationContext
+    public partial class UIApplicationContext : SystemApplicationContext
     {
         public UIApplicationContext() =>
             InitializeComponents();
@@ -19,8 +19,7 @@ namespace OryxBot.Client.Windows
             // Todo: Open website
         }
 
-        private void OnToggleBotClicked(object? sender, EventArgs e) {
-            // Todo: Toggle bot
-        }
+        private void OnToolStipToggleBotTradeMissionRunButton(object? sender, EventArgs e) =>
+            TradeMissionRunRouteFile.ShowDialog();
     }
 }

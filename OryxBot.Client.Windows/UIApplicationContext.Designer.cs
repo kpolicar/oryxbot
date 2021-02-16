@@ -5,15 +5,17 @@ using System.Diagnostics;
 
 namespace OryxBot.Client.Windows
 {
-    internal partial class UIApplicationContext
+    public partial class UIApplicationContext
     {
         public event EventHandler Load;
         
         private Container components;
 
         public ToolStripMenuItem ToolStipPanelButton { private set; get; }
-        public ToolStripMenuItem ToolStipToggleBotButton { private set; get; }
+        public ToolStripMenuItem ToolStipToggleBotTradeMissionRecordButton { private set; get; }
+        public ToolStripMenuItem ToolStipToggleBotTradeMissionRunButton { private set; get; }
         public ToolStripMenuItem ToolStripCloseButton { private set; get; }
+        public OpenFileDialog TradeMissionRunRouteFile { private set; get; }
         private ContextMenuStrip contextMenuStrip;
         private NotifyIcon trayIcon;
 
@@ -29,13 +31,27 @@ namespace OryxBot.Client.Windows
             };
             ToolStipPanelButton.Click += OnPanelClicked;
             //
-            // toolStipToggleBotButton
+            // toolStipToggleBotTradeMissionRecordButton
             //
-            ToolStipToggleBotButton = new ToolStripMenuItem {
-                Name = "toolStipToggleBotButton",
-                Text = Resources.UIApplicationContext.ToolStipToggleBotButton_TextStart,
+            ToolStipToggleBotTradeMissionRecordButton = new ToolStripMenuItem {
+                Name = "toolStipToggleBotTradeMissionRecordButton",
+                Text = Resources.UIApplicationContext.ToolStipToggleBotTradeMissionRecordButton_TextStart,
             };
-            ToolStipToggleBotButton.Click += OnToggleBotClicked;
+            //
+            // toolStipToggleBotTradeMissionRunButton
+            //
+            ToolStipToggleBotTradeMissionRunButton = new ToolStripMenuItem {
+                Name = "toolStipToggleBotTradeMissionRunButton",
+                Text = Resources.UIApplicationContext.ToolStipToggleBotTradeMissionRunButton_TextStart,
+            };
+            ToolStipToggleBotTradeMissionRunButton.Click += OnToolStipToggleBotTradeMissionRunButton;
+            //
+            // TradeMissionRunRouteFile
+            //
+            TradeMissionRunRouteFile = new OpenFileDialog {
+                Title = Resources.UIApplicationContext.TradeMissionRunRouteFile_Title,
+                Filter = "Route Files (*.csv)|*.csv",
+            };
             //
             // toolStripCloseButton
             //
@@ -49,7 +65,13 @@ namespace OryxBot.Client.Windows
             //
             contextMenuStrip = new ContextMenuStrip(components) {
                 Name = "contextMenuStrip",
-                Items = { ToolStipToggleBotButton, ToolStipPanelButton, new ToolStripSeparator(), ToolStripCloseButton },
+                Items = {
+                    ToolStipToggleBotTradeMissionRecordButton,
+                    ToolStipToggleBotTradeMissionRunButton,
+                    ToolStipPanelButton,
+                    new ToolStripSeparator(),
+                    ToolStripCloseButton
+                },
                 ShowItemToolTips = false,
             };
             //

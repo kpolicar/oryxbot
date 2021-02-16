@@ -90,20 +90,38 @@ namespace OryxBot.Client.Windows.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Start (F1).
+        ///   Looks up a localized string similar to Start Recording (F1).
         /// </summary>
-        internal static string ToolStipToggleBotButton_TextStart {
+        internal static string ToolStipToggleBotTradeMissionRecordButton_TextStart {
             get {
-                return ResourceManager.GetString("ToolStipToggleBotButton.TextStart", resourceCulture);
+                return ResourceManager.GetString("ToolStipToggleBotTradeMissionRecordButton.TextStart", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Stop (F1).
+        ///   Looks up a localized string similar to Stop Recording (F1).
         /// </summary>
-        internal static string ToolStipToggleBotButton_TextStop {
+        internal static string ToolStipToggleBotTradeMissionRecordButton_TextStop {
             get {
-                return ResourceManager.GetString("ToolStipToggleBotButton.TextStop", resourceCulture);
+                return ResourceManager.GetString("ToolStipToggleBotTradeMissionRecordButton.TextStop", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Start Route (F2).
+        /// </summary>
+        internal static string ToolStipToggleBotTradeMissionRunButton_TextStart {
+            get {
+                return ResourceManager.GetString("ToolStipToggleBotTradeMissionRunButton.TextStart", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Stop Route (F2).
+        /// </summary>
+        internal static string ToolStipToggleBotTradeMissionRunButton_TextStop {
+            get {
+                return ResourceManager.GetString("ToolStipToggleBotTradeMissionRunButton.TextStop", resourceCulture);
             }
         }
         
@@ -113,6 +131,15 @@ namespace OryxBot.Client.Windows.Resources {
         internal static string ToolStripCloseButton_Text {
             get {
                 return ResourceManager.GetString("ToolStripCloseButton.Text", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Select Route File.
+        /// </summary>
+        internal static string TradeMissionRunRouteFile_Title {
+            get {
+                return ResourceManager.GetString("TradeMissionRunRouteFile.Title", resourceCulture);
             }
         }
     }

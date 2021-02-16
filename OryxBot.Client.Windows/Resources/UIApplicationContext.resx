@@ -1780,11 +1780,20 @@
         <value>OryxBot
 v0.1.0</value>
     </data>
-    <data name="ToolStipToggleBotButton.TextStop" xml:space="preserve">
-        <value>Stop (F1)</value>
+    <data name="ToolStipToggleBotTradeMissionRecordButton.TextStop" xml:space="preserve">
+        <value>Stop Recording (F1)</value>
     </data>
-    <data name="ToolStipToggleBotButton.TextStart" xml:space="preserve">
-        <value>Start (F1)</value>
+    <data name="ToolStipToggleBotTradeMissionRecordButton.TextStart" xml:space="preserve">
+        <value>Start Recording (F1)</value>
+    </data>
+    <data name="ToolStipToggleBotTradeMissionRunButton.TextStop" xml:space="preserve">
+        <value>Stop Route (F2)</value>
+    </data>
+    <data name="ToolStipToggleBotTradeMissionRunButton.TextStart" xml:space="preserve">
+        <value>Start Route (F2)</value>
+    </data>
+    <data name="TradeMissionRunRouteFile.Title" xml:space="preserve">
+        <value>Select Route File</value>
     </data>
     <data name="ToolStipPanelButton.Text" xml:space="preserve">
         <value>Panel</value>

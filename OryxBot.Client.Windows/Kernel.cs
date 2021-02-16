@@ -1,11 +1,17 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.Design;
 using System.Diagnostics;
+using System.Windows.Forms;
+using OryxBot.Bot;
+using OryxBot.Bot.Contracts;
 using OryxBot.Bot.Services;
 using OryxBot.Client.Windows.Services;
 using OryxBot.Shared.Contracts;
 using OryxBot.Shared.Design;
+using BotManagerContract=OryxBot.Shared.Contracts.BotManager;
+using ServiceContainer = OryxBot.Shared.Design.ServiceContainer;
 
 namespace OryxBot.Client.Windows
 {
@@ -19,7 +25,8 @@ namespace OryxBot.Client.Windows
                 {typeof(Input), new Win32Input()},
                 {typeof(Hotkey), new Win32Hotkey()},
                 {typeof(AlbionDataProvider), new NetworkAlbionDataProvider()},
-                {typeof(BotJob), new Bot.TradeMissionRecord()},
+                {typeof(BotManagerContract), new Bot.BotManager()},
+                {typeof(TradeMissionRouteProvider), new FileDialogTradeMissionRouteProvider()},
             };
 
             
@@ -56,18 +63,33 @@ namespace OryxBot.Client.Windows
 
             public void OnLoadForm(object? sender, EventArgs e) {
                 var app = (sender as UIApplicationContext)!;
-                var bot = ((BotJob) Services.GetService(typeof(BotJob)))!;
+                var bot = Services.GetService<BotManagerContract>();
+                var tradeMissionRouteProvider = (FileDialogTradeMissionRouteProvider) Services.GetService<TradeMissionRouteProvider>();
                 
-                app.ToolStipToggleBotButton.Click += (_, _) => bot.ToggleStart();
-                bot.Started += app.OnBotStarted;
-                bot.Stopped += app.OnBotStopped;
+                app.ToolStipToggleBotTradeMissionRecordButton.Click += (_, _) => bot.ToggleTradeMissionRecord();
+                app.ToolStipToggleBotTradeMissionRunButton.Click += (_, _) => bot.ToggleTradeMissionRun();
+                
+                bot.Started += (sender, e) => {
+                    if (e.Job is TradeMissionRecord)
+                        app.OnBotTradeMissionRecordingStarted(sender, e);
+                    else if (e.Job is TradeMissionRun)
+                        app.OnBotTradeMissionRunStarted(sender, e);
+                };
+                bot.Stopped += (sender, e) => {
+                    if (e.Job is TradeMissionRecord)
+                        app.OnBotTradeMissionRecordingStopped(sender, e);
+                    else if (e.Job is TradeMissionRun)
+                        app.OnBotTradeMissionRunStopped(sender, e);
+                };
+                tradeMissionRouteProvider.BindToApp(app);
             }
 
             private void BindServices() {
-                var hotkey = ((Hotkey) Services.GetService(typeof(Hotkey)))!;
-                var bot = ((BotJob) Services.GetService(typeof(BotJob)))!;
+                var hotkey = Services.GetService<Hotkey>();
+                var bot = Services.GetService<BotManagerContract>();
                 
-                hotkey.F1 += (_, _) => bot.ToggleStart();
+                hotkey.F1 += (_, _) => bot.ToggleTradeMissionRecord();
+                hotkey.F2 += (_, _) => bot.ToggleTradeMissionRun();
             }
         }
     }

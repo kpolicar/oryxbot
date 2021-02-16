@@ -1,13 +1,16 @@
 using System;
+using System.Collections.Generic;
+using OryxBot.Shared.Design;
+using OryxBot.Shared.Events;
 
 namespace OryxBot.Shared.Contracts
 {
-    public interface BotJob
+    public interface BotManager
     {
-        event EventHandler? Started;
-        event EventHandler? Stopped;
-        
-        void ToggleStart();
-        void Stop();
+        event EventHandler<BotEventArgs>? Started;
+        event EventHandler<BotEventArgs>? Stopped;
+
+        void ToggleTradeMissionRun();
+        void ToggleTradeMissionRecord();
     }
 }

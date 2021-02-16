@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using OryxBot.Shared.Contracts;
 using OryxBot.Shared.Design;
 using OryxBot.Shared.Events;
+using ServiceContainer = OryxBot.Shared.Design.ServiceContainer;
 
 namespace OryxBot.Bot
 {
@@ -19,7 +20,7 @@ namespace OryxBot.Bot
         
 
         public void BindDependencies(ServiceContainer serviceContainer) {
-            dataProvider = ((AlbionDataProvider) serviceContainer.GetService(typeof(AlbionDataProvider)))!;
+            dataProvider = serviceContainer.GetService<AlbionDataProvider>();
             dataProvider.Move += RuntimeEventListener<MoveEventArgs>(OnCharacterMove);
         }
 

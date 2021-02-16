@@ -2,12 +2,23 @@ using System;
 
 namespace OryxBot.Client.Windows
 {
-    internal partial class UIApplicationContext
+    public partial class UIApplicationContext
     {
-        public void OnBotStarted(object? sender, EventArgs e) =>
-            ToolStipToggleBotButton.Text = Resources.UIApplicationContext.ToolStipToggleBotButton_TextStop;
+        public void OnBotTradeMissionRecordingStarted(object? sender, EventArgs e) =>
+            ToolStipToggleBotTradeMissionRecordButton.Text =
+                Resources.UIApplicationContext.ToolStipToggleBotTradeMissionRecordButton_TextStop;
 
-        public void OnBotStopped(object? sender, EventArgs e) =>
-            ToolStipToggleBotButton.Text = Resources.UIApplicationContext.ToolStipToggleBotButton_TextStart;
+        public void OnBotTradeMissionRecordingStopped(object? sender, EventArgs e) =>
+            ToolStipToggleBotTradeMissionRecordButton.Text =
+                Resources.UIApplicationContext.ToolStipToggleBotTradeMissionRecordButton_TextStart;
+        
+        public void OnBotTradeMissionRunStarted(object? sender, EventArgs e) =>
+            ToolStipToggleBotTradeMissionRunButton.Text =
+                Resources.UIApplicationContext.ToolStipToggleBotTradeMissionRunButton_TextStop;
+
+        public void OnBotTradeMissionRunStopped(object? sender, EventArgs e) =>
+            ToolStipToggleBotTradeMissionRunButton.Text =
+                Resources.UIApplicationContext.ToolStipToggleBotTradeMissionRunButton_TextStart;
+
     }
 }
