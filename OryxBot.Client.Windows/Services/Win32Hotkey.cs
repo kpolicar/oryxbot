@@ -11,7 +11,7 @@ namespace OryxBot.Client.Windows.Services
         public event EventHandler? Escape;
         private IKeyboardMouseEvents? m_GlobalHook;
         
-        public void Bind() {
+        public Win32Hotkey() {
             m_GlobalHook = Hook.GlobalEvents();
             
             var combinations = new Dictionary<Combination, Action> {

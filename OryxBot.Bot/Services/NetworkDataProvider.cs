@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 using Albion.Network;
 using OryxBot.Albion.Protocol;
 using OryxBot.Shared.Contracts;
@@ -15,7 +17,6 @@ namespace OryxBot.Bot.Services
     {
         private List<Thread> captureThreads = new();
         private IPhotonReceiver receiver = null!;
-        private event EventHandler? Disposing;
         
         public event EventHandler<MoveEventArgs>? Move;
 
@@ -39,8 +40,6 @@ namespace OryxBot.Bot.Services
                     device.OnPacketArrival += PacketHandler;
                     device.Open(DeviceMode.Promiscuous, 1000);
                     device.StartCapture();
-                    
-                    Disposing += (_, _) => device.StopCapture();
                 });
                 captureThreads.Add(captureThread);
                 captureThread.Start();
@@ -56,7 +55,11 @@ namespace OryxBot.Bot.Services
             }
         }
 
-        public void Dispose() =>
-            Disposing?.Invoke(this, EventArgs.Empty);
+        public void Dispose() {
+            var stopTasks = CaptureDeviceList.Instance.Select(
+                device => Task.Run(device.StopCapture));
+
+            Task.WaitAll(stopTasks.ToArray());
+        }
     }
 }
