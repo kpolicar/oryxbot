@@ -2,12 +2,12 @@ using System;
 
 namespace OryxBot.Shared.Contracts
 {
-    public interface BotManager
+    public interface BotJob
     {
         event EventHandler? Started;
         event EventHandler? Stopped;
         
-        void ToggleRun();
+        void ToggleStart();
         void Stop();
     }
 }

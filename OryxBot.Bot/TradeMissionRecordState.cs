@@ -1,8 +1,8 @@
 namespace OryxBot.Bot
 {
-    public partial class OryxBot
+    public partial class TradeMissionRecord
     {
-        class OryxBotState
+        class TradeMissionRecordState
         {
             public bool Running = false;
         }

@@ -27,8 +27,11 @@
       <Compile Update="Services\MoveEventHandler.cs">
         <DependentUpon>NetworkDataProvider.cs</DependentUpon>
       </Compile>
-      <Compile Update="State.cs">
-        <DependentUpon>OryxBot.cs</DependentUpon>
+      <Compile Update="TradeMissionRecordState.cs">
+        <DependentUpon>TradeMissionRecord.cs</DependentUpon>
+      </Compile>
+      <Compile Update="TradeMissionRunState.cs">
+        <DependentUpon>TradeMissionRun.cs</DependentUpon>
       </Compile>
     </ItemGroup>
 
