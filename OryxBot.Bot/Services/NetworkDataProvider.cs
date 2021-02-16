@@ -19,7 +19,7 @@ namespace OryxBot.Bot.Services
         private IPhotonReceiver receiver = null!;
         
         public event EventHandler<MoveEventArgs>? Move;
-
+        
         public NetworkAlbionDataProvider() =>
             Run();
         

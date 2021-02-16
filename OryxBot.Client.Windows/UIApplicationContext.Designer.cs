@@ -44,7 +44,6 @@ namespace OryxBot.Client.Windows
                 Name = "toolStipToggleBotTradeMissionRunButton",
                 Text = Resources.UIApplicationContext.ToolStipToggleBotTradeMissionRunButton_TextStart,
             };
-            ToolStipToggleBotTradeMissionRunButton.Click += OnToolStipToggleBotTradeMissionRunButton;
             //
             // TradeMissionRunRouteFile
             //

@@ -18,8 +18,5 @@ namespace OryxBot.Client.Windows
         private void OnPanelClicked(object? sender, EventArgs e) {
             // Todo: Open website
         }
-
-        private void OnToolStipToggleBotTradeMissionRunButton(object? sender, EventArgs e) =>
-            TradeMissionRunRouteFile.ShowDialog();
     }
 }

@@ -1,5 +1,6 @@
 using System;
 using System.Drawing;
+using System.Numerics;
 using OryxBot.Shared.Design;
 using SMath=System.Math;
 
@@ -21,8 +22,8 @@ namespace OryxBot.Bot
                 SMath.Sqrt(
                     SMath.Pow(B.X - A.X, 2) + SMath.Pow(B.Y - A.Y, 2));
 
-            public static (double x, double y) PointOnUnitCircle(double angle) =>
-                (SMath.Cos(angle), SMath.Sin(angle));
+            public static Vector2 PointOnUnitCircle(double angle) =>
+                new ((float) SMath.Cos(angle), (float) SMath.Sin(angle));
         }
     }
 }

@@ -24,6 +24,7 @@ namespace OryxBot.Client.Windows
             private readonly Dictionary<Type, object> _services = new() {
                 {typeof(Input), new Win32Input()},
                 {typeof(Hotkey), new Win32Hotkey()},
+                {typeof(ActionFactory), new InputActionFactory()},
                 {typeof(AlbionDataProvider), new NetworkAlbionDataProvider()},
                 {typeof(BotManagerContract), new Bot.BotManager()},
                 {typeof(TradeMissionRouteProvider), new FileDialogTradeMissionRouteProvider()},
