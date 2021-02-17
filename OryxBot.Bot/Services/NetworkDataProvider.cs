@@ -7,57 +7,64 @@ using System.Threading.Tasks;
 using Albion.Network;
 using OryxBot.Albion.Protocol;
 using OryxBot.Shared.Contracts;
+using OryxBot.Shared.Design;
 using OryxBot.Shared.Events;
 using PacketDotNet;
 using SharpPcap;
+using BotManagerContract=OryxBot.Shared.Contracts.BotManager;
 
 namespace OryxBot.Bot.Services
 {
-    public partial class NetworkAlbionDataProvider : AlbionDataProvider, IDisposable
+    public partial class NetworkAlbionDataProvider : AlbionDataProvider, IDisposable, HasDependencies
     {
-        private List<Thread> captureThreads = new();
-        private IPhotonReceiver receiver = null!;
+        private IPhotonReceiver _receiver = null!;
+        private bool _running;
         
         public event EventHandler<MoveEventArgs>? Move;
+        public event EventHandler<RequestPacket>? NetworkRequest;
+        public event EventHandler<EventPacket>? NetworkEvent;
         
-        public NetworkAlbionDataProvider() =>
-            Run();
-
-        class Packethan : PacketHandler<RequestPacket>
+        
+        private class RaiseRequestPacketEvent : PacketHandler<RequestPacket>
         {
-            protected override Task OnHandleAsync(RequestPacket packet) {
-                var packeta = (OperationCodes)packet.OperationCode;
-                if (packeta == OperationCodes.Move)
-                    return Task.CompletedTask;
-                Debug.WriteLine("request: "+packeta);
-                
-                return Task.CompletedTask;
-            }
-        }
+            private NetworkAlbionDataProvider DataProvider;
 
-        class Packethana : PacketHandler<EventPacket>
-        {
-            protected override Task OnHandleAsync(EventPacket packet) {
-                var packeta = (EventCodes)packet.EventCode;
-                if (packeta == EventCodes.Move)
-                    return Task.CompletedTask;
-                Debug.WriteLine("event: "+packeta);
-                
-                return Task.CompletedTask;
-            }
+            public RaiseRequestPacketEvent(NetworkAlbionDataProvider dataProvider) =>
+                DataProvider = dataProvider;
+
+            protected override Task OnHandleAsync(RequestPacket packet) =>
+                new (() => DataProvider.NetworkRequest?.Invoke(this, packet));
         }
         
+        private class RaiseEventPacketEvent : PacketHandler<EventPacket>
+        {
+            private NetworkAlbionDataProvider DataProvider;
+
+            public RaiseEventPacketEvent(NetworkAlbionDataProvider dataProvider) =>
+                DataProvider = dataProvider;
+
+            protected override Task OnHandleAsync(EventPacket packet) =>
+                new (() => DataProvider.NetworkEvent?.Invoke(this, packet));
+        }
+
+        public void BindDependencies(ServiceContainer serviceContainer) {
+            var bot = serviceContainer.GetService<BotManagerContract>();
+            bot.Started += (_, _) => Run();
+        }
 
         private void Run() {
+            if (_running)
+                return;
+            
             var builder = ReceiverBuilder.Create();
     
             builder.AddRequestHandler(new MoveRequestHandler(this));
-            builder.AddHandler(new Packethan());
-            builder.AddHandler(new Packethana());
+            builder.AddHandler(new RaiseRequestPacketEvent(this));
+            builder.AddHandler(new RaiseEventPacketEvent(this));
             // builder.AddEventHandler(new MoveEventHandler());
             // builder.AddEventHandler(new NewCharacterEventHandler());
             
-            receiver = builder.Build();
+            _receiver = builder.Build();
     
             foreach (var device in CaptureDeviceList.Instance) {
                 var captureThread = new Thread(() => {
@@ -67,9 +74,20 @@ namespace OryxBot.Bot.Services
                     device.Open(DeviceMode.Promiscuous, 1000);
                     device.StartCapture();
                 });
-                captureThreads.Add(captureThread);
                 captureThread.Start();
             }
+
+            _running = true;
+        }
+
+        private void Stop() {
+            if (!_running)
+                return;
+            var stopTasks = CaptureDeviceList.Instance.Select(
+                device => Task.Run(device.StopCapture));
+
+            Task.WaitAll(stopTasks.ToArray());
+            _running = false;
         }
         
         private void PacketHandler(object sender, CaptureEventArgs e)
@@ -77,15 +95,11 @@ namespace OryxBot.Bot.Services
             UdpPacket packet = Packet.ParsePacket(e.Packet.LinkLayerType, e.Packet.Data).Extract<UdpPacket>();
             if (packet != null && (packet.SourcePort == 5056 || packet.DestinationPort == 5056))
             {
-                receiver.ReceivePacket(packet.PayloadData);
+                _receiver.ReceivePacket(packet.PayloadData);
             }
         }
 
-        public void Dispose() {
-            var stopTasks = CaptureDeviceList.Instance.Select(
-                device => Task.Run(device.StopCapture));
-
-            Task.WaitAll(stopTasks.ToArray());
-        }
+        public void Dispose() =>
+            Stop();
     }
 }

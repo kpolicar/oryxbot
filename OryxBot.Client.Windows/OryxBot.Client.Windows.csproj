@@ -5,6 +5,10 @@
         <TargetFramework>net5.0-windows</TargetFramework>
         <UseWindowsForms>true</UseWindowsForms>
         <Nullable>enable</Nullable>
+        <Company>OryxBot</Company>
+        <Product>OryxBot</Product>
+        <NeutralLanguage>en</NeutralLanguage>
+        <AssemblyName>OryxBot</AssemblyName>
     </PropertyGroup>
 
     <ItemGroup>
@@ -40,6 +44,12 @@
 
     <ItemGroup>
       <PackageReference Include="NLog" Version="4.7.7" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Update="NLog.config">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
     </ItemGroup>
 
 </Project>

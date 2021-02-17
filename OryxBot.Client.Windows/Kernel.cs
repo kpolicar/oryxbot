@@ -94,6 +94,7 @@ namespace OryxBot.Client.Windows
                 hotkey.F1 += (_, _) => bot.ToggleTradeMissionRecord();
                 hotkey.F2 += (_, _) => bot.ToggleTradeMissionRun();
                 logger.BindToServices(Services);
+                NLog.LogManager.Shutdown();
             }
         }
     }
