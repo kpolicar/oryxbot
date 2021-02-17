@@ -7,7 +7,7 @@ namespace OryxBot.Bot
     {
         class TradeMissionRecordState
         {
-            public LinkedList<Position> RecordedPositions = new();
+            public LinkedList<RecordableStep> RecordedSteps = new();
         }
     }
 }

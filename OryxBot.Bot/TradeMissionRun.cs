@@ -18,37 +18,48 @@ namespace OryxBot.Bot
         
         private TradeMissionRunState state = new();
         private AlbionDataProvider dataProvider = null!;
-        private LinkedList<Position> Route;
-        private IEnumerator<Position> Waypoint = null!;
+        private LinkedList<TradeMissionRecord.RecordableStep> Route;
+        private IEnumerator<TradeMissionRecord.RecordableStep> Step = null!;
         private ActionFactory actions = null!;
 
 
-        public TradeMissionRun(LinkedList<Position> route) =>
-            Route = route;
+        public TradeMissionRun(LinkedList<TradeMissionRecord.RecordableStep> steps) =>
+            Route = steps;
         
         public void BindDependencies(ServiceContainer serviceContainer) {
             dataProvider = serviceContainer.GetService<AlbionDataProvider>();
             dataProvider.Move += RuntimeEventListener<MoveEventArgs>(OnCharacterMove);
+            dataProvider.ChangeCluster += RuntimeEventListener<ChangeClusterEventArgs>(OnChangeCluster);
             actions = serviceContainer.GetService<ActionFactory>();
         }
 
         public override void Start() {
-            Waypoint = Route.GetEnumerator();
-            Waypoint.MoveNext();
+            Step = Route.GetEnumerator();
+            Step.MoveNext();
             base.Start();
         }
 
         public override void Stop() {
             base.Stop();
             state = new();
-            Waypoint.Reset();
+            Step.Reset();
         }
 
         private void OnCharacterMove(object? sender, MoveEventArgs e) {
-            if (Helpers.Math.Distance(Waypoint.Current, e.Position) <= 3f)
-                Waypoint.MoveNext();
+            if (!(Step.Current is TradeMissionRecord.MoveStep move))
+                return;
+            if (Helpers.Math.Distance(move.Position, e.Position) <= 3f)
+                Step.MoveNext();
 
-            actions.MoveTowards(e.Position, Waypoint.Current);
+            actions.MoveTowards(e.Position, move.Position);
+            Debug.WriteLine("1 next step:"+Step.Current);
+        }
+
+        private void OnChangeCluster(object? sender, ChangeClusterEventArgs e) {
+            if (!(Step.Current is TradeMissionRecord.ChangeClusterStep))
+                return;
+            Step.MoveNext();
+            Debug.WriteLine("2 next step:"+Step.Current);
         }
     }
 }

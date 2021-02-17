@@ -36,7 +36,6 @@ namespace OryxBot.Bot.Services
             }
 
             protected override Task OnActionAsync(MoveOperation operation) {
-                Debug.WriteLine("moved");
                 DataProvider.Move?.Invoke(this, (MoveEventArgs) operation);
                 return Task.CompletedTask;
             }

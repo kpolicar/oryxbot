@@ -33,6 +33,9 @@
       <Compile Update="TradeMissionRunState.cs">
         <DependentUpon>TradeMissionRun.cs</DependentUpon>
       </Compile>
+      <Compile Update="RecordableStep.cs">
+        <DependentUpon>TradeMissionRecord.cs</DependentUpon>
+      </Compile>
     </ItemGroup>
 
 </Project>

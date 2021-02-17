@@ -22,18 +22,15 @@ namespace OryxBot.Bot
         public void BindDependencies(ServiceContainer serviceContainer) {
             dataProvider = serviceContainer.GetService<AlbionDataProvider>();
             dataProvider.Move += RuntimeEventListener<MoveEventArgs>(OnCharacterMove);
+            dataProvider.ChangeCluster += RuntimeEventListener<ChangeClusterEventArgs>(OnChangeCluster);
         }
 
         private void OnCharacterMove(object? sender, MoveEventArgs e) {
-            if (state.RecordedPositions.Count == 0) {
-                RecordPosition(e.Position);
-                return;
-            }
+            state.RecordedSteps.AddLast(MoveStep.From(e));
+        }
 
-            if (Helpers.Math.Distance(state.RecordedPositions.Last!.Value, e.Position) <= DistanceStep)
-                return;
-            
-            RecordPosition(e.Position);
+        private void OnChangeCluster(object? sender, ChangeClusterEventArgs e) {
+            state.RecordedSteps.AddLast(ChangeClusterStep.From(e));
         }
 
         public override void Stop() {
@@ -47,26 +44,21 @@ namespace OryxBot.Bot
         }
 
         private void SaveRecordingToDisk() {
-            if (state.RecordedPositions.Count <= 0)
+            if (state.RecordedSteps.Count <= 0)
                 return;
             
             var fileName = GenerateFileName();
             using var fileStream = new StreamWriter($"recordings/{fileName}");
 
             lock (state) {
-                foreach (var recordedPosition in state.RecordedPositions) {
-                    fileStream.WriteLine($"{recordedPosition.X},{recordedPosition.Y}");
+                foreach (var recordedPosition in state.RecordedSteps) {
+                    fileStream.WriteLine(recordedPosition.CsvFormat);
                 }
             }
         }
 
         private string GenerateFileName() =>
             $"{DateTime.Now:yyyy-MM-dd_hh-mm-ss}.csv";
-
-        private void RecordPosition(Position position) {
-            state.RecordedPositions.AddLast(position);
-            Debug.WriteLine($"Recorded Position {position}");
-        }
 
         public void Dispose() {
             dataProvider.Move -= OnCharacterMove;

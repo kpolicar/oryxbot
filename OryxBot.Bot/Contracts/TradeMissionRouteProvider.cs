@@ -5,6 +5,6 @@ namespace OryxBot.Bot.Contracts
 {
     public interface TradeMissionRouteProvider
     {
-        LinkedList<Position>? Route();
+        LinkedList<TradeMissionRecord.RecordableStep>? Route();
     }
 }

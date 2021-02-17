@@ -24,7 +24,6 @@ namespace OryxBot.Client.Windows.Services
                 new Vector2(cursorPosition.X, cursorPosition.Y));
 
             if (distanceFromPreviousCursor <= 10) {
-                Debug.WriteLine("not close enough");
                 return;
             }
 
