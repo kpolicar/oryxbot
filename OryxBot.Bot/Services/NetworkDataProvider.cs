@@ -21,32 +21,11 @@ namespace OryxBot.Bot.Services
         private bool _running;
         
         public event EventHandler<MoveEventArgs>? Move;
+        public event EventHandler<ChangeClusterEventArgs>? ChangeCluster;
         public event EventHandler<RequestPacket>? NetworkRequest;
         public event EventHandler<EventPacket>? NetworkEvent;
         
         
-        private class RaiseRequestPacketEvent : PacketHandler<RequestPacket>
-        {
-            private NetworkAlbionDataProvider DataProvider;
-
-            public RaiseRequestPacketEvent(NetworkAlbionDataProvider dataProvider) =>
-                DataProvider = dataProvider;
-
-            protected override Task OnHandleAsync(RequestPacket packet) =>
-                new (() => DataProvider.NetworkRequest?.Invoke(this, packet));
-        }
-        
-        private class RaiseEventPacketEvent : PacketHandler<EventPacket>
-        {
-            private NetworkAlbionDataProvider DataProvider;
-
-            public RaiseEventPacketEvent(NetworkAlbionDataProvider dataProvider) =>
-                DataProvider = dataProvider;
-
-            protected override Task OnHandleAsync(EventPacket packet) =>
-                new (() => DataProvider.NetworkEvent?.Invoke(this, packet));
-        }
-
         public void BindDependencies(ServiceContainer serviceContainer) {
             var bot = serviceContainer.GetService<BotManagerContract>();
             bot.Started += (_, _) => Run();
@@ -57,12 +36,8 @@ namespace OryxBot.Bot.Services
                 return;
             
             var builder = ReceiverBuilder.Create();
-    
-            builder.AddRequestHandler(new MoveRequestHandler(this));
-            builder.AddHandler(new RaiseRequestPacketEvent(this));
-            builder.AddHandler(new RaiseEventPacketEvent(this));
-            // builder.AddEventHandler(new MoveEventHandler());
-            // builder.AddEventHandler(new NewCharacterEventHandler());
+
+            BindEventRaiseHandlers(builder);
             
             _receiver = builder.Build();
     

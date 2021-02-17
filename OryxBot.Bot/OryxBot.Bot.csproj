@@ -21,7 +21,7 @@
       <Compile Update="Services\NewCharacterEventHandler.cs">
         <DependentUpon>NetworkDataProvider.cs</DependentUpon>
       </Compile>
-      <Compile Update="Services\MoveRequestHandler.cs">
+      <Compile Update="Services\RaiseEvents.cs">
         <DependentUpon>NetworkDataProvider.cs</DependentUpon>
       </Compile>
       <Compile Update="Services\MoveEventHandler.cs">

@@ -5,6 +5,7 @@ namespace OryxBot.Shared.Contracts
 {
     public interface AlbionDataProvider
     {
-        public event EventHandler<MoveEventArgs> Move;
+        event EventHandler<MoveEventArgs> Move;
+        event EventHandler<ChangeClusterEventArgs>? ChangeCluster;
     }
 }

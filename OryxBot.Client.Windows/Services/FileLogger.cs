@@ -28,12 +28,14 @@ namespace OryxBot.Client.Windows.Services
         private void BindToDataProvider(NetworkAlbionDataProvider dataProvider) {
             dataProvider.NetworkEvent += (_, packet) => {
                 var evcode = (EventCodes) packet.EventCode;
-                NetworkEvent.Info(evcode);
+                NetworkEvent.Info(evcode.ToString());
             };
             dataProvider.NetworkRequest += (_, packet) => {
                 var opcode = (OperationCodes) packet.OperationCode;
-                NetworkRequest.Info(opcode);
+                NetworkRequest.Info(opcode.ToString());
             };
+            
+            dataProvider.ChangeCluster += (_, e) => Debug.WriteLine("Changed cluster:"+e.Location);
         }
 
         private void BindToBot(BotManager bot) {
