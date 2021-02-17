@@ -10,7 +10,7 @@ namespace OryxBot.Bot.Services
         internal class NewCharacterEventHandler : EventPacketHandler<NewCharacterEvent>
         {
 
-            public NewCharacterEventHandler() : base(EventCodes.NewCharacter) {
+            public NewCharacterEventHandler() : base((int) EventCodes.NewCharacter) {
             }
             
             protected override Task OnActionAsync(NewCharacterEvent value) {

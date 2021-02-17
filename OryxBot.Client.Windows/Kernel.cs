@@ -26,6 +26,7 @@ namespace OryxBot.Client.Windows
                 {typeof(Hotkey), new Win32Hotkey()},
                 {typeof(ActionFactory), new InputActionFactory()},
                 {typeof(AlbionDataProvider), new NetworkAlbionDataProvider()},
+                {typeof(Logger), new FileLogger()},
                 {typeof(BotManagerContract), new Bot.BotManager()},
                 {typeof(TradeMissionRouteProvider), new FileDialogTradeMissionRouteProvider()},
             };
@@ -88,9 +89,11 @@ namespace OryxBot.Client.Windows
             private void BindServices() {
                 var hotkey = Services.GetService<Hotkey>();
                 var bot = Services.GetService<BotManagerContract>();
+                var logger = (FileLogger) Services.GetService<Logger>();
                 
                 hotkey.F1 += (_, _) => bot.ToggleTradeMissionRecord();
                 hotkey.F2 += (_, _) => bot.ToggleTradeMissionRun();
+                logger.BindToServices(Services);
             }
         }
     }

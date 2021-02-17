@@ -22,12 +22,38 @@ namespace OryxBot.Bot.Services
         
         public NetworkAlbionDataProvider() =>
             Run();
+
+        class Packethan : PacketHandler<RequestPacket>
+        {
+            protected override Task OnHandleAsync(RequestPacket packet) {
+                var packeta = (OperationCodes)packet.OperationCode;
+                if (packeta == OperationCodes.Move)
+                    return Task.CompletedTask;
+                Debug.WriteLine("request: "+packeta);
+                
+                return Task.CompletedTask;
+            }
+        }
+
+        class Packethana : PacketHandler<EventPacket>
+        {
+            protected override Task OnHandleAsync(EventPacket packet) {
+                var packeta = (EventCodes)packet.EventCode;
+                if (packeta == EventCodes.Move)
+                    return Task.CompletedTask;
+                Debug.WriteLine("event: "+packeta);
+                
+                return Task.CompletedTask;
+            }
+        }
         
 
         private void Run() {
             var builder = ReceiverBuilder.Create();
     
             builder.AddRequestHandler(new MoveRequestHandler(this));
+            builder.AddHandler(new Packethan());
+            builder.AddHandler(new Packethana());
             // builder.AddEventHandler(new MoveEventHandler());
             // builder.AddEventHandler(new NewCharacterEventHandler());
             

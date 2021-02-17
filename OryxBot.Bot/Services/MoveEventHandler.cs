@@ -9,7 +9,7 @@ namespace OryxBot.Bot.Services
     {
         internal class MoveEventHandler : EventPacketHandler<MoveEvent>
         {
-            public MoveEventHandler() : base(EventCodes.Move) {
+            public MoveEventHandler() : base((int) EventCodes.Move) {
             }
 
             protected override Task OnActionAsync(MoveEvent value) {

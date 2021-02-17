@@ -17,7 +17,7 @@ namespace OryxBot.Bot.Services
             private NetworkAlbionDataProvider DataProvider;
 
             public MoveRequestHandler(NetworkAlbionDataProvider networkAlbionDataProvider) :
-                base(OperationCodes.Move) =>
+                base((int) OperationCodes.Move) =>
                 DataProvider = networkAlbionDataProvider;
 
             protected override Task OnActionAsync(MoveOperation operation) {
