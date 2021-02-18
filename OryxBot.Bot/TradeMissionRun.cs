@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel.Design;
 using System.Diagnostics;
@@ -22,7 +23,7 @@ namespace OryxBot.Bot
         private TradeMissionRunState state = new();
         private AlbionDataProvider dataProvider = null!;
         private LinkedList<TradeMissionRecord.RecordableStep> Route;
-        private TwoWayEnumerator<TradeMissionRecord.RecordableStep> Step = null!;
+        private IEnumerator<TradeMissionRecord.RecordableStep> Step = null!;
         private ActionFactory actions = null!;
 
 
@@ -37,7 +38,7 @@ namespace OryxBot.Bot
         }
 
         public override void Start() {
-            Step = new TwoWayEnumerator<TradeMissionRecord.RecordableStep>(Route.GetEnumerator());
+            Step = Route.GetEnumerator();
             Step.MoveNext();
             
             base.Start();
@@ -66,12 +67,8 @@ namespace OryxBot.Bot
             {
                 if (Step.Current is TradeMissionRecord.ChangeClusterStep)
                     break;
-                if (skips >= MaxSkippableSteps) {
-                    // Abort
-                    for (int i = 0; i < skips; i++)
-                        Step.MovePrevious();
-                    return;
-                }
+                if (skips >= MaxSkippableSteps)
+                    throw new RouteException(Step.Current);
 
                 Step.MoveNext();
             }
