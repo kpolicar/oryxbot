@@ -5,6 +5,8 @@ using System.Diagnostics;
 using System.Numerics;
 using System.Threading;
 using System.Threading.Tasks;
+using OryxBot.Bot.Exceptions;
+using OryxBot.Shared;
 using OryxBot.Shared.Contracts;
 using OryxBot.Shared.Design;
 using OryxBot.Shared.Events;
@@ -15,11 +17,12 @@ namespace OryxBot.Bot
     public partial class TradeMissionRun : Job, HasDependencies
     {
         private const float MaxDistance = 3f;
+        private const int MaxSkippableSteps = 4;
         
         private TradeMissionRunState state = new();
         private AlbionDataProvider dataProvider = null!;
         private LinkedList<TradeMissionRecord.RecordableStep> Route;
-        private IEnumerator<TradeMissionRecord.RecordableStep> Step = null!;
+        private TwoWayEnumerator<TradeMissionRecord.RecordableStep> Step = null!;
         private ActionFactory actions = null!;
 
 
@@ -34,8 +37,9 @@ namespace OryxBot.Bot
         }
 
         public override void Start() {
-            Step = Route.GetEnumerator();
+            Step = new TwoWayEnumerator<TradeMissionRecord.RecordableStep>(Route.GetEnumerator());
             Step.MoveNext();
+            
             base.Start();
         }
 
@@ -46,17 +50,35 @@ namespace OryxBot.Bot
         }
 
         private void OnCharacterMove(object? sender, MoveEventArgs e) {
-            if (!(Step.Current is TradeMissionRecord.MoveStep move))
+            if (!(Step.Current is TradeMissionRecord.MoveStep))
                 return;
-            if (Helpers.Math.Distance(move.Position, e.Position) <= MaxDistance)
-                Step.MoveNext();
 
-            actions.MoveTowards(e.Position, move.Position);
+            while (Step.Current is TradeMissionRecord.MoveStep move &&
+                   Helpers.Math.Distance(move.Position, e.Position) <= MaxDistance)
+            {
+                Step.MoveNext();
+                actions.MoveTowards(e.Position, move.Position);
+            }
         }
 
         private void OnChangeCluster(object? sender, ChangeClusterEventArgs e) {
-            if (!(Step.Current is TradeMissionRecord.ChangeClusterStep))
-                return;
+            for (var skips = 0 ;; skips++)
+            {
+                if (Step.Current is TradeMissionRecord.ChangeClusterStep)
+                    break;
+                if (skips >= MaxSkippableSteps) {
+                    // Abort
+                    for (int i = 0; i < skips; i++)
+                        Step.MovePrevious();
+                    return;
+                }
+
+                Step.MoveNext();
+            }
+
+            var changeCluster = (Step.Current as TradeMissionRecord.ChangeClusterStep)!;
+            if (changeCluster.Location != e.Location)
+                throw new RouteException(Step.Current);
             Step.MoveNext();
         }
     }

@@ -31,7 +31,6 @@ namespace OryxBot.Bot.Services
         public void BindDependencies(ServiceContainer serviceContainer) {
             var bot = serviceContainer.GetService<BotManagerContract>();
             bot.Started += (_, _) => Run();
-            Run();
         }
 
         private void Run() {
