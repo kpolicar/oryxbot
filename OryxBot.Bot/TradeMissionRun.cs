@@ -14,7 +14,7 @@ namespace OryxBot.Bot
 {
     public partial class TradeMissionRun : Job, HasDependencies
     {
-        private const float MaxDistance = 10f;
+        private const float MaxDistance = 3f;
         
         private TradeMissionRunState state = new();
         private AlbionDataProvider dataProvider = null!;
@@ -52,14 +52,12 @@ namespace OryxBot.Bot
                 Step.MoveNext();
 
             actions.MoveTowards(e.Position, move.Position);
-            Debug.WriteLine("1 next step:"+Step.Current);
         }
 
         private void OnChangeCluster(object? sender, ChangeClusterEventArgs e) {
             if (!(Step.Current is TradeMissionRecord.ChangeClusterStep))
                 return;
             Step.MoveNext();
-            Debug.WriteLine("2 next step:"+Step.Current);
         }
     }
 }

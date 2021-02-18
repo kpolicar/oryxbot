@@ -52,6 +52,30 @@ namespace OryxBot.Bot.Services
                 return Task.CompletedTask;
             }
         }
+
+        private class RaiseRegisterToObjectEvent : RaiseEvent<ChangeClusterOperation>
+        {
+            public RaiseRegisterToObjectEvent(NetworkAlbionDataProvider dataProvider) :
+                base(dataProvider, (int) OperationCodes.RegisterToObject) {
+            }
+
+            protected override Task OnActionAsync(ChangeClusterOperation operation) {
+                DataProvider.RegisterToObject?.Invoke(this, (ChangeClusterEventArgs) operation);
+                return Task.CompletedTask;
+            }
+        }
+
+        private class RaiseInventoryMoveItemEvent : RaiseEvent<ChangeClusterOperation>
+        {
+            public RaiseInventoryMoveItemEvent(NetworkAlbionDataProvider dataProvider) :
+                base(dataProvider, (int) OperationCodes.InventoryMoveItem) {
+            }
+
+            protected override Task OnActionAsync(ChangeClusterOperation operation) {
+                DataProvider.InventoryMoveItem?.Invoke(this, (ChangeClusterEventArgs) operation);
+                return Task.CompletedTask;
+            }
+        }
         
         private class AsyncRaiseRequestPacketEvent : PacketHandler<RequestPacket>
         {

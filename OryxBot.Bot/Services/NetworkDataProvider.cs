@@ -22,6 +22,8 @@ namespace OryxBot.Bot.Services
         
         public event EventHandler<MoveEventArgs>? Move;
         public event EventHandler<ChangeClusterEventArgs>? ChangeCluster;
+        public event EventHandler? RegisterToObject;
+        public event EventHandler? InventoryMoveItem;
         public event EventHandler<RequestPacket>? NetworkRequest;
         public event EventHandler<EventPacket>? NetworkEvent;
         
@@ -29,6 +31,7 @@ namespace OryxBot.Bot.Services
         public void BindDependencies(ServiceContainer serviceContainer) {
             var bot = serviceContainer.GetService<BotManagerContract>();
             bot.Started += (_, _) => Run();
+            Run();
         }
 
         private void Run() {
