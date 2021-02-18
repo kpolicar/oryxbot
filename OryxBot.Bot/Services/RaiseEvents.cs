@@ -48,7 +48,6 @@ namespace OryxBot.Bot.Services
             }
 
             protected override Task OnActionAsync(ChangeClusterOperation operation) {
-                Debug.WriteLine("changed cluster");
                 DataProvider.ChangeCluster?.Invoke(this, (ChangeClusterEventArgs) operation);
                 return Task.CompletedTask;
             }

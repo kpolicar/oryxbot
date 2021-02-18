@@ -14,7 +14,7 @@ namespace OryxBot.Bot
 {
     public partial class TradeMissionRun : Job, HasDependencies
     {
-        private const float MaxDistance = 0.5f;
+        private const float MaxDistance = 10f;
         
         private TradeMissionRunState state = new();
         private AlbionDataProvider dataProvider = null!;
@@ -48,7 +48,7 @@ namespace OryxBot.Bot
         private void OnCharacterMove(object? sender, MoveEventArgs e) {
             if (!(Step.Current is TradeMissionRecord.MoveStep move))
                 return;
-            if (Helpers.Math.Distance(move.Position, e.Position) <= 3f)
+            if (Helpers.Math.Distance(move.Position, e.Position) <= MaxDistance)
                 Step.MoveNext();
 
             actions.MoveTowards(e.Position, move.Position);

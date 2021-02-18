@@ -47,6 +47,8 @@ namespace OryxBot.Bot.Services
 
                     device.OnPacketArrival += PacketHandler;
                     device.Open(DeviceMode.Promiscuous, 1000);
+                    device.Filter = "udp port 5056";
+                    
                     device.StartCapture();
                 });
                 captureThread.Start();
