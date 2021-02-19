@@ -15,6 +15,9 @@ namespace OryxBot.Client.Windows.Native
         [DllImport("user32.dll")]
         public static extern int GetSystemMetrics(int nIndex);
         
+        [DllImport("user32.dll", SetLastError = true)]
+        public static extern uint SendInput(uint numInputs, Input[] inputs, int size);
+        
         [DllImport("user32.dll")]
         public static extern IntPtr SetParent(IntPtr hWndChild, IntPtr hWndNewParent);
 
@@ -74,11 +77,37 @@ namespace OryxBot.Client.Windows.Native
             public int Y;
         }
         
+        public struct MouseInput
+        {
+            public int X;
+            public int Y;
+            public uint MouseData;
+            public uint Flags;
+            public uint Time;
+            public IntPtr ExtraInfo;
+        }
+
+        public struct Input
+        {
+            public int Type;
+            public MouseInput MouseInput;
+        }
+        
         //assorted constants needed
         public static int GWL_STYLE = -16;
         public static int WS_SIZEBOX = 0x00040000;
         public static int WS_BORDER = 0x00800000;
         public static int WS_DLGFRAME = 0x00400000;
         public static int WS_CAPTION = WS_BORDER | WS_DLGFRAME | WS_SIZEBOX; //window with a title bar
+        
+        public const int InputMouse = 0;
+        public const int InputKeyboard = 1;
+
+        public const int MouseEventMove      = 0x01;
+        public const int MouseEventLeftDown  = 0x02;
+        public const int MouseEventLeftUp    = 0x04;
+        public const int MouseEventRightDown = 0x08;
+        public const int MouseEventRightUp   = 0x10;
+        public const int MouseEventAbsolute  = 0x8000;
     }
 }

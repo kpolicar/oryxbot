@@ -5,5 +5,7 @@ namespace OryxBot.Shared.Contracts
     public interface Input
     {
         void MoveCursorRelativeToCenter(Vector2 direction);
+        void RightMouseDown();
+        void RightMouseUp();
     }
 }

@@ -1,6 +1,8 @@
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
 using System.Numerics;
+using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using OryxBot.Bot;
 using OryxBot.Client.Windows.Native;
@@ -29,6 +31,32 @@ namespace OryxBot.Client.Windows.Services
 
             User32.SetCursorPos(targetX, targetY);
             cursorPosition = newCursorPosition;
+        }
+
+        public void RightMouseDown() {
+            var input = new User32.Input {
+                Type = User32.InputMouse,
+                MouseInput = new User32.MouseInput {
+                    Flags = User32.MouseEventRightDown
+                }
+            };
+            var inputs = new[] {input};
+            var result = User32.SendInput(1, inputs, Marshal.SizeOf(input));
+            if(result == 0)
+                throw new Win32Exception(Marshal.GetLastWin32Error());
+        }
+
+        public void RightMouseUp() {
+            var input = new User32.Input {
+                Type = User32.InputMouse,
+                MouseInput = new User32.MouseInput {
+                    Flags = User32.MouseEventRightUp
+                }
+            };
+            var inputs = new[] {input};
+            var result = User32.SendInput(1, inputs, Marshal.SizeOf(input));
+            if(result == 0)
+                throw new Win32Exception(Marshal.GetLastWin32Error());
         }
 
         public Point ResolveScreenCenter() {
