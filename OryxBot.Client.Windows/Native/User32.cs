@@ -63,6 +63,7 @@ namespace OryxBot.Client.Windows.Native
         public const int SM_CYFULLSCREEN = 1;
 
 
+        [StructLayout(LayoutKind.Sequential)]
         public struct Rect
         {
             public int Left { get; set; }
@@ -71,12 +72,14 @@ namespace OryxBot.Client.Windows.Native
             public int Bottom { get; set; }
         }
         
+        [StructLayout(LayoutKind.Sequential)]
         public struct POINT
         {
             public int X;
             public int Y;
         }
         
+        [StructLayout(LayoutKind.Sequential)]
         public struct MouseInput
         {
             public int X;
@@ -86,11 +89,27 @@ namespace OryxBot.Client.Windows.Native
             public uint Time;
             public IntPtr ExtraInfo;
         }
-
+        
+        [StructLayout(LayoutKind.Sequential)]
+        public struct KeyboardInput
+        {
+            public Int16 wVk;
+            public Int16 wScan;
+            public Int32 dwFlags;
+            public Int32 time;
+            public IntPtr dwExtraInfo;
+        }
+        
+        [StructLayout(LayoutKind.Explicit)]
         public struct Input
         {
+            [FieldOffset(0)]
             public int Type;
+            
+            [FieldOffset(4)]
             public MouseInput MouseInput;
+            [FieldOffset(4)]
+            public KeyboardInput KeyboardInput;
         }
         
         //assorted constants needed

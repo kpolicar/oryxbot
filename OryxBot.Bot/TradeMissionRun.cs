@@ -20,6 +20,7 @@ namespace OryxBot.Bot
         private const float MaxDistance = 4f;
         private const int MaxSkippableSteps = 4;
         private const int ClusterAvgLoadTime = 5000;
+        private const int DelayBetweenNpcInterfaceActions = 2000;
 
         public TradeMissionRunState State {
             get;
@@ -38,13 +39,14 @@ namespace OryxBot.Bot
             dataProvider = serviceContainer.GetService<AlbionDataProvider>();
             dataProvider.Move += RuntimeEventListener<MoveEventArgs>(OnCharacterMove);
             dataProvider.ChangeCluster += RuntimeEventListener<ChangeClusterEventArgs>(OnChangeCluster);
+            dataProvider.RegisterToObject += RuntimeEventListener(OnRegisterToObject);
+            // todo InventoryMoveItem
             actions = serviceContainer.GetService<ActionFactory>();
         }
 
         public override void Start() {
             Step = Route.GetEnumerator();
             Step.MoveNext();
-            
             base.Start();
         }
 
@@ -54,18 +56,112 @@ namespace OryxBot.Bot
             Step.Reset();
         }
 
-        private void OnCharacterMove(object? sender, MoveEventArgs e) {
+        private void OnRegisterToObject(object? sender, EventArgs e) {
+            switch (State.Executing) {
+                case TradeMissionRunState.Action.TAKING_QUEST:
+                    TakingQuestOnRegisterToObject();
+                    break;
+                case TradeMissionRunState.Action.BANKING_REWARDS:
+                    BankingRewardsOnRegisterToObject();
+                    break;
+                default:
+                    return;
+            }
+        }
+
+        private void OnCharacterMove(object? sender, MoveEventArgs moveEvent) {
+            switch (State.Executing) {
+                case TradeMissionRunState.Action.TAKING_QUEST:
+                    TakingQuestOnMove(moveEvent);
+                    break;
+                case TradeMissionRunState.Action.RETAKING_QUEST:
+                    RetakingQuestOnMove(moveEvent);
+                    break;
+                case TradeMissionRunState.Action.MOVING:
+                    RunningRouteOnMove(moveEvent);
+                    break;
+                case TradeMissionRunState.Action.BANKING_REWARDS:
+                    BankingRewardsOnMove(moveEvent);
+                    break;
+                default:
+                    return;
+            }
+        }
+
+        private void BankingRewardsOnRegisterToObject() {
+            Thread.Sleep(DelayBetweenNpcInterfaceActions);
+            
+            actions.BankRewardItems();
+            Thread.Sleep(DelayBetweenNpcInterfaceActions);
+            
+            actions.UnbankTokenItem();
+            Thread.Sleep(DelayBetweenNpcInterfaceActions);
+            
+            // move
+            State.Executing = TradeMissionRunState.Action.RETAKING_QUEST;
+        }
+
+        private void TakingQuestOnRegisterToObject() {
+            Thread.Sleep(DelayBetweenNpcInterfaceActions);
+            
+            actions.NpcQuestOpenTradeMissionsTab();
+            Thread.Sleep(DelayBetweenNpcInterfaceActions);
+            
+            actions.NpcQuestOpenTradeMissionsContractTab();
+            Thread.Sleep(DelayBetweenNpcInterfaceActions);
+            
+            actions.NpcQuestSelectTradeMissionsContract();
+            Thread.Sleep(DelayBetweenNpcInterfaceActions);
+            
+            actions.NpcQuestAcceptTradeMissionsContract();
+            Thread.Sleep(DelayBetweenNpcInterfaceActions);
+
+            // move
+            State.Executing = TradeMissionRunState.Action.MOVING;
+        }
+
+        private void RetakingQuestOnMove(MoveEventArgs moveEvent) {
+            var target = new Position(0, 0);
+
+            if (Helpers.Math.Distance(moveEvent.Position, target) <= MaxDistance) {
+                // Click on NPC and wait for object interaction
+            } else {
+                actions.MoveTowards(moveEvent.Position, target);
+            }
+        }
+
+        private void TakingQuestOnMove(MoveEventArgs moveEvent) {
+            var target = new Position(0, 0); // todo: taking quest position
+
+            if (Helpers.Math.Distance(moveEvent.Position, target) <= MaxDistance) {
+                // Click on NPC and wait for object interaction
+            } else {
+                actions.MoveTowards(moveEvent.Position, target);
+            }
+        }
+
+        private void BankingRewardsOnMove(MoveEventArgs moveEvent) {
+            var target = new Position(0, 0); // todo: taking quest position
+            
+            if (Helpers.Math.Distance(moveEvent.Position, target) <= MaxDistance) {
+                // Click on NPC and wait for object interaction
+            } else {
+                actions.MoveTowards(moveEvent.Position, target);
+            }
+        }
+
+        private void RunningRouteOnMove(MoveEventArgs moveEvent) {
             if (!(Step.Current is TradeMissionRecord.MoveStep target))
                 return;
 
             while (Step.Current is TradeMissionRecord.MoveStep move &&
-                   Helpers.Math.Distance(move.Position, e.Position) <= MaxDistance)
+                   Helpers.Math.Distance(move.Position, moveEvent.Position) <= MaxDistance)
             {
                 Step.MoveNext();
                 State.Executing = TradeMissionRunState.Action.MOVING;
                 target = move;
             }
-            actions.MoveTowards(e.Position, target.Position);
+            actions.MoveTowards(moveEvent.Position, target.Position);
         }
 
         private void OnChangeCluster(object? sender, ChangeClusterEventArgs e) {
@@ -88,7 +184,7 @@ namespace OryxBot.Bot
 
             if (Step.Current is TradeMissionRecord.MoveStep move) {
                 Thread.Sleep(ClusterAvgLoadTime);
-                Task.Run(() => KeepTryingToMoveUntilStateChange(move, State.Executing.Value));
+                Task.Run(() => KeepTryingToMoveUntilStateChange(move, State.Executing));
             }
         }
 

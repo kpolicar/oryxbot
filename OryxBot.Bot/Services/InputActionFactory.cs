@@ -1,6 +1,7 @@
 using System;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Drawing;
 using System.Numerics;
 using System.Threading;
 using OryxBot.Shared.Contracts;
@@ -36,6 +37,34 @@ namespace OryxBot.Bot.Services
             // input.RightMouseDown();
             // Thread.Sleep(50);
             // input.RightMouseUp();
+        }
+
+        public void OpenBank() {
+            throw new NotImplementedException();
+        }
+
+        public void BankRewardItems() {
+            input.ShiftClick(AlbionInterface.FirstItemInInventory);
+        }
+
+        public void UnbankTokenItem() {
+            input.ShiftClick(AlbionInterface.FirstItemInBank);
+        }
+
+        public void NpcQuestOpenTradeMissionsTab() {
+            input.Click(AlbionInterface.QuestNpcTradeMissionsTab);
+        }
+
+        public void NpcQuestOpenTradeMissionsContractTab() {
+            input.Click(AlbionInterface.QuestNpcTradeMissionsContractTab);
+        }
+
+        public void NpcQuestSelectTradeMissionsContract() {
+            input.Click(AlbionInterface.QuestNpcSelectTradeMissionContract);
+        }
+
+        public void NpcQuestAcceptTradeMissionsContract() {
+            input.Click(AlbionInterface.QuestNpcAcceptTradeMissionContract);
         }
     }
 }

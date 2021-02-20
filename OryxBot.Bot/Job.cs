@@ -22,6 +22,12 @@ namespace OryxBot.Bot
                     return;
                 callback(sender, e);
             };
+        protected EventHandler RuntimeEventListener(EventHandler callback) =>
+            (sender, e) => {
+                if (!Running)
+                    return;
+                callback(sender, e);
+            };
 
         public void ToggleStart() {
             if (Running)

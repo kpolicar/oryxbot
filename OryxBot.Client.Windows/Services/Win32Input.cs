@@ -6,9 +6,12 @@ using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using WindowsInput;
+using WindowsInput.Native;
 using OryxBot.Bot;
 using OryxBot.Client.Windows.Native;
 using OryxBot.Shared.Contracts;
+using OryxBot.Shared.Design;
 
 namespace OryxBot.Client.Windows.Services
 {
@@ -18,6 +21,7 @@ namespace OryxBot.Client.Windows.Services
         private Task moveCursorTask = Task.CompletedTask;
         private Point cursorPosition;
         private Point cursorTargetPosition;
+        private InputSimulator input = new ();
 
         public void MoveCursorRelativeToCenter(Vector2 direction) {
             var center = ResolveScreenCenter();
@@ -28,6 +32,27 @@ namespace OryxBot.Client.Windows.Services
 
             cursorTargetPosition = newCursorPosition;
             EnsureCursorMoveTaskIsRunning();
+        }
+
+        public void MoveCursor(ResponsivePoint point) {
+            cursorTargetPosition = new Point(point.X, point.Y);
+            EnsureCursorMoveTaskIsRunning();
+        }
+
+        public void ShiftClick(ResponsivePoint point) {
+            MoveCursor(point);
+            moveCursorTask.Wait();
+            
+            input.Keyboard.KeyDown(VirtualKeyCode.LSHIFT);
+            input.Mouse.LeftButtonClick();
+            input.Keyboard.KeyUp(VirtualKeyCode.LSHIFT);
+        }
+
+        public void Click(ResponsivePoint point) {
+            MoveCursor(point);
+            moveCursorTask.Wait();
+            
+            input.Mouse.LeftButtonClick();
         }
 
         private void EnsureCursorMoveTaskIsRunning() {
@@ -57,32 +82,12 @@ namespace OryxBot.Client.Windows.Services
                 sw.Stop();
             });
         }
-        
-        public void RightMouseDown() {
-            var input = new User32.Input {
-                Type = User32.InputMouse,
-                MouseInput = new User32.MouseInput {
-                    Flags = User32.MouseEventRightDown
-                }
-            };
-            var inputs = new[] {input};
-            var result = User32.SendInput(1, inputs, Marshal.SizeOf(input));
-            if(result == 0)
-                throw new Win32Exception(Marshal.GetLastWin32Error());
-        }
 
-        public void RightMouseUp() {
-            var input = new User32.Input {
-                Type = User32.InputMouse,
-                MouseInput = new User32.MouseInput {
-                    Flags = User32.MouseEventRightUp
-                }
-            };
-            var inputs = new[] {input};
-            var result = User32.SendInput(1, inputs, Marshal.SizeOf(input));
-            if(result == 0)
-                throw new Win32Exception(Marshal.GetLastWin32Error());
-        }
+        public void RightMouseDown() =>
+            input.Mouse.RightButtonDown();
+
+        public void RightMouseUp() =>
+            input.Mouse.RightButtonUp();
 
         public Point ResolveScreenCenter() {
             var dimensions = ResolveScreenDimensions();
