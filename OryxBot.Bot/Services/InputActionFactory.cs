@@ -33,9 +33,9 @@ namespace OryxBot.Bot.Services
             direction = Vector2.Normalize(direction);
 
             input.MoveCursorRelativeToCenter(direction);
-            input.RightMouseDown();
-            Thread.Sleep(50);
-            input.RightMouseUp();
+            // input.RightMouseDown();
+            // Thread.Sleep(50);
+            // input.RightMouseUp();
         }
     }
 }

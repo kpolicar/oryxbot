@@ -9,6 +9,7 @@ namespace OryxBot.Bot
             public enum Action
             {
                 MOVING,
+                CHANGING_CLUSTER,
             }
 
             public Action? Executing {

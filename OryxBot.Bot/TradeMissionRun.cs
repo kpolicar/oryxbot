@@ -17,8 +17,9 @@ namespace OryxBot.Bot
 {
     public partial class TradeMissionRun : Job, HasDependencies
     {
-        private const float MaxDistance = 3f;
+        private const float MaxDistance = 4f;
         private const int MaxSkippableSteps = 4;
+        private const int ClusterAvgLoadTime = 5000;
 
         public TradeMissionRunState State {
             get;
@@ -57,7 +58,6 @@ namespace OryxBot.Bot
             if (!(Step.Current is TradeMissionRecord.MoveStep target))
                 return;
 
-            Debug.WriteLine("yes");
             while (Step.Current is TradeMissionRecord.MoveStep move &&
                    Helpers.Math.Distance(move.Position, e.Position) <= MaxDistance)
             {
@@ -82,13 +82,20 @@ namespace OryxBot.Bot
             var changeCluster = (Step.Current as TradeMissionRecord.ChangeClusterStep)!;
             if (changeCluster.Location != e.Location)
                 throw new RouteException(Step.Current);
+            
             Step.MoveNext();
+            State.Executing = TradeMissionRunState.Action.CHANGING_CLUSTER;
 
             if (Step.Current is TradeMissionRecord.MoveStep move) {
-                Task.Run(() => {
-                    Thread.Sleep(5000);
-                    actions.MoveTowards(default, move.Position);
-                });
+                Thread.Sleep(ClusterAvgLoadTime);
+                Task.Run(() => KeepTryingToMoveUntilStateChange(move, State.Executing.Value));
+            }
+        }
+
+        private void KeepTryingToMoveUntilStateChange(TradeMissionRecord.MoveStep move, TradeMissionRunState.Action state) {
+            while (State.Executing == state) {
+                actions.MoveTowards(default, move.Position);
+                Thread.Sleep(1000);
             }
         }
     }
