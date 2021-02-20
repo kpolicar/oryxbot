@@ -12,6 +12,7 @@ namespace OryxBot.Bot
     {
         public event EventHandler<BotEventArgs>? Started;
         public event EventHandler<BotEventArgs>? Stopped;
+        public event EventHandler<BotEventArgs>? JobChanged;
         private ServiceContainer serviceContainer = null!;
         private TradeMissionRouteProvider routeProvider = null!;
         private BotJob? Bot;
@@ -45,6 +46,8 @@ namespace OryxBot.Bot
                     dependant.BindDependencies(serviceContainer);
                 Bot.Started += (_, _) => Started?.Invoke(this, new BotEventArgs(Bot));
                 Bot.Stopped += (_, _) => Stopped?.Invoke(this, new BotEventArgs(Bot));
+                
+                JobChanged?.Invoke(this, new BotEventArgs(Bot));
             }
         }
     }

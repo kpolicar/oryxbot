@@ -19,8 +19,11 @@ namespace OryxBot.Bot
     {
         private const float MaxDistance = 3f;
         private const int MaxSkippableSteps = 4;
-        
-        private TradeMissionRunState state = new();
+
+        public TradeMissionRunState State {
+            get;
+            private set;
+        } = new();
         private AlbionDataProvider dataProvider = null!;
         private LinkedList<TradeMissionRecord.RecordableStep> Route;
         private IEnumerator<TradeMissionRecord.RecordableStep> Step = null!;
@@ -46,20 +49,23 @@ namespace OryxBot.Bot
 
         public override void Stop() {
             base.Stop();
-            state = new();
+            State = new();
             Step.Reset();
         }
 
         private void OnCharacterMove(object? sender, MoveEventArgs e) {
-            if (!(Step.Current is TradeMissionRecord.MoveStep))
+            if (!(Step.Current is TradeMissionRecord.MoveStep target))
                 return;
 
+            Debug.WriteLine("yes");
             while (Step.Current is TradeMissionRecord.MoveStep move &&
                    Helpers.Math.Distance(move.Position, e.Position) <= MaxDistance)
             {
                 Step.MoveNext();
-                actions.MoveTowards(e.Position, move.Position);
+                State.Executing = TradeMissionRunState.Action.MOVING;
+                target = move;
             }
+            actions.MoveTowards(e.Position, target.Position);
         }
 
         private void OnChangeCluster(object? sender, ChangeClusterEventArgs e) {
@@ -77,6 +83,13 @@ namespace OryxBot.Bot
             if (changeCluster.Location != e.Location)
                 throw new RouteException(Step.Current);
             Step.MoveNext();
+
+            if (Step.Current is TradeMissionRecord.MoveStep move) {
+                Task.Run(() => {
+                    Thread.Sleep(5000);
+                    actions.MoveTowards(default, move.Position);
+                });
+            }
         }
     }
 }

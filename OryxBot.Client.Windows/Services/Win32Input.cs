@@ -3,6 +3,8 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Numerics;
 using System.Runtime.InteropServices;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using OryxBot.Bot;
 using OryxBot.Client.Windows.Native;
@@ -12,7 +14,10 @@ namespace OryxBot.Client.Windows.Services
 {
     public class Win32Input : Input
     {
+        private const int MaxTimeToMoveCursor = 200;
+        private Task moveCursorTask = Task.CompletedTask;
         private Point cursorPosition;
+        private Point cursorTargetPosition;
 
         public void MoveCursorRelativeToCenter(Vector2 direction) {
             var center = ResolveScreenCenter();
@@ -21,18 +26,38 @@ namespace OryxBot.Client.Windows.Services
             var (targetX, targetY) = (center.X + pixelX, center.Y + pixelY);
             var newCursorPosition = new Point(targetX, targetY);
 
-            var distanceFromPreviousCursor = Vector2.Distance(
-                new Vector2(newCursorPosition.X, newCursorPosition.Y),
-                new Vector2(cursorPosition.X, cursorPosition.Y));
-
-            if (distanceFromPreviousCursor <= 10) {
-                return;
-            }
-
-            User32.SetCursorPos(targetX, targetY);
-            cursorPosition = newCursorPosition;
+            cursorTargetPosition = newCursorPosition;
+            EnsureCursorMoveTaskIsRunning();
         }
 
+        private void EnsureCursorMoveTaskIsRunning() {
+            if (!moveCursorTask.IsCompleted)
+                return;
+            
+            moveCursorTask = Task.Run(() => {
+                var sw = new Stopwatch();
+                sw.Start();
+                var previousCursorTargetPosition = cursorTargetPosition;
+                
+                while (cursorPosition != cursorTargetPosition) {
+                    if (cursorTargetPosition != previousCursorTargetPosition) {
+                        previousCursorTargetPosition = cursorTargetPosition;
+                        sw.Restart();
+                    }
+
+                    var step = System.Math.Min(1F, sw.ElapsedMilliseconds / (float)MaxTimeToMoveCursor);
+                    var stepToTargetPosition = Math.Lerp(cursorPosition, cursorTargetPosition, step);
+                    
+                    User32.SetCursorPos(cursorPosition.X, cursorPosition.Y);
+                    cursorPosition = stepToTargetPosition;
+
+                    Thread.Sleep(5);
+                }
+                
+                sw.Stop();
+            });
+        }
+        
         public void RightMouseDown() {
             var input = new User32.Input {
                 Type = User32.InputMouse,

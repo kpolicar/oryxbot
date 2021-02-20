@@ -1,9 +1,13 @@
 using System;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Numerics;
+using System.Threading;
 using OryxBot.Shared.Contracts;
 using OryxBot.Shared.Design;
 using OryxBot.Shared.Events;
+using BotManagerContract=OryxBot.Shared.Contracts.BotManager;
+
 
 namespace OryxBot.Bot.Services
 {
@@ -11,12 +15,15 @@ namespace OryxBot.Bot.Services
     {
         private Input input = null!;
         private AlbionDataProvider dataProvider = null!;
+        private BotManagerContract bot = null!;
         private Position currentPosition;
 
 
         public void BindDependencies(ServiceContainer serviceContainer) {
             input = serviceContainer.GetService<Input>();
             dataProvider = serviceContainer.GetService<AlbionDataProvider>();
+            bot = serviceContainer.GetService<BotManagerContract>();
+            
             dataProvider.Move += (_, e) => currentPosition = e.Position;
         }
 
@@ -26,6 +33,9 @@ namespace OryxBot.Bot.Services
             direction = Vector2.Normalize(direction);
 
             input.MoveCursorRelativeToCenter(direction);
+            input.RightMouseDown();
+            Thread.Sleep(50);
+            input.RightMouseUp();
         }
     }
 }
