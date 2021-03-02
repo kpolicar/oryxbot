@@ -10,7 +10,6 @@ namespace OryxBot.Albion.Protocol
         public string Location { get; }
         
         public ChangeClusterOperation(Dictionary<byte, object> parameters) : base(parameters) {
-            Debug.WriteLine("yes");
             Location = parameters[0].ToString();
         }
         

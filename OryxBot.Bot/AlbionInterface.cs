@@ -21,5 +21,8 @@ namespace OryxBot.Bot
         
         public static ResponsivePoint QuestNpcAcceptTradeMissionContract =
             new(2100, 1210, 3840, 1600);
+        
+        public static ResponsivePoint BankNpc =
+            new(2150, 770, 3840, 1600);
     }
 }

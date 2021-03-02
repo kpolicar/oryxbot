@@ -8,7 +8,7 @@ namespace OryxBot.Shared.Design
         private readonly int _screenHeight;
         
         public int X => _x;
-        public int Y => _x;
+        public int Y => _y;
         
         public ResponsivePoint(int x, int y, int screenWidth, int screenHeight) =>
             (_x, _y, _screenWidth, _screenHeight) = (x, y, screenWidth, screenHeight);

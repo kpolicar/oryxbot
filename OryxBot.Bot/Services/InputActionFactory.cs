@@ -34,13 +34,21 @@ namespace OryxBot.Bot.Services
             direction = Vector2.Normalize(direction);
 
             input.MoveCursorRelativeToCenter(direction);
-            // input.RightMouseDown();
-            // Thread.Sleep(50);
-            // input.RightMouseUp();
+            input.RightMouseDown();
+            input.RightMouseUp();
+        }
+
+        public void InteractWith(Position origin, Position target) {
+            var direction = new Vector2(target.X - origin.X, target.Y - origin.Y);
+            direction = Vector2.Transform(direction, Matrix3x2.CreateRotation(-(float)Math.PI/4));
+            direction = Vector2.Normalize(direction);
+
+            input.MoveCursorRelativeToCenter(direction);
+            input.Click();
         }
 
         public void OpenBank() {
-            throw new NotImplementedException();
+            input.Click(AlbionInterface.BankNpc);
         }
 
         public void BankRewardItems() {
@@ -65,6 +73,10 @@ namespace OryxBot.Bot.Services
 
         public void NpcQuestAcceptTradeMissionsContract() {
             input.Click(AlbionInterface.QuestNpcAcceptTradeMissionContract);
+        }
+
+        public void StopAllActions() {
+            input.Key('s');
         }
     }
 }

@@ -34,7 +34,18 @@ namespace OryxBot.Client.Windows.Services
             EnsureCursorMoveTaskIsRunning();
         }
 
+        public void Click() {
+            input.Mouse.LeftButtonClick();
+        }
+
+        public void Key(char character) {
+            if (character == 's')
+                input.Keyboard.KeyPress(VirtualKeyCode.VK_S);
+        }
+
         public void MoveCursor(ResponsivePoint point) {
+            if (cursorTargetPosition == new Point(point.X, point.Y))
+                cursorPosition = default;
             cursorTargetPosition = new Point(point.X, point.Y);
             EnsureCursorMoveTaskIsRunning();
         }
@@ -43,9 +54,17 @@ namespace OryxBot.Client.Windows.Services
             MoveCursor(point);
             moveCursorTask.Wait();
             
-            input.Keyboard.KeyDown(VirtualKeyCode.LSHIFT);
-            input.Mouse.LeftButtonClick();
-            input.Keyboard.KeyUp(VirtualKeyCode.LSHIFT);
+            input.Keyboard.KeyDown(VirtualKeyCode.SHIFT);
+            Thread.Sleep(150);
+            input.Mouse.LeftButtonDown();
+            Thread.Sleep(150);
+            input.Mouse.LeftButtonUp();
+            Thread.Sleep(150);
+            input.Mouse.LeftButtonDown();
+            Thread.Sleep(150);
+            input.Mouse.LeftButtonUp();
+            Thread.Sleep(150);
+            input.Keyboard.KeyUp(VirtualKeyCode.SHIFT);
         }
 
         public void Click(ResponsivePoint point) {

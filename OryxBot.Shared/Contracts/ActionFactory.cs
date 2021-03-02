@@ -13,5 +13,7 @@ namespace OryxBot.Shared.Contracts
         void NpcQuestOpenTradeMissionsContractTab();
         void NpcQuestSelectTradeMissionsContract();
         void NpcQuestAcceptTradeMissionsContract();
+        void StopAllActions();
+        void InteractWith(Position origin, Position target);
     }
 }

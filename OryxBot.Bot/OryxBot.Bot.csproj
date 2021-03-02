@@ -30,16 +30,26 @@
       <Compile Update="TradeMissionRecordState.cs">
         <DependentUpon>TradeMissionRecord.cs</DependentUpon>
       </Compile>
-      <Compile Update="TradeMissionRunState.cs">
-        <DependentUpon>TradeMissionRun.cs</DependentUpon>
-      </Compile>
       <Compile Update="RecordableStep.cs">
         <DependentUpon>TradeMissionRecord.cs</DependentUpon>
+      </Compile>
+      <Compile Update="TradeMissionRunRoute.cs">
+        <DependentUpon>TradeMissionRun.cs</DependentUpon>
+      </Compile>
+      <Compile Update="TradeMissionTakeQuest.cs">
+        <DependentUpon>TradeMissionRun.cs</DependentUpon>
+      </Compile>
+      <Compile Update="TradeMissionBank.cs">
+        <DependentUpon>TradeMissionRun.cs</DependentUpon>
+      </Compile>
+      <Compile Update="TradeMissionMovementTracker.cs">
+        <DependentUpon>TradeMissionRun.cs</DependentUpon>
       </Compile>
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Resources" />
+      <EmbeddedResource Include="Resources\route_lymhurst_bank_to_quest.csv" />
+      <EmbeddedResource Include="Resources\route_lymhurst_quest_to_bank.csv" />
     </ItemGroup>
 
 </Project>

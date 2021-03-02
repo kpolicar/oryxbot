@@ -10,6 +10,7 @@ using OryxBot.Bot.Services;
 using OryxBot.Client.Windows.Services;
 using OryxBot.Shared.Contracts;
 using OryxBot.Shared.Design;
+using BotManager = OryxBot.Bot.BotManager;
 using BotManagerContract=OryxBot.Shared.Contracts.BotManager;
 using ServiceContainer = OryxBot.Shared.Design.ServiceContainer;
 
@@ -89,10 +90,13 @@ namespace OryxBot.Client.Windows
             private void BindServices() {
                 var hotkey = Services.GetService<Hotkey>();
                 var bot = Services.GetService<BotManagerContract>();
+                var routeProvider = Services.GetService<TradeMissionRouteProvider>();
+                var input = Services.GetService<Input>();
                 var logger = (FileLogger) Services.GetService<Logger>();
                 
                 hotkey.F1 += (_, _) => bot.ToggleTradeMissionRecord();
                 hotkey.F2 += (_, _) => bot.ToggleTradeMissionRun();
+                hotkey.F3 += (_, _) => Debug.WriteLine(routeProvider.RouteFromQuestToBank().Count);
                 logger.BindToServices(Services);
                 NLog.LogManager.Shutdown();
             }

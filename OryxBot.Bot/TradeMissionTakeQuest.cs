@@ -1,0 +1,44 @@
+using System;
+using System.Threading;
+using OryxBot.Bot.Attributes;
+using OryxBot.Shared.Design;
+using OryxBot.Shared.Events;
+using static OryxBot.Bot.TradeMissionRun.TradeMissionRunState.TradeMissionAction;
+
+namespace OryxBot.Bot
+{
+    public partial class TradeMissionRun
+    {
+        
+        private void RunRouteFromBankToQuestNpc() {
+            RunRoute(routeProvider.RouteFromBankToQuest()!, OnRouteFromBankToQuestNpcFinished);
+        }
+
+        private void OnRouteFromBankToQuestNpcFinished(object? sender, EventArgs eventArgs) {
+            State.Action = TAKING_QUEST;
+            actions.StopAllActions();
+            Thread.Sleep(DelayBetweenNpcInterfaceActions);
+            
+            actions.InteractWith(State.LastKnownMove!.Position, new Position(0,0));
+        }
+        
+        [CallOnRegisterToObject(RequiredState = TAKING_QUEST)]
+        private void TakingQuestOnRegisterToObject(EventArgs e) {
+            Thread.Sleep(DelayBetweenNpcInterfaceActions);
+            
+            actions.NpcQuestOpenTradeMissionsTab();
+            Thread.Sleep(DelayBetweenNpcInterfaceActions);
+            
+            actions.NpcQuestOpenTradeMissionsContractTab();
+            Thread.Sleep(DelayBetweenNpcInterfaceActions);
+            
+            actions.NpcQuestSelectTradeMissionsContract();
+            Thread.Sleep(DelayBetweenNpcInterfaceActions);
+            
+            actions.NpcQuestAcceptTradeMissionsContract();
+            Thread.Sleep(DelayBetweenNpcInterfaceActions);
+
+            RunTradeMissionRoute();
+        }
+    }
+}

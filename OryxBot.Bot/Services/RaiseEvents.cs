@@ -15,6 +15,7 @@ namespace OryxBot.Bot.Services
         private void BindEventRaiseHandlers(ReceiverBuilder builder) {
             builder.AddRequestHandler(new RaiseMoveEvent(this));
             builder.AddRequestHandler(new RaiseChangeClusterEvent(this));
+            builder.AddRequestHandler(new RaiseRegisterToObjectEvent(this));
             
             // builder.AddHandler(new AsyncRaiseRequestPacketEvent(this));
             // builder.AddHandler(new AsyncRaiseEventPacketEvent(this));

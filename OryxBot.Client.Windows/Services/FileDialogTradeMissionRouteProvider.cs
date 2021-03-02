@@ -1,6 +1,9 @@
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
+using System.Reflection;
+using System.Resources;
 using System.Windows.Forms;
 using Microsoft.VisualBasic.FileIO;
 using OryxBot.Bot;
@@ -23,7 +26,32 @@ namespace OryxBot.Client.Windows.Services
             if (path == null)
                 return null;
 
-            using var parser = new TextFieldParser(path) {
+            using var textStream = new StreamReader(path);
+            return RouteFromStream(textStream.BaseStream);
+        }
+
+        public LinkedList<TradeMissionRecord.RecordableStep>? RouteFromBankToQuest() {
+            var resource = "Bot.Resources.route_lymhurst_bank_to_quest.csv";
+            using var resourceStream =
+                Assembly.GetAssembly(typeof(OryxBot.Bot.BotManager))!
+                    .GetManifestResourceStream(resource)!;
+            
+            using var textStream = new StreamReader(resourceStream);
+            return RouteFromStream(textStream.BaseStream);
+        }
+
+        public LinkedList<TradeMissionRecord.RecordableStep>? RouteFromQuestToBank() {
+            var resource = "Bot.Resources.route_lymhurst_quest_to_bank.csv";
+            using var resourceStream =
+                Assembly.GetAssembly(typeof(OryxBot.Bot.BotManager))!
+                    .GetManifestResourceStream(resource)!;
+            
+            var textStream = new StreamReader(resourceStream);
+            return RouteFromStream(textStream.BaseStream);
+        }
+
+        protected LinkedList<TradeMissionRecord.RecordableStep>? RouteFromStream(Stream stream) {
+            using var parser = new TextFieldParser(stream) {
                 TextFieldType = FieldType.Delimited,
                 Delimiters = new []{ "," }
             };
