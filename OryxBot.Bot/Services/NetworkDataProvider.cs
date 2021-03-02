@@ -23,6 +23,7 @@ namespace OryxBot.Bot.Services
         public event EventHandler<MoveEventArgs>? Move;
         public event EventHandler<ChangeClusterEventArgs>? ChangeCluster;
         public event EventHandler? RegisterToObject;
+        public event EventHandler? UnregisterFromObject;
         public event EventHandler? InventoryMoveItem;
         public event EventHandler<RequestPacket>? NetworkRequest;
         public event EventHandler<EventPacket>? NetworkEvent;

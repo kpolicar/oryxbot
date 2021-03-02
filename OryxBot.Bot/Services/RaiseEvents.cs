@@ -16,6 +16,7 @@ namespace OryxBot.Bot.Services
             builder.AddRequestHandler(new RaiseMoveEvent(this));
             builder.AddRequestHandler(new RaiseChangeClusterEvent(this));
             builder.AddRequestHandler(new RaiseRegisterToObjectEvent(this));
+            builder.AddRequestHandler(new RaiseUnRegisterFromObjectEvent(this));
             
             // builder.AddHandler(new AsyncRaiseRequestPacketEvent(this));
             // builder.AddHandler(new AsyncRaiseEventPacketEvent(this));
@@ -28,6 +29,12 @@ namespace OryxBot.Bot.Services
             
             protected RaiseEvent(NetworkAlbionDataProvider dataProvider, int operationCode) : base(operationCode) =>
                 DataProvider = dataProvider;
+        }
+
+        private abstract class RaiseEvent : RaiseEvent<UnknownOperation>
+        {
+            protected RaiseEvent(NetworkAlbionDataProvider dataProvider, int operationCode) : base(dataProvider, operationCode) {
+            }
         }
 
         private class RaiseMoveEvent : RaiseEvent<MoveOperation>
@@ -54,14 +61,28 @@ namespace OryxBot.Bot.Services
             }
         }
 
-        private class RaiseRegisterToObjectEvent : RaiseEvent<ChangeClusterOperation>
+        private class RaiseRegisterToObjectEvent : RaiseEvent
         {
             public RaiseRegisterToObjectEvent(NetworkAlbionDataProvider dataProvider) :
                 base(dataProvider, (int) OperationCodes.RegisterToObject) {
             }
 
-            protected override Task OnActionAsync(ChangeClusterOperation operation) {
-                DataProvider.RegisterToObject?.Invoke(this, (ChangeClusterEventArgs) operation);
+            protected override Task OnActionAsync(UnknownOperation operation) {
+                Debug.WriteLine("registered event!");
+                DataProvider.RegisterToObject?.Invoke(this, EventArgs.Empty);
+                return Task.CompletedTask;
+            }
+        }
+
+        private class RaiseUnRegisterFromObjectEvent : RaiseEvent
+        {
+            public RaiseUnRegisterFromObjectEvent(NetworkAlbionDataProvider dataProvider) :
+                base(dataProvider, (int) OperationCodes.UnRegisterFromObject) {
+            }
+
+            protected override Task OnActionAsync(UnknownOperation operation) {
+                Debug.WriteLine("unregistered event!");
+                DataProvider.UnregisterFromObject?.Invoke(this, EventArgs.Empty);
                 return Task.CompletedTask;
             }
         }

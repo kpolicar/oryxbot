@@ -44,6 +44,8 @@ namespace OryxBot.Bot
         private MethodInfo[] OnMoveMethods = null!;
         private MethodInfo[] OnChangeClusterMethods = null!;
         private MethodInfo[] OnRegisterToObjectMethods = null!;
+        private MethodInfo[] OnUnregisterFromObjectMethods = null!;
+        private Random rand = new();
 
 
         public TradeMissionRun(LinkedList<TradeMissionRecord.RecordableStep> steps) {
@@ -59,6 +61,7 @@ namespace OryxBot.Bot
             dataProvider.Move += RuntimeEventListener<MoveEventArgs>(OnCharacterMove);
             dataProvider.ChangeCluster += RuntimeEventListener<ChangeClusterEventArgs>(OnChangeCluster);
             dataProvider.RegisterToObject += RuntimeEventListener(OnRegisterToObject);
+            dataProvider.UnregisterFromObject += RuntimeEventListener(OnUnregisterFromObject);
             // todo InventoryMoveItem
             actions = serviceContainer.GetService<ActionFactory>();
             var hotkey = serviceContainer.GetService<Hotkey>();
@@ -79,6 +82,11 @@ namespace OryxBot.Bot
             OnRegisterToObjectMethods = GetType()
                 .GetMethods(BindingFlags.NonPublic | BindingFlags.Instance)
                 .Where(m => m.GetCustomAttributes(typeof(CallOnRegisterToObjectAttribute), true).Any())
+                .ToArray();
+            
+            OnUnregisterFromObjectMethods = GetType()
+                .GetMethods(BindingFlags.NonPublic | BindingFlags.Instance)
+                .Where(m => m.GetCustomAttributes(typeof(CallOnUnregisterFromObjectAttribute), true).Any())
                 .ToArray();
         }
 
@@ -112,11 +120,25 @@ namespace OryxBot.Bot
 
             public MoveEventArgs? LastKnownMove = null;
             public bool Moving = false;
+            public bool Interacting = false;
         }
 
         private void OnRegisterToObject(object? sender, EventArgs e) {
+            State.Interacting = true;
+            Debug.WriteLine("registered");
             foreach (var method in OnRegisterToObjectMethods
                 .Where(m => m.GetCustomAttributes(true).OfType<CallOnRegisterToObjectAttribute>().Any(attr => attr.RequiredState == State.Action))
+            )
+            {
+                method.Invoke(this, new object?[] {e});
+            }
+        }
+
+        private void OnUnregisterFromObject(object? sender, EventArgs e) {
+            State.Interacting = false;
+            Debug.WriteLine("unregistered");
+            foreach (var method in OnRegisterToObjectMethods
+                .Where(m => m.GetCustomAttributes(true).OfType<CallOnUnregisterFromObjectAttribute>().Any(attr => attr.RequiredState == State.Action))
             )
             {
                 method.Invoke(this, new object?[] {e});
@@ -142,13 +164,26 @@ namespace OryxBot.Bot
             }
         }
 
-        private void KeepTryingToMoveUntilValidMovement(TradeMissionRecord.MoveStep move) {
-            while (!State.Moving) {
-                Debug.WriteLine("still trying");
-                actions.MoveTowards(default, move.Position);
-                Thread.Sleep(1000);
-            }
-        }
+        private Position CurrentOrigin() =>
+            State.LastKnownMove?.Position ?? RandomPoint();
+        private Position RandomPoint() =>
+           new Position(rand.Next(100), rand.Next(100));
+
+        private Task KeepTryingToMoveUntilValidMovement(TradeMissionRecord.MoveStep? move = null) =>
+            Task.Run(() => {
+                do {
+                    actions.MoveTowards(CurrentOrigin(), move?.Position ?? RandomPoint());
+                    Thread.Sleep(1000);
+                } while (!State.Moving);
+            });
+
+        private Task KeepTryingToInteractUntilValidInteraction(Position target) =>
+            Task.Run(() => {
+                do {
+                    actions.InteractWith(CurrentOrigin(), target);
+                    Thread.Sleep(1000);
+                } while (!State.Interacting);
+            });
 
         private void RunRoute(LinkedList<TradeMissionRecord.RecordableStep> route, Action<object?, EventArgs>? afterRoute = null) {
             State.Action = RUNNING_ROUTE;
@@ -159,8 +194,8 @@ namespace OryxBot.Bot
             
             funcToCallAfterRoute = afterRoute;
             RouteFinished += OnRunRouteFinished;
-            
-            actions.MoveTowards(State.LastKnownMove?.Position ?? default, default);
+
+            KeepTryingToMoveUntilValidMovement();
         }
 
         private void OnRunRouteFinished(object? o, EventArgs e) {

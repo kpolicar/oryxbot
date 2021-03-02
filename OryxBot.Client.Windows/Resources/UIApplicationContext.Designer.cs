@@ -72,7 +72,7 @@ namespace OryxBot.Client.Windows.Resources {
         
         /// <summary>
         ///   Looks up a localized string similar to OryxBot
-        ///v0.1.0.
+        ///v1.0.0.
         /// </summary>
         internal static string Text {
             get {

@@ -19,7 +19,7 @@ namespace OryxBot.Bot
             actions.StopAllActions();
             
             Thread.Sleep(DelayBetweenNpcInterfaceActions);
-            actions.InteractWith(State.LastKnownMove!.Position, new Position(0f,0f));
+            KeepTryingToInteractUntilValidInteraction(new Position(0f, 0f));
         }
         
         [CallOnRegisterToObject(RequiredState = BANKING)]
@@ -31,7 +31,7 @@ namespace OryxBot.Bot
             
             actions.UnbankTokenItem();
             Thread.Sleep(DelayBetweenNpcInterfaceActions);
-            
+
             RunRouteFromBankToQuestNpc();
         }
     }

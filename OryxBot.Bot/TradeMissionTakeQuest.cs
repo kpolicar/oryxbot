@@ -19,7 +19,7 @@ namespace OryxBot.Bot
             actions.StopAllActions();
             Thread.Sleep(DelayBetweenNpcInterfaceActions);
             
-            actions.InteractWith(State.LastKnownMove!.Position, new Position(0,0));
+            KeepTryingToInteractUntilValidInteraction(new Position(-75.5f, 0));
         }
         
         [CallOnRegisterToObject(RequiredState = TAKING_QUEST)]

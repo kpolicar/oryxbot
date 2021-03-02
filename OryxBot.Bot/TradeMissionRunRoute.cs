@@ -52,7 +52,7 @@ namespace OryxBot.Bot
 
             if (Step.Current is TradeMissionRecord.MoveStep move) {
                 Thread.Sleep(ClusterAvgLoadTime);
-                Task.Run(() => KeepTryingToMoveUntilValidMovement(move));
+                KeepTryingToMoveUntilValidMovement(move);
             }
         }
 
