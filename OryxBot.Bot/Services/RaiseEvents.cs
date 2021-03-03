@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.Drawing;
 using System.Numerics;
+using System.Threading;
 using System.Threading.Tasks;
 using Albion.Network;
 using OryxBot.Albion.Protocol;
@@ -17,6 +18,7 @@ namespace OryxBot.Bot.Services
             builder.AddRequestHandler(new RaiseChangeClusterEvent(this));
             builder.AddRequestHandler(new RaiseRegisterToObjectEvent(this));
             builder.AddRequestHandler(new RaiseUnRegisterFromObjectEvent(this));
+            builder.AddRequestHandler(new RaiseInventoryMoveItemEvent(this));
             
             // builder.AddHandler(new AsyncRaiseRequestPacketEvent(this));
             // builder.AddHandler(new AsyncRaiseEventPacketEvent(this));
@@ -26,9 +28,19 @@ namespace OryxBot.Bot.Services
             where TOperation : BaseOperation
         {
             protected readonly NetworkAlbionDataProvider DataProvider;
+            private Mutex mut = new();
             
             protected RaiseEvent(NetworkAlbionDataProvider dataProvider, int operationCode) : base(operationCode) =>
                 DataProvider = dataProvider;
+
+            protected override Task OnActionAsync(TOperation value) =>
+                Task.Run(() => {
+                    mut.WaitOne();
+                    CallEvent(value);
+                    mut.ReleaseMutex();
+                });
+
+            protected abstract void CallEvent(TOperation value);
         }
 
         private abstract class RaiseEvent : RaiseEvent<UnknownOperation>
@@ -43,10 +55,8 @@ namespace OryxBot.Bot.Services
                 base(dataProvider, (int) OperationCodes.Move) {
             }
 
-            protected override Task OnActionAsync(MoveOperation operation) {
+            protected override void CallEvent(MoveOperation operation) =>
                 DataProvider.Move?.Invoke(this, (MoveEventArgs) operation);
-                return Task.CompletedTask;
-            }
         }
 
         private class RaiseChangeClusterEvent : RaiseEvent<ChangeClusterOperation>
@@ -55,10 +65,8 @@ namespace OryxBot.Bot.Services
                 base(dataProvider, (int) OperationCodes.ChangeCluster) {
             }
 
-            protected override Task OnActionAsync(ChangeClusterOperation operation) {
+            protected override void CallEvent(ChangeClusterOperation operation) =>
                 DataProvider.ChangeCluster?.Invoke(this, (ChangeClusterEventArgs) operation);
-                return Task.CompletedTask;
-            }
         }
 
         private class RaiseRegisterToObjectEvent : RaiseEvent
@@ -67,11 +75,8 @@ namespace OryxBot.Bot.Services
                 base(dataProvider, (int) OperationCodes.RegisterToObject) {
             }
 
-            protected override Task OnActionAsync(UnknownOperation operation) {
-                Debug.WriteLine("registered event!");
+            protected override void CallEvent(UnknownOperation value) =>
                 DataProvider.RegisterToObject?.Invoke(this, EventArgs.Empty);
-                return Task.CompletedTask;
-            }
         }
 
         private class RaiseUnRegisterFromObjectEvent : RaiseEvent
@@ -80,23 +85,18 @@ namespace OryxBot.Bot.Services
                 base(dataProvider, (int) OperationCodes.UnRegisterFromObject) {
             }
 
-            protected override Task OnActionAsync(UnknownOperation operation) {
-                Debug.WriteLine("unregistered event!");
+            protected override void CallEvent(UnknownOperation value) =>
                 DataProvider.UnregisterFromObject?.Invoke(this, EventArgs.Empty);
-                return Task.CompletedTask;
-            }
         }
 
-        private class RaiseInventoryMoveItemEvent : RaiseEvent<ChangeClusterOperation>
+        private class RaiseInventoryMoveItemEvent : RaiseEvent
         {
             public RaiseInventoryMoveItemEvent(NetworkAlbionDataProvider dataProvider) :
                 base(dataProvider, (int) OperationCodes.InventoryMoveItem) {
             }
 
-            protected override Task OnActionAsync(ChangeClusterOperation operation) {
-                DataProvider.InventoryMoveItem?.Invoke(this, (ChangeClusterEventArgs) operation);
-                return Task.CompletedTask;
-            }
+            protected override void CallEvent(UnknownOperation value) =>
+                DataProvider.InventoryMoveItem?.Invoke(this, EventArgs.Empty);
         }
         
         private class AsyncRaiseRequestPacketEvent : PacketHandler<RequestPacket>
