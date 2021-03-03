@@ -60,6 +60,7 @@ namespace OryxBot.Bot
             var hasNext = Step?.MoveNext();
             
             if (hasNext == false) {
+                actions.StopAllActions();
                 RouteFinished?.Invoke(this, EventArgs.Empty);
                 return false;
             }

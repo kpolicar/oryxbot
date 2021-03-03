@@ -46,7 +46,9 @@ namespace OryxBot.Bot
 
             private void OnMove(object? sender, MoveEventArgs e) {
                 Task.Run(() => {
-                    Bot.State.Moving = !Bot.State.LastKnownMove?.Position.Equals(e.Position) ?? true;
+                    var lastKnownMove = Bot.State.LastKnownMove;
+                    if (lastKnownMove == null || lastKnownMove.Position.Equals(e.Position))
+                        return;
                     sw.Restart();
                 });
             }
