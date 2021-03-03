@@ -11,10 +11,12 @@ namespace OryxBot.Bot
     {
         
         private void RunRouteFromBankToQuestNpc() {
+            Console.WriteLine("Running route from Bank to Quest NPC");
             RunRoute(routeProvider.RouteFromBankToQuest()!, OnRouteFromBankToQuestNpcFinished);
         }
 
         private void OnRouteFromBankToQuestNpcFinished(object? sender, EventArgs eventArgs) {
+            Console.WriteLine("Route from Bank to Quest NPC finished");
             State.Action = TAKING_QUEST;
             actions.StopAllActions();
             Thread.Sleep(DelayBetweenNpcInterfaceActions);

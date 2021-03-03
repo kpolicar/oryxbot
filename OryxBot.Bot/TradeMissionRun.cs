@@ -125,7 +125,6 @@ namespace OryxBot.Bot
 
         private void OnRegisterToObject(object? sender, EventArgs e) {
             State.Interacting = true;
-            Debug.WriteLine("registered");
             foreach (var method in OnRegisterToObjectMethods
                 .Where(m => m.GetCustomAttributes(true).OfType<CallOnRegisterToObjectAttribute>().Any(attr => attr.RequiredState == State.Action))
             )
@@ -136,7 +135,6 @@ namespace OryxBot.Bot
 
         private void OnUnregisterFromObject(object? sender, EventArgs e) {
             State.Interacting = false;
-            Debug.WriteLine("unregistered");
             foreach (var method in OnRegisterToObjectMethods
                 .Where(m => m.GetCustomAttributes(true).OfType<CallOnUnregisterFromObjectAttribute>().Any(attr => attr.RequiredState == State.Action))
             )
@@ -172,17 +170,19 @@ namespace OryxBot.Bot
         private Task KeepTryingToMoveUntilValidMovement(TradeMissionRecord.MoveStep? move = null) =>
             Task.Run(() => {
                 do {
+                    Console.WriteLine("Attempting movement");
                     actions.MoveTowards(CurrentOrigin(), move?.Position ?? RandomPoint());
                     Thread.Sleep(1000);
-                } while (!State.Moving);
+                } while (!State.Moving && Running);
             });
 
         private Task KeepTryingToInteractUntilValidInteraction(Position target) =>
             Task.Run(() => {
                 do {
+                    Console.WriteLine("Attempting interaction");
                     actions.InteractWith(CurrentOrigin(), target);
                     Thread.Sleep(1000);
-                } while (!State.Interacting);
+                } while (!State.Interacting && Running);
             });
 
         private void RunRoute(LinkedList<TradeMissionRecord.RecordableStep> route, Action<object?, EventArgs>? afterRoute = null) {

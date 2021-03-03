@@ -11,10 +11,12 @@ namespace OryxBot.Bot
     public partial class TradeMissionRun
     {
         private void RunRouteFromQuestNpcToBank() {
+            Console.WriteLine("Running route from Quest NPC to Bank");
             RunRoute(routeProvider.RouteFromQuestToBank()!, OnRouteFromQuestNpcToBankFinished);
         }
         
         private void OnRouteFromQuestNpcToBankFinished(object? sender, EventArgs eventArgs) {
+            Console.WriteLine("Route from Quest NPC to Bank finished");
             State.Action = BANKING;
             actions.StopAllActions();
             

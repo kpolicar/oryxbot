@@ -60,7 +60,7 @@ namespace OryxBot.Bot
             var hasNext = Step?.MoveNext();
             
             if (hasNext == false) {
-                actions.StopAllActions();
+                // actions.StopAllActions();
                 RouteFinished?.Invoke(this, EventArgs.Empty);
                 return false;
             }
@@ -69,6 +69,7 @@ namespace OryxBot.Bot
         }
         
         private void RunTradeMissionRoute() {
+            Console.WriteLine("Running trade mission route.");
             RunRoute(Route);
         }
     }

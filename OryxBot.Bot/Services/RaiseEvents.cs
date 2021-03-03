@@ -18,7 +18,6 @@ namespace OryxBot.Bot.Services
             builder.AddRequestHandler(new RaiseChangeClusterEvent(this));
             builder.AddRequestHandler(new RaiseRegisterToObjectEvent(this));
             builder.AddRequestHandler(new RaiseUnRegisterFromObjectEvent(this));
-            builder.AddRequestHandler(new RaiseInventoryMoveItemEvent(this));
             
             // builder.AddHandler(new AsyncRaiseRequestPacketEvent(this));
             // builder.AddHandler(new AsyncRaiseEventPacketEvent(this));
@@ -28,17 +27,15 @@ namespace OryxBot.Bot.Services
             where TOperation : BaseOperation
         {
             protected readonly NetworkAlbionDataProvider DataProvider;
-            private Mutex mut = new();
             
             protected RaiseEvent(NetworkAlbionDataProvider dataProvider, int operationCode) : base(operationCode) =>
                 DataProvider = dataProvider;
 
-            protected override Task OnActionAsync(TOperation value) =>
-                Task.Run(() => {
-                    mut.WaitOne();
-                    CallEvent(value);
-                    mut.ReleaseMutex();
-                });
+            protected override Task OnActionAsync(TOperation value) {
+                CallEvent(value);
+                return Task.CompletedTask;
+            }
+                
 
             protected abstract void CallEvent(TOperation value);
         }

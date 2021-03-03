@@ -1,3 +1,4 @@
+using System;
 using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
@@ -14,7 +15,7 @@ namespace OryxBot.Bot
             private Thread? _thread;
             private bool running = false;
             private const int SleepDuration = 100;
-            private const int StandStillDuration = 2500;
+            private const int StandStillDuration = 500;
             private TradeMissionRun Bot;
             private Stopwatch sw = new();
 
@@ -44,11 +45,14 @@ namespace OryxBot.Bot
                 }
             }
 
+            private Position lastMove;
+
             private void OnMove(object? sender, MoveEventArgs e) {
                 Task.Run(() => {
-                    var lastKnownMove = Bot.State.LastKnownMove;
-                    if (lastKnownMove == null || lastKnownMove.Position.Equals(e.Position))
+                    if (lastMove.Equals(e.Position))
                         return;
+                    
+                    lastMove = e.Position;
                     sw.Restart();
                 });
             }
