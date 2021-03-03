@@ -15,6 +15,7 @@ using OryxBot.Shared;
 using OryxBot.Shared.Contracts;
 using OryxBot.Shared.Design;
 using OryxBot.Shared.Events;
+using OryxBot.Shared.Extensions;
 using static OryxBot.Bot.TradeMissionRun.TradeMissionRunState.TradeMissionAction;
 using ServiceContainer = OryxBot.Shared.Design.ServiceContainer;
 
@@ -37,7 +38,7 @@ namespace OryxBot.Bot
         private TradeMissionRouteProvider routeProvider = null!;
         private LinkedList<TradeMissionRecord.RecordableStep>? ActiveRoute;
         private LinkedList<TradeMissionRecord.RecordableStep> Route;
-        private IEnumerator<TradeMissionRecord.RecordableStep>? Step;
+        private ITwoWayEnumerator<TradeMissionRecord.RecordableStep>? Step;
         private ActionFactory actions = null!;
         private TradeMissionMovementTracker movementStateTracker;
         
@@ -93,7 +94,8 @@ namespace OryxBot.Bot
         public override void Start() {
             base.Start();
             movementStateTracker.Start();
-            RunRouteFromQuestNpcToBank();
+            // RunRouteFromQuestNpcToBank();
+            RunTradeMissionRoute();
         }
 
         public override void Stop() {
@@ -189,7 +191,7 @@ namespace OryxBot.Bot
             State.Action = RUNNING_ROUTE;
             
             ActiveRoute = route;
-            Step = ActiveRoute.GetEnumerator();
+            Step = ActiveRoute.GetTwoWayEnumerator();
             Step.MoveNext();
             
             funcToCallAfterRoute = afterRoute;

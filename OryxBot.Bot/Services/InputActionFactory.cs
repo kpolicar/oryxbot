@@ -34,6 +34,7 @@ namespace OryxBot.Bot.Services
             direction = Vector2.Normalize(direction);
 
             input.MoveCursorRelativeToCenter(direction);
+            
             input.RightMouseDown();
             input.RightMouseUp();
         }

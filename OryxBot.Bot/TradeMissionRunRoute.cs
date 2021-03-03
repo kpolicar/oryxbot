@@ -4,6 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using OryxBot.Bot.Attributes;
 using OryxBot.Bot.Exceptions;
+using OryxBot.Shared.Design;
 using OryxBot.Shared.Events;
 using static OryxBot.Bot.TradeMissionRun.TradeMissionRunState.TradeMissionAction;
 
@@ -15,10 +16,8 @@ namespace OryxBot.Bot
         private void RunningRouteOnMove(MoveEventArgs moveEvent) {
             if (!(Step?.Current is TradeMissionRecord.MoveStep target))
                 return;
-
-            while (Step.Current is TradeMissionRecord.MoveStep move &&
-                   Helpers.Math.Distance(move.Position, moveEvent.Position) <= MaxDistance) {
-                
+            
+            while (CanProgressToNextStep(moveEvent.Position)) {
                 if (!MoveToNextRouteStep())
                     return;
                 var nextMove = Step.Current as TradeMissionRecord.MoveStep;
@@ -29,6 +28,10 @@ namespace OryxBot.Bot
             }
             actions.MoveTowards(moveEvent.Position, target.Position);
         }
+
+        private bool CanProgressToNextStep(Position currentPosition) =>
+            Step!.Current is TradeMissionRecord.MoveStep move &&
+            Helpers.Math.Distance(move.Position, currentPosition) <= MaxDistance;
         
         [CallOnChangeCluster(RequiredState = RUNNING_ROUTE)]
         private void RunningRouteOnChangeCluster(ChangeClusterEventArgs e) {
