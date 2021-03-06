@@ -17,7 +17,7 @@ namespace OryxBot.Client.Windows.Services
 {
     public class Win32Input : Input
     {
-        private const int MaxTimeToMoveCursor = 200;
+        private const int MaxTimeToMoveCursor = 400;
         private Task moveCursorTask = Task.CompletedTask;
         private Point cursorPosition;
         private Point cursorTargetPosition;
