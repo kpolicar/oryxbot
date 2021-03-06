@@ -45,11 +45,16 @@
       <Compile Update="TradeMissionMovementTracker.cs">
         <DependentUpon>TradeMissionRun.cs</DependentUpon>
       </Compile>
+      <Compile Update="TradeMissionProgressQuest.cs">
+        <DependentUpon>TradeMissionRun.cs</DependentUpon>
+      </Compile>
     </ItemGroup>
 
     <ItemGroup>
       <EmbeddedResource Include="Resources\route_lymhurst_bank_to_quest.csv" />
       <EmbeddedResource Include="Resources\route_lymhurst_quest_to_bank.csv" />
+      <EmbeddedResource Include="Resources\route_lymhurst_trademission.csv" />
+      <EmbeddedResource Include="Resources\route_lymhurst_trademission_back.csv" />
     </ItemGroup>
 
 </Project>

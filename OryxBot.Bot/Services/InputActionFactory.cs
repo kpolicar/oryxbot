@@ -35,8 +35,8 @@ namespace OryxBot.Bot.Services
 
             input.MoveCursorRelativeToCenter(direction);
             
-            input.RightMouseDown();
-            input.RightMouseUp();
+            //input.RightMouseDown();
+            //input.RightMouseUp();
         }
 
         public void InteractWith(Position origin, Position target) {
@@ -46,10 +46,6 @@ namespace OryxBot.Bot.Services
 
             input.MoveCursorRelativeToCenter(direction);
             input.Click();
-        }
-
-        public void OpenBank() {
-            input.Click(AlbionInterface.BankNpc);
         }
 
         public void BankRewardItems() {

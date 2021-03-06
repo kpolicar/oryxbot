@@ -23,7 +23,7 @@ namespace OryxBot.Bot
 {
     public partial class TradeMissionRun : Job, HasDependencies
     {
-        private const float MaxDistance = 4f;
+        private const float MaxDistance = 6f;
         private const int MaxSkippableSteps = 4;
         private const int ClusterAvgLoadTime = 5000;
         private const int DelayBetweenNpcInterfaceActions = 2000;
@@ -94,7 +94,7 @@ namespace OryxBot.Bot
         public override void Start() {
             base.Start();
             movementStateTracker.Start();
-            // RunRouteFromQuestNpcToBank();
+            //RunRouteFromQuestNpcToBank();
             RunTradeMissionRoute();
         }
 
@@ -113,6 +113,7 @@ namespace OryxBot.Bot
                 BANKING,
                 TAKING_QUEST,
                 RUNNING_ROUTE,
+                PROGRESSING_QUEST,
             }
 
             public TradeMissionAction Action {
