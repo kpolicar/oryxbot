@@ -27,7 +27,10 @@ namespace OryxBot.Bot
                 var route = routeProvider.Route();
                 if (route == null) // Todo: Error
                     return;
-                EnforceBotServiceType(typeof(TradeMissionRun), new object?[] {route});
+                var routeBack = routeProvider.Route();
+                if (routeBack == null) // Todo: Error
+                    return;
+                EnforceBotServiceType(typeof(TradeMissionRun), new object?[] {route, routeBack});
             }
             Bot!.ToggleStart();
         }

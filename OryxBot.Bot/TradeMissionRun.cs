@@ -33,6 +33,7 @@ namespace OryxBot.Bot
         private TradeMissionRouteProvider routeProvider = null!;
         private LinkedList<TradeMissionRecord.RecordableStep>? ActiveRoute;
         private LinkedList<TradeMissionRecord.RecordableStep> Route;
+        private LinkedList<TradeMissionRecord.RecordableStep> RouteBack;
         private ITwoWayEnumerator<TradeMissionRecord.RecordableStep>? Step;
         private ActionFactory actions = null!;
         private TradeMissionMovementTracker movementStateTracker;
@@ -44,7 +45,7 @@ namespace OryxBot.Bot
         private Random rand = new();
 
 
-        public TradeMissionRun(LinkedList<TradeMissionRecord.RecordableStep> steps) {
+        public TradeMissionRun(LinkedList<TradeMissionRecord.RecordableStep> steps, LinkedList<TradeMissionRecord.RecordableStep> stepsBack) {
             Route = steps;
             movementStateTracker = new TradeMissionMovementTracker(this);
         }
