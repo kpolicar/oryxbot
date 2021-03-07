@@ -1,5 +1,3 @@
-using System.ComponentModel.Design;
-
 namespace OryxBot.Shared.Design
 {
     public interface HasDependencies

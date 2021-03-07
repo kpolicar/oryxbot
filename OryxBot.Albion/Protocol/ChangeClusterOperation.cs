@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Diagnostics;
 using Albion.Network;
 using OryxBot.Shared.Events;
 

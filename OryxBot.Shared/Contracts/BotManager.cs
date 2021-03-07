@@ -1,6 +1,4 @@
 using System;
-using System.Collections.Generic;
-using OryxBot.Shared.Design;
 using OryxBot.Shared.Events;
 
 namespace OryxBot.Shared.Contracts

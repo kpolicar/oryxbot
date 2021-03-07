@@ -1,5 +1,3 @@
-using System;
-using System.Drawing;
 using System.Numerics;
 using OryxBot.Shared.Design;
 using SMath=System.Math;

@@ -1,7 +1,5 @@
 using System;
-using System.Diagnostics;
 using System.Threading;
-using System.Threading.Tasks;
 using OryxBot.Bot.Attributes;
 using OryxBot.Bot.Exceptions;
 using OryxBot.Shared.Design;

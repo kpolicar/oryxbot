@@ -1,12 +1,7 @@
 using System;
-using System.ComponentModel;
-using System.Diagnostics;
-using System.Drawing;
 using System.Numerics;
-using System.Threading;
 using OryxBot.Shared.Contracts;
 using OryxBot.Shared.Design;
-using OryxBot.Shared.Events;
 using BotManagerContract=OryxBot.Shared.Contracts.BotManager;
 
 

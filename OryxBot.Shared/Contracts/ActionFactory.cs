@@ -1,4 +1,3 @@
-using System.Numerics;
 using OryxBot.Shared.Design;
 
 namespace OryxBot.Shared.Contracts

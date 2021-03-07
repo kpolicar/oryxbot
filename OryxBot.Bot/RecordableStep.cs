@@ -1,6 +1,3 @@
-using System;
-using System.Runtime.Serialization;
-using System.Security.Cryptography;
 using OryxBot.Shared.Design;
 using OryxBot.Shared.Events;
 

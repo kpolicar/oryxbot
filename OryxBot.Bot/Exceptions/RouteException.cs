@@ -1,5 +1,4 @@
 using System;
-using OryxBot.Shared;
 
 namespace OryxBot.Bot.Exceptions
 {

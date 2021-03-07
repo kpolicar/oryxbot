@@ -1,9 +1,7 @@
 using System;
-using System.Diagnostics;
 using System.Threading;
 using OryxBot.Bot.Attributes;
 using OryxBot.Shared.Design;
-using OryxBot.Shared.Events;
 using static OryxBot.Bot.TradeMissionRun.TradeMissionRunState.TradeMissionAction;
 
 namespace OryxBot.Bot

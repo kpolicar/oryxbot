@@ -1,17 +1,12 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.ComponentModel.Design;
 using System.Diagnostics;
 using System.Linq;
-using System.Numerics;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using OryxBot.Bot.Attributes;
 using OryxBot.Bot.Contracts;
-using OryxBot.Bot.Exceptions;
-using OryxBot.Shared;
 using OryxBot.Shared.Contracts;
 using OryxBot.Shared.Design;
 using OryxBot.Shared.Events;

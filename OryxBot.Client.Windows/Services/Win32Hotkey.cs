@@ -1,8 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Numerics;
-using System.Windows.Forms;
 using Gma.System.MouseKeyHook;
 using OryxBot.Shared.Contracts;
 

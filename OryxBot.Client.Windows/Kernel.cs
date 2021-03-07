@@ -1,16 +1,13 @@
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.ComponentModel.Design;
-using System.Diagnostics;
-using System.Windows.Forms;
 using OryxBot.Bot;
 using OryxBot.Bot.Contracts;
 using OryxBot.Bot.Services;
+using OryxBot.Client.Windows.Api;
+using OryxBot.Client.Windows.Contracts;
 using OryxBot.Client.Windows.Services;
 using OryxBot.Shared.Contracts;
 using OryxBot.Shared.Design;
-using BotManager = OryxBot.Bot.BotManager;
 using BotManagerContract=OryxBot.Shared.Contracts.BotManager;
 using ServiceContainer = OryxBot.Shared.Design.ServiceContainer;
 
@@ -23,6 +20,7 @@ namespace OryxBot.Client.Windows
             public readonly ServiceContainer Services = new();
 
             private readonly Dictionary<Type, object> _services = new() {
+                {typeof(AuthManager), new ApiAuthManager()},
                 {typeof(Input), new Win32Input()},
                 {typeof(Hotkey), new Win32Hotkey()},
                 {typeof(ActionFactory), new InputActionFactory()},

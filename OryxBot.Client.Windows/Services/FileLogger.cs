@@ -1,11 +1,9 @@
 using System.Diagnostics;
-using System.Threading.Tasks;
 using NLog;
 using OryxBot.Albion.Protocol;
 using OryxBot.Bot.Services;
 using OryxBot.Shared.Contracts;
 using OryxBot.Shared.Design;
-using OryxBot.Shared.Events;
 using LoggerContract = OryxBot.Shared.Contracts.Logger;
 using NLogger=NLog.Logger;
 

@@ -1,12 +1,7 @@
 ﻿using System;
-using System.Diagnostics;
-using System.Drawing;
-using System.Numerics;
-using System.Threading;
 using System.Threading.Tasks;
 using Albion.Network;
 using OryxBot.Albion.Protocol;
-using OryxBot.Shared.Contracts;
 using OryxBot.Shared.Events;
 
 namespace OryxBot.Bot.Services

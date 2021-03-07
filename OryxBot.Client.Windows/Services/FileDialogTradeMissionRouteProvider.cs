@@ -1,14 +1,11 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Reflection;
-using System.Resources;
 using System.Windows.Forms;
 using Microsoft.VisualBasic.FileIO;
 using OryxBot.Bot;
 using OryxBot.Bot.Contracts;
-using OryxBot.Shared.Design;
 using OryxBot.Shared.Events;
 
 namespace OryxBot.Client.Windows.Services
