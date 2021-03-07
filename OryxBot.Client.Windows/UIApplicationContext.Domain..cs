@@ -1,4 +1,5 @@
 using System;
+using OryxBot.Shared.Events;
 
 namespace OryxBot.Client.Windows
 {
@@ -20,5 +21,9 @@ namespace OryxBot.Client.Windows
             ToolStipToggleBotTradeMissionRunButton.Text =
                 Resources.UIApplicationContext.ToolStipToggleBotTradeMissionRunButton_TextStart;
 
+        private void OnFetchedUser(object? sender, FetchedUserEventArgs e) {
+            ToolStipUsernameLabel.Text = Resources.UIApplicationContext.ToolStipUsernameLabel_TextLoggedInAs
+                .Replace(":name", e.user.name);
+        }
     }
 }

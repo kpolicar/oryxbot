@@ -20,6 +20,7 @@ namespace OryxBot.Client.Windows
             public readonly ServiceContainer Services = new();
 
             private readonly Dictionary<Type, object> _services = new() {
+                {typeof(ApiClient), new ApiClient()},
                 {typeof(AuthManager), new ApiAuthManager()},
                 {typeof(Input), new Win32Input()},
                 {typeof(Hotkey), new Win32Hotkey()},
@@ -83,6 +84,7 @@ namespace OryxBot.Client.Windows
                         app.OnBotTradeMissionRunStopped(sender, e);
                 };
                 tradeMissionRouteProvider.BindToApp(app);
+                app.ShowLoginDialogue();
             }
 
             private void BindServices() {

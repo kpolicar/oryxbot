@@ -41,6 +41,9 @@ namespace OryxBot.Client.Windows.Native
 
         [DllImport("user32.dll")]
         public static extern bool SendMessage(IntPtr hWnd, uint Msg, int wParam, int lParam);
+
+        [DllImport("user32.dll")]
+        public static extern bool SendMessage(IntPtr hWnd, uint Msg, int wParam, IntPtr lParam);
         
         [DllImport("user32.dll", CharSet=CharSet.Ansi, SetLastError=true)]
         public static extern bool PostMessage(IntPtr hWnd, uint Msg, IntPtr wParam, IntPtr lParam);
@@ -56,6 +59,10 @@ namespace OryxBot.Client.Windows.Native
         public const int WM_KEYDOWN = 0x0100;
         public const int WM_KEYUP = 0x0101;
         public const int WM_CHAR = 0x0102;
+        
+        public const uint WM_SETICON = 0x80u;
+        public const int ICON_SMALL = 0;
+        public const int ICON_BIG = 1;
         
         // https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getsystemmetrics
         public const int SM_CMONITORS = 80;

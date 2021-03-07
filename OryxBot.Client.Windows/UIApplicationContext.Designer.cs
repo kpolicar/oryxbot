@@ -13,6 +13,7 @@ namespace OryxBot.Client.Windows
 
         public ToolStripMenuItem ToolStipPanelButton { private set; get; }
         public ToolStripMenuItem ToolStipToggleBotTradeMissionRecordButton { private set; get; }
+        public ToolStripLabel ToolStipUsernameLabel { private set; get; }
         public ToolStripMenuItem ToolStipToggleBotTradeMissionRunButton { private set; get; }
         public ToolStripMenuItem ToolStripCloseButton { private set; get; }
         public OpenFileDialog TradeMissionRunRouteFile { private set; get; }
@@ -30,6 +31,13 @@ namespace OryxBot.Client.Windows
                 Text = Resources.UIApplicationContext.ToolStipPanelButton_Text,
             };
             ToolStipPanelButton.Click += OnPanelClicked;
+            //
+            // ToolStipUsernameLabel
+            //
+            ToolStipUsernameLabel = new ToolStripLabel {
+                Name = "toolStipUsernameLabel",
+                Text = Resources.UIApplicationContext.ToolStipUsernameLabel_Text,
+            };
             //
             // toolStipToggleBotTradeMissionRecordButton
             //
@@ -65,6 +73,8 @@ namespace OryxBot.Client.Windows
             contextMenuStrip = new ContextMenuStrip(components) {
                 Name = "contextMenuStrip",
                 Items = {
+                    ToolStipUsernameLabel,
+                    new ToolStripSeparator(),
                     ToolStipToggleBotTradeMissionRecordButton,
                     ToolStipToggleBotTradeMissionRunButton,
                     ToolStipPanelButton,

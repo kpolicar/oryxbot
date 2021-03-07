@@ -126,6 +126,24 @@ namespace OryxBot.Client.Windows.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Not Logged In.
+        /// </summary>
+        internal static string ToolStipUsernameLabel_Text {
+            get {
+                return ResourceManager.GetString("ToolStipUsernameLabel.Text", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Logged in as :name.
+        /// </summary>
+        internal static string ToolStipUsernameLabel_TextLoggedInAs {
+            get {
+                return ResourceManager.GetString("ToolStipUsernameLabel.TextLoggedInAs", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Close.
         /// </summary>
         internal static string ToolStripCloseButton_Text {

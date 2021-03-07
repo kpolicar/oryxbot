@@ -36,6 +36,7 @@ namespace OryxBot.Client.Windows
             Application.SetCompatibleTextRenderingDefault(false);
 
             var ui = new UIApplicationContext();
+            ui.BindDependencies(Services);
             ui.Load += _kernel.OnLoadForm;
             
             ui.Show();

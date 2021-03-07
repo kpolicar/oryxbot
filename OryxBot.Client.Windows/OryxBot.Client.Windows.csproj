@@ -33,12 +33,18 @@
       <Compile Update="UIApplicationContext.Domain..cs">
         <DependentUpon>UIApplicationContext.cs</DependentUpon>
       </Compile>
+      <Compile Update="WelcomeDialogue.Designer.cs">
+        <DependentUpon>WelcomeDialogue.cs</DependentUpon>
+      </Compile>
     </ItemGroup>
 
     <ItemGroup>
       <EmbeddedResource Update="Resources\UIApplicationContext.resx">
         <Generator>ResXFileCodeGenerator</Generator>
         <LastGenOutput>UIApplicationContext.Designer.cs</LastGenOutput>
+      </EmbeddedResource>
+      <EmbeddedResource Update="WelcomeDialogue.resx">
+        <DependentUpon>WelcomeDialogue.cs</DependentUpon>
       </EmbeddedResource>
     </ItemGroup>
 
@@ -52,6 +58,10 @@
       <None Update="NLog.config">
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </None>
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Properties" />
     </ItemGroup>
 
 </Project>
