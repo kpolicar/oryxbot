@@ -13,6 +13,9 @@ namespace OryxBot.Bot
         private void ProgressingQuestOnRegisterToObject(EventArgs e) {
             Thread.Sleep(DelayBetweenNpcInterfaceActions);
             
+            actions.NpcQuestProgress();
+            Thread.Sleep(DelayBetweenNpcInterfaceActions);
+            
             RunTradeMissionRouteBack();
         }
     }

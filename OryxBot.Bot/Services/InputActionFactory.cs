@@ -67,6 +67,10 @@ namespace OryxBot.Bot.Services
             input.Click(AlbionInterface.QuestNpcAcceptTradeMissionContract);
         }
 
+        public void NpcQuestProgress() {
+            input.Click(AlbionInterface.QuestNpcProgressContract);
+        }
+
         public void StopAllActions() {
             input.Key('s');
         }
