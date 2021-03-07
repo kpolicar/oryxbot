@@ -27,8 +27,7 @@ namespace OryxBot.Bot.Services
                 DataProvider = dataProvider;
 
             protected override Task OnActionAsync(TOperation value) {
-                CallEvent(value);
-                return Task.CompletedTask;
+                return Task.Run(() => CallEvent(value));
             }
                 
 

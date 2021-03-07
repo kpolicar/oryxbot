@@ -12,23 +12,45 @@ namespace OryxBot.Bot
     {
         [CallOnMove(RequiredState = RUNNING_ROUTE)]
         private void RunningRouteOnMove(MoveEventArgs moveEvent) {
+            var finished = ProgressMoveStepsAndSkipIfAlreadyAhead(moveEvent);
+
             if (!(Step?.Current is TradeMissionRecord.MoveStep target))
                 return;
-            
-            while (CanProgressToNextStep(moveEvent.Position)) {
-                if (!MoveToNextRouteStep())
-                    return;
-                var nextMove = Step.Current as TradeMissionRecord.MoveStep;
-                if (nextMove == null)
-                    continue;
-                State.Action = RUNNING_ROUTE;
-                target = nextMove;
-            }
             actions.MoveTowards(moveEvent.Position, target.Position);
         }
 
-        private bool CanProgressToNextStep(Position currentPosition) =>
-            Step!.Current is TradeMissionRecord.MoveStep move &&
+        private bool ProgressMoveStepsAndSkipIfAlreadyAhead(MoveEventArgs moveEvent) {
+            if (!(Step?.Current is TradeMissionRecord.MoveStep))
+                return false;
+            
+            var skipped = 0;
+            for (int i = 0; i < MaxSkippableSteps; i++) {
+                var hasNext = Step.MoveNext();
+                
+                if (!hasNext || !(Step.Current is TradeMissionRecord.MoveStep)) {
+                    break;
+                }
+                skipped++;
+            }
+
+            for (int i = 0; i < skipped; i++) {
+                var target = (Step!.Current as TradeMissionRecord.MoveStep)!;
+                if (IsMoveStepAndCanProgress(moveEvent.Position)) {
+                    return !MoveToNextRouteStep();
+                }
+
+                Step.MovePrevious();
+            }
+            
+            if (IsMoveStepAndCanProgress(moveEvent.Position)) {
+                return !MoveToNextRouteStep();
+            }
+
+            return false;
+        }
+        
+        private bool IsMoveStepAndCanProgress(Position currentPosition) =>
+            Step?.Current is TradeMissionRecord.MoveStep move &&
             Helpers.Math.Distance(move.Position, currentPosition) <= MaxDistance;
         
         [CallOnChangeCluster(RequiredState = RUNNING_ROUTE)]
@@ -61,12 +83,16 @@ namespace OryxBot.Bot
             var hasNext = Step?.MoveNext();
             
             if (hasNext == false) {
-                actions.StopAllActions();
-                RouteFinished?.Invoke(this, EventArgs.Empty);
+                finishRoute();
                 return false;
             }
 
             return hasNext != null;
+        }
+
+        private void finishRoute() {
+            actions.StopAllActions();
+            RouteFinished?.Invoke(this, EventArgs.Empty);
         }
         
         private void RunTradeMissionRoute() {

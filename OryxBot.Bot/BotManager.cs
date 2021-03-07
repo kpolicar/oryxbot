@@ -14,7 +14,7 @@ namespace OryxBot.Bot
         public event EventHandler<BotEventArgs>? JobChanged;
         private ServiceContainer serviceContainer = null!;
         private TradeMissionRouteProvider routeProvider = null!;
-        private BotJob? Bot;
+        public BotJob? Bot;
 
 
         public void BindDependencies(ServiceContainer serviceContainer) {

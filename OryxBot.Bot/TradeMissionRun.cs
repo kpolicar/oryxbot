@@ -19,7 +19,7 @@ namespace OryxBot.Bot
 {
     public partial class TradeMissionRun : Job, HasDependencies
     {
-        private const float MaxDistance = 6f;
+        private const float MaxDistance = 4f;
         private const int MaxSkippableSteps = 4;
         private const int ClusterAvgLoadTime = 5000;
         private const int DelayBetweenNpcInterfaceActions = 2000;
@@ -180,6 +180,14 @@ namespace OryxBot.Bot
             Task.Run(() => {
                 do {
                     Console.WriteLine($"Attempting interaction with {target}, state: {State.Action}, current pos: "+CurrentOrigin());
+                    actions.StopAllActions();
+                    Thread.Sleep(50);
+                    
+                    if (Helpers.Math.Distance(CurrentOrigin(), target) > 2f) {
+                        actions.MoveTowards(CurrentOrigin(), target);
+                        Thread.Sleep(200);
+                        continue;
+                    }
                     actions.InteractWith(CurrentOrigin(), target);
                     Thread.Sleep(1000);
                 } while (!State.Interacting && Running);

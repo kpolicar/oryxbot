@@ -92,11 +92,12 @@ namespace OryxBot.Bot.Services
 
         public void StopAllActions() {
             Console.WriteLine("Stopping all actions.");
-            input.Key('s');
             if (rightMouseIsDown) {
                 rightMouseIsDown = false;
                 input.RightMouseUp();
             }
+            Thread.Sleep(15);
+            input.Key('s');
         }
     }
 }
