@@ -6,21 +6,24 @@ namespace OryxBot.Bot
     public static class AlbionInterface
     {
         public static ResponsivePoint FirstItemInInventory =
-            new(3345, 810, 3840, 1600, AnchorStyle.Right);
+            new(1590, 550, 1920, 1080, AnchorStyle.Right);
         
         public static ResponsivePoint FirstItemInBank =
-            new(130, 435, 3840, 1600, AnchorStyle.Left);
+            new(85, 295, 1920, 1080, AnchorStyle.Left);
         
         public static ResponsivePoint QuestNpcTradeMissionsTab =
-            new(605, 700, 3840, 1600, AnchorStyle.Left);
+            new(415, 470, 1920, 1080, AnchorStyle.Left);
         
         public static ResponsivePoint QuestNpcTradeMissionsContractTab =
-            new(490, 500, 3840, 1600, AnchorStyle.Left);
+            new(155, 335, 1920, 1080, AnchorStyle.Left);
         
         public static ResponsivePoint QuestNpcSelectTradeMissionContract =
-            new(225, 560, 3840, 1600, AnchorStyle.Left);
+            new(150, 375, 1920, 1080, AnchorStyle.Left);
         
         public static ResponsivePoint QuestNpcAcceptTradeMissionContract =
-            new(2100, 1210, 3840, 1600, AnchorStyle.Left);
+            new(1080, 820, 1920, 1080, AnchorStyle.Left);
+        
+        public static ResponsivePoint QuestNpcProgressContract =
+            new(1080, 820, 1920, 1080, AnchorStyle.Left);
     }
 }
