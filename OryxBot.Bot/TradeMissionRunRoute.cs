@@ -61,7 +61,7 @@ namespace OryxBot.Bot
             var hasNext = Step?.MoveNext();
             
             if (hasNext == false) {
-                // actions.StopAllActions();
+                actions.StopAllActions();
                 RouteFinished?.Invoke(this, EventArgs.Empty);
                 return false;
             }
@@ -76,14 +76,13 @@ namespace OryxBot.Bot
         
         private void RunTradeMissionRouteBack() {
             Console.WriteLine("Running trade mission route back.");
-            RunRoute(Route, (o, args) => Console.WriteLine("Trade route finished!"));
+            RunRoute(RouteBack, (o, args) => Console.WriteLine("Trade route finished!"));
         }
 
         private void OnRunTradeMissionRouteFinished(object? arg1, EventArgs arg2) {
             Console.WriteLine("User route finished.");
             
             State.Action = PROGRESSING_QUEST;
-            actions.StopAllActions();
             Thread.Sleep(DelayBetweenNpcInterfaceActions);
             
             KeepTryingToInteractUntilValidInteraction(new Position(50f,188f));

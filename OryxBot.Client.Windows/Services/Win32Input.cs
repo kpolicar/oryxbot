@@ -13,7 +13,7 @@ namespace OryxBot.Client.Windows.Services
 {
     public class Win32Input : Input
     {
-        private const int MaxTimeToMoveCursor = 400;
+        private const int MaxTimeToMoveCursor = 200; // todo 400
         private Task moveCursorTask = Task.CompletedTask;
         private Point cursorPosition;
         private Point cursorTargetPosition;
@@ -21,7 +21,7 @@ namespace OryxBot.Client.Windows.Services
 
         public void MoveCursorRelativeToCenter(Vector2 direction) {
             var center = ResolveScreenCenter();
-            var (pixelX, pixelY) = ((int) (direction.X * 300), -(int) (direction.Y * 300));
+            var (pixelX, pixelY) = ((int) (direction.X * 200), -(int) (direction.Y * 200));
 
             var (targetX, targetY) = (center.X + pixelX, center.Y + pixelY);
             var newCursorPosition = new Point(targetX, targetY);

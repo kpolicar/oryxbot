@@ -1,5 +1,6 @@
 using System;
 using System.Numerics;
+using System.Threading;
 using OryxBot.Shared.Contracts;
 using OryxBot.Shared.Design;
 using BotManagerContract=OryxBot.Shared.Contracts.BotManager;
@@ -11,27 +12,45 @@ namespace OryxBot.Bot.Services
     {
         private Input input = null!;
         private AlbionDataProvider dataProvider = null!;
-        private BotManagerContract bot = null!;
+        private BotManager bot = null!;
         private Position currentPosition;
+        private BotJob job;
+        private bool rightMouseIsDown = false;
 
 
         public void BindDependencies(ServiceContainer serviceContainer) {
             input = serviceContainer.GetService<Input>();
             dataProvider = serviceContainer.GetService<AlbionDataProvider>();
-            bot = serviceContainer.GetService<BotManagerContract>();
+            bot = (serviceContainer.GetService<BotManagerContract>() as BotManager)!;
             
             dataProvider.Move += (_, e) => currentPosition = e.Position;
+            bot.JobChanged += (sender, args) => job = args.Job;
         }
 
-        public void MoveTowards(Position origin, Position target) {
+        public void MoveTowards(Position origin, Position target) =>
+            MoveTowards(origin, target, false);
+
+        public void MoveTowards(Position origin, Position target, bool forceReclick = false) {
             var direction = new Vector2(target.X - origin.X, target.Y - origin.Y);
             direction = Vector2.Transform(direction, Matrix3x2.CreateRotation(-(float)Math.PI/4));
             direction = Vector2.Normalize(direction);
 
             input.MoveCursorRelativeToCenter(direction);
             
-            //input.RightMouseDown();
-            //input.RightMouseUp();
+            if (!rightMouseIsDown) {
+                input.RightMouseDown();
+                rightMouseIsDown = true;
+            }
+
+            if (job is TradeMissionRun run) {
+                forceReclick |= !run.State.Moving;
+            }
+            if (forceReclick) {
+                if (rightMouseIsDown)
+                    input.RightMouseUp();
+                Thread.Sleep(50);
+                input.RightMouseDown(); 
+            }
         }
 
         public void InteractWith(Position origin, Position target) {
@@ -72,7 +91,12 @@ namespace OryxBot.Bot.Services
         }
 
         public void StopAllActions() {
+            Console.WriteLine("Stopping all actions.");
             input.Key('s');
+            if (rightMouseIsDown) {
+                rightMouseIsDown = false;
+                input.RightMouseUp();
+            }
         }
     }
 }

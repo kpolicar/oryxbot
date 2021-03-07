@@ -7,6 +7,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using OryxBot.Bot.Attributes;
 using OryxBot.Bot.Contracts;
+using OryxBot.Bot.Services;
 using OryxBot.Shared.Contracts;
 using OryxBot.Shared.Design;
 using OryxBot.Shared.Events;
@@ -35,7 +36,7 @@ namespace OryxBot.Bot
         private LinkedList<TradeMissionRecord.RecordableStep> Route;
         private LinkedList<TradeMissionRecord.RecordableStep> RouteBack;
         private ITwoWayEnumerator<TradeMissionRecord.RecordableStep>? Step;
-        private ActionFactory actions = null!;
+        private InputActionFactory actions = null!;
         private TradeMissionMovementTracker movementStateTracker;
         
         private MethodInfo[] OnMoveMethods = null!;
@@ -60,7 +61,7 @@ namespace OryxBot.Bot
             dataProvider.RegisterToObject += RuntimeEventListener(OnRegisterToObject);
             dataProvider.UnregisterFromObject += RuntimeEventListener(OnUnregisterFromObject);
             // todo InventoryMoveItem
-            actions = serviceContainer.GetService<ActionFactory>();
+            actions = (serviceContainer.GetService<ActionFactory>() as InputActionFactory)!;
             var hotkey = serviceContainer.GetService<Hotkey>();
             hotkey.F3 += (_, _) => Debug.WriteLine(State.LastKnownMove?.Position);
             movementStateTracker.BindDependencies(serviceContainer);
@@ -90,8 +91,8 @@ namespace OryxBot.Bot
         public override void Start() {
             base.Start();
             movementStateTracker.Start();
-            //RunRouteFromQuestNpcToBank();
-            RunTradeMissionRoute();
+            RunRouteFromQuestNpcToBank();
+            //RunTradeMissionRoute();
         }
 
         public override void Stop() {
@@ -170,7 +171,7 @@ namespace OryxBot.Bot
             Task.Run(() => {
                 do {
                     Console.WriteLine("Attempting movement");
-                    actions.MoveTowards(CurrentOrigin(), move?.Position ?? RandomPoint());
+                    actions.MoveTowards(CurrentOrigin(), move?.Position ?? RandomPoint(), true);
                     Thread.Sleep(1000);
                 } while (!State.Moving && Running);
             });
@@ -178,7 +179,7 @@ namespace OryxBot.Bot
         private Task KeepTryingToInteractUntilValidInteraction(Position target) =>
             Task.Run(() => {
                 do {
-                    Console.WriteLine("Attempting interaction");
+                    Console.WriteLine($"Attempting interaction with {target}, state: {State.Action}, current pos: "+CurrentOrigin());
                     actions.InteractWith(CurrentOrigin(), target);
                     Thread.Sleep(1000);
                 } while (!State.Interacting && Running);

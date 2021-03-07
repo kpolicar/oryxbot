@@ -17,7 +17,6 @@ namespace OryxBot.Bot
         private void OnRouteFromBankToQuestNpcFinished(object? sender, EventArgs eventArgs) {
             Console.WriteLine("Route from Bank to Quest NPC finished");
             State.Action = TAKING_QUEST;
-            actions.StopAllActions();
             Thread.Sleep(DelayBetweenNpcInterfaceActions);
             
             KeepTryingToInteractUntilValidInteraction(new Position(-75.5f, 0));

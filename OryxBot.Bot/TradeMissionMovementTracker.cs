@@ -14,7 +14,7 @@ namespace OryxBot.Bot
             private Thread? _thread;
             private bool running = false;
             private const int SleepDuration = 100;
-            private const int StandStillDuration = 500;
+            private const int StandStillDuration = 2000;
             private TradeMissionRun Bot;
             private Stopwatch sw = new();
 
@@ -39,7 +39,15 @@ namespace OryxBot.Bot
             public void EntryPoint() {
                 sw.Start();
                 while (running) {
+                    var previousBotMovingStatus = Bot.State.Moving;
                     Bot.State.Moving = sw.ElapsedMilliseconds < StandStillDuration;
+
+                    if (Bot.State.Action == TradeMissionRunState.TradeMissionAction.RUNNING_ROUTE &&
+                        previousBotMovingStatus != Bot.State.Moving &&
+                        !Bot.State.Moving)
+                    {
+                        Bot.KeepTryingToMoveUntilValidMovement();
+                    }
                     Thread.Sleep(SleepDuration);
                 }
             }
