@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Configuration;
 using System.Diagnostics;
 using System.Drawing;
 using System.Net.Http;
@@ -31,10 +33,10 @@ namespace Inkybot
             VisibleChanged += OnVisibleChanged;
             
             errorMessage.Text = "";
-            //usernameTextBox.Text = Properties.Settings.Default.email;
-            //passwordTextBox.Text = Properties.Settings.Default.password;
+            usernameTextBox.Text = ConfigurationManager.AppSettings.Get("email");
+            passwordTextBox.Text = ConfigurationManager.AppSettings.Get("password");
             newVersionLabel.Hide();
-            //rememberPasswordCheckbox.Checked = Properties.Settings.Default.password.Length > 0;
+            rememberPasswordCheckbox.Checked = ConfigurationManager.AppSettings.Get("password")?.Length > 0;
             auth = Program.Services.GetService<AuthManager>();
             api = Program.Services.GetService<ApiClient>();
         }
@@ -76,9 +78,11 @@ namespace Inkybot
                 return;
             }
 
-            //Properties.Settings.Default.email = usernameTextBox.Text;
-            //Properties.Settings.Default.password = rememberPasswordCheckbox.Checked ? passwordTextBox.Text : "";
-            //Properties.Settings.Default.Save();
+            UserSettings.AddUpdateAppSettings(new Dictionary<string, string> {
+                {"email", usernameTextBox.Text},
+                {"password", rememberPasswordCheckbox.Checked ? passwordTextBox.Text : ""},
+            });
+            
             DialogResult = DialogResult.OK;
         }
 
@@ -125,9 +129,7 @@ namespace Inkybot
         }
 
         private void resetSettings_Clicked(object sender, EventArgs eventArgs) {
-            //Properties.Settings.Default.Reset();
-            //Properties.Settings.Default.Save();
-                
+            UserSettings.Reset();
             Application.Restart();
         }
     }
