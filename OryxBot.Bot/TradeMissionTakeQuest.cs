@@ -1,5 +1,6 @@
 using System;
 using System.Threading;
+using System.Threading.Tasks;
 using OryxBot.Bot.Attributes;
 using OryxBot.Shared.Design;
 using static OryxBot.Bot.TradeMissionRun.TradeMissionRunState.TradeMissionAction;
@@ -9,36 +10,36 @@ namespace OryxBot.Bot
     public partial class TradeMissionRun
     {
         
-        private void RunRouteFromBankToQuestNpc() {
+        private Task RunRouteFromBankToQuestNpc() {
             Console.WriteLine("Running route from Bank to Quest NPC");
-            RunRoute(routeProvider.RouteFromBankToQuest()!, OnRouteFromBankToQuestNpcFinished);
+            return RunRoute(routeProvider.RouteFromBankToQuest()!, OnRouteFromBankToQuestNpcFinished);
         }
 
-        private void OnRouteFromBankToQuestNpcFinished(object? sender, EventArgs eventArgs) {
+        private async Task OnRouteFromBankToQuestNpcFinished(object? sender, EventArgs eventArgs) {
             Console.WriteLine("Route from Bank to Quest NPC finished");
             State.Action = TAKING_QUEST;
-            Thread.Sleep(DelayBetweenNpcInterfaceActions);
+            await Task.Delay(DelayBetweenNpcInterfaceActions).ConfigureAwait(false);
             
-            KeepTryingToInteractUntilValidInteraction(new Position(-75.5f, 0));
+            await KeepTryingToInteractUntilValidInteraction(new Position(-75.5f, 0)).ConfigureAwait(false);
         }
         
         [CallOnRegisterToObject(RequiredState = TAKING_QUEST)]
-        private void TakingQuestOnRegisterToObject(EventArgs e) {
-            Thread.Sleep(DelayBetweenNpcInterfaceActions);
+        private async Task TakingQuestOnRegisterToObject(EventArgs e) {
+            await Task.Delay(DelayBetweenNpcInterfaceActions).ConfigureAwait(false);
             
             actions.NpcQuestOpenTradeMissionsTab();
-            Thread.Sleep(DelayBetweenNpcInterfaceActions);
+            await Task.Delay(DelayBetweenNpcInterfaceActions).ConfigureAwait(false);
             
             actions.NpcQuestOpenTradeMissionsContractTab();
-            Thread.Sleep(DelayBetweenNpcInterfaceActions);
+            await Task.Delay(DelayBetweenNpcInterfaceActions).ConfigureAwait(false);
             
             actions.NpcQuestSelectTradeMissionsContract();
-            Thread.Sleep(DelayBetweenNpcInterfaceActions);
+            await Task.Delay(DelayBetweenNpcInterfaceActions).ConfigureAwait(false);
             
             actions.NpcQuestAcceptTradeMissionsContract();
-            Thread.Sleep(DelayBetweenNpcInterfaceActions);
+            await Task.Delay(DelayBetweenNpcInterfaceActions).ConfigureAwait(false);
 
-            RunTradeMissionRoute();
+            await RunTradeMissionRoute().ConfigureAwait(false);
         }
     }
 }

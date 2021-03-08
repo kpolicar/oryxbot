@@ -44,7 +44,7 @@ namespace OryxBot.Bot.Services
             foreach (var device in CaptureDeviceList.Instance) {
                 var captureThread = new Thread(() => {
                     device.OnPacketArrival += PacketHandler;
-                    device.Open(DeviceMode.Promiscuous, 300);
+                    device.Open(DeviceMode.Promiscuous, 1000);
                     device.Filter = "udp and dst port 5056";
                     
                     device.StartCapture();

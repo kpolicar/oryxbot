@@ -46,7 +46,7 @@ namespace OryxBot.Bot
                         previousBotMovingStatus != Bot.State.Moving &&
                         !Bot.State.Moving)
                     {
-                        Bot.KeepTryingToMoveUntilValidMovement();
+                        Task.Run(() => Bot.KeepTryingToMoveUntilValidMovement()).ConfigureAwait(false);
                     }
                     Thread.Sleep(SleepDuration);
                 }
@@ -54,15 +54,14 @@ namespace OryxBot.Bot
 
             private Position lastMove;
 
-            private void OnMove(object? sender, MoveEventArgs e) {
-                Task.Run(() => {
+            private async void OnMove(object? sender, MoveEventArgs e) =>
+                await Task.Run(() => {
                     if (lastMove.Equals(e.Position))
                         return;
                     
                     lastMove = e.Position;
                     sw.Restart();
                 });
-            }
         }
     }
 }

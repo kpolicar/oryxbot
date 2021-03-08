@@ -1,5 +1,6 @@
 using System;
 using System.Threading;
+using System.Threading.Tasks;
 using OryxBot.Bot.Attributes;
 using static OryxBot.Bot.TradeMissionRun.TradeMissionRunState.TradeMissionAction;
 
@@ -10,13 +11,13 @@ namespace OryxBot.Bot
 
         
         [CallOnRegisterToObject(RequiredState = PROGRESSING_QUEST)]
-        private void ProgressingQuestOnRegisterToObject(EventArgs e) {
-            Thread.Sleep(DelayBetweenNpcInterfaceActions);
+        private async Task ProgressingQuestOnRegisterToObject(EventArgs e) {
+            await Task.Delay(DelayBetweenNpcInterfaceActions).ConfigureAwait(false);
             
             actions.NpcQuestProgress();
-            Thread.Sleep(DelayBetweenNpcInterfaceActions);
+            await Task.Delay(DelayBetweenNpcInterfaceActions).ConfigureAwait(false);
             
-            RunTradeMissionRouteBack();
+            await RunTradeMissionRouteBack().ConfigureAwait(false);
         }
     }
 }

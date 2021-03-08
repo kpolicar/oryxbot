@@ -1,5 +1,6 @@
 using System;
 using System.Threading;
+using System.Threading.Tasks;
 using OryxBot.Bot.Attributes;
 using OryxBot.Shared.Design;
 using static OryxBot.Bot.TradeMissionRun.TradeMissionRunState.TradeMissionAction;
@@ -8,30 +9,30 @@ namespace OryxBot.Bot
 {
     public partial class TradeMissionRun
     {
-        private void RunRouteFromQuestNpcToBank() {
+        private Task RunRouteFromQuestNpcToBank() {
             Console.WriteLine("Running route from Quest NPC to Bank");
-            RunRoute(routeProvider.RouteFromQuestToBank()!, OnRouteFromQuestNpcToBankFinished);
+            return RunRoute(routeProvider.RouteFromQuestToBank()!, OnRouteFromQuestNpcToBankFinished);
         }
         
-        private void OnRouteFromQuestNpcToBankFinished(object? sender, EventArgs eventArgs) {
+        private async Task OnRouteFromQuestNpcToBankFinished(object? sender, EventArgs eventArgs) {
             Console.WriteLine("Route from Quest NPC to Bank finished");
             State.Action = BANKING;
             
-            Thread.Sleep(DelayBetweenNpcInterfaceActions);
-            KeepTryingToInteractUntilValidInteraction(new Position(0f, 0f));
+            await Task.Delay(DelayBetweenNpcInterfaceActions).ConfigureAwait(false);
+            await KeepTryingToInteractUntilValidInteraction(new Position(0f, 0f)).ConfigureAwait(false);
         }
         
         [CallOnRegisterToObject(RequiredState = BANKING)]
-        private void BankingOnRegisterToObject(EventArgs e) {
-            Thread.Sleep(DelayBetweenNpcInterfaceActions);
+        private async Task BankingOnRegisterToObject(EventArgs e) {
+            await Task.Delay(DelayBetweenNpcInterfaceActions).ConfigureAwait(false);
             
             actions.BankRewardItems();
-            Thread.Sleep(DelayBetweenNpcInterfaceActions);
+            await Task.Delay(DelayBetweenNpcInterfaceActions).ConfigureAwait(false);
             
             actions.UnbankTokenItem();
-            Thread.Sleep(DelayBetweenNpcInterfaceActions);
+            await Task.Delay(DelayBetweenNpcInterfaceActions).ConfigureAwait(false);
 
-            RunRouteFromBankToQuestNpc();
+            await RunRouteFromBankToQuestNpc().ConfigureAwait(false);
         }
     }
 }

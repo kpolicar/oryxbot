@@ -91,7 +91,7 @@ namespace OryxBot.Bot
         public override void Start() {
             base.Start();
             movementStateTracker.Start();
-            RunRouteFromQuestNpcToBank();
+            Task.Run(RunRouteFromQuestNpcToBank).ConfigureAwait(false);
             //RunTradeMissionRoute();
         }
 
@@ -145,6 +145,7 @@ namespace OryxBot.Bot
 
         private void OnCharacterMove(object? sender, MoveEventArgs e) {
             State.LastKnownMove = e;
+            Console.WriteLine("character moved: "+e.Position);
             foreach (var method in OnMoveMethods
                 .Where(m => m.GetCustomAttributes(true).OfType<CallOnMoveAttribute>().Any(attr => attr.RequiredState == State.Action))
             )
@@ -167,33 +168,37 @@ namespace OryxBot.Bot
         private Position RandomPoint() =>
            new Position(rand.Next(100), rand.Next(100));
 
-        private Task KeepTryingToMoveUntilValidMovement(TradeMissionRecord.MoveStep? move = null) =>
-            Task.Run(() => {
-                do {
-                    Console.WriteLine("Attempting movement");
-                    actions.MoveTowards(CurrentOrigin(), move?.Position ?? RandomPoint(), true);
-                    Thread.Sleep(1000);
-                } while (!State.Moving && Running);
-            });
+        private async Task KeepTryingToMoveUntilValidMovement(TradeMissionRecord.MoveStep? move = null) {
+            do {
+                Console.WriteLine("Attempting movement");
+                actions.MoveTowards(CurrentOrigin(), move?.Position ?? RandomPoint(), true);
+                
+                await Task.Delay(1000).ConfigureAwait(false);
+            } while (!State.Moving && Running);
+        }
 
-        private Task KeepTryingToInteractUntilValidInteraction(Position target) =>
-            Task.Run(() => {
-                do {
-                    Console.WriteLine($"Attempting interaction with {target}, state: {State.Action}, current pos: "+CurrentOrigin());
-                    actions.StopAllActions();
-                    Thread.Sleep(50);
+        private async Task KeepTryingToInteractUntilValidInteraction(Position target) {
+            do {
+                Console.WriteLine($"Attempting interaction with {target}, state: {State.Action}, current pos: "+CurrentOrigin());
+                
+                actions.StopAllActions();
+                await Task.Delay(50).ConfigureAwait(false);
                     
-                    if (Helpers.Math.Distance(CurrentOrigin(), target) > 2f) {
-                        actions.MoveTowards(CurrentOrigin(), target);
-                        Thread.Sleep(200);
-                        continue;
-                    }
-                    actions.InteractWith(CurrentOrigin(), target);
-                    Thread.Sleep(1000);
-                } while (!State.Interacting && Running);
-            });
+                if (Helpers.Math.Distance(CurrentOrigin(), target) > 3f) {
+                    actions.MoveTowards(CurrentOrigin(), target);
+                    await Task.Delay(200).ConfigureAwait(false);
+                    
+                    actions.StopAllActions();
+                    await Task.Delay(200).ConfigureAwait(false);
+                    
+                    continue;
+                }
+                actions.InteractWith(CurrentOrigin(), target);
+                await Task.Delay(1000).ConfigureAwait(false);
+            } while (!State.Interacting && Running);
+        }
 
-        private void RunRoute(LinkedList<TradeMissionRecord.RecordableStep> route, Action<object?, EventArgs>? afterRoute = null) {
+        private Task RunRoute(LinkedList<TradeMissionRecord.RecordableStep> route, Func<object?, EventArgs, Task>? afterRoute = null) {
             State.Action = RUNNING_ROUTE;
             
             ActiveRoute = route;
@@ -203,14 +208,14 @@ namespace OryxBot.Bot
             funcToCallAfterRoute = afterRoute;
             RouteFinished += OnRunRouteFinished;
 
-            KeepTryingToMoveUntilValidMovement();
+            return KeepTryingToMoveUntilValidMovement();
         }
 
         private void OnRunRouteFinished(object? o, EventArgs e) {
-            funcToCallAfterRoute?.Invoke(o, e);
+            funcToCallAfterRoute?.Invoke(o, e).ConfigureAwait(false);
             RouteFinished -= OnRunRouteFinished;
         }
 
-        private Action<object?, EventArgs>? funcToCallAfterRoute;
+        private Func<object?, EventArgs, Task>? funcToCallAfterRoute;
     }
 }

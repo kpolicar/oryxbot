@@ -1,5 +1,6 @@
 using System;
 using System.Threading;
+using System.Threading.Tasks;
 using OryxBot.Bot.Attributes;
 using OryxBot.Bot.Exceptions;
 using OryxBot.Shared.Design;
@@ -54,7 +55,7 @@ namespace OryxBot.Bot
             Helpers.Math.Distance(move.Position, currentPosition) <= MaxDistance;
         
         [CallOnChangeCluster(RequiredState = RUNNING_ROUTE)]
-        private void RunningRouteOnChangeCluster(ChangeClusterEventArgs e) {
+        private async Task RunningRouteOnChangeCluster(ChangeClusterEventArgs e) {
             for (var skips = 0 ;; skips++)
             {
                 if (Step!.Current is TradeMissionRecord.ChangeClusterStep)
@@ -74,8 +75,8 @@ namespace OryxBot.Bot
                 return;
 
             if (Step.Current is TradeMissionRecord.MoveStep move) {
-                Thread.Sleep(ClusterAvgLoadTime);
-                KeepTryingToMoveUntilValidMovement(move);
+                await Task.Delay(ClusterAvgLoadTime).ConfigureAwait(false); 
+                await KeepTryingToMoveUntilValidMovement(move).ConfigureAwait(false);
             }
         }
 
@@ -95,23 +96,23 @@ namespace OryxBot.Bot
             RouteFinished?.Invoke(this, EventArgs.Empty);
         }
         
-        private void RunTradeMissionRoute() {
+        private Task RunTradeMissionRoute() {
             Console.WriteLine("Running trade mission route.");
-            RunRoute(Route, OnRunTradeMissionRouteFinished);
+            return RunRoute(Route, OnRunTradeMissionRouteFinished);
         }
         
-        private void RunTradeMissionRouteBack() {
+        private Task RunTradeMissionRouteBack() {
             Console.WriteLine("Running trade mission route back.");
-            RunRoute(RouteBack, (o, args) => Console.WriteLine("Trade route finished!"));
+            return RunRoute(RouteBack, async (o, args) => Console.WriteLine("Trade route finished!"));
         }
 
-        private void OnRunTradeMissionRouteFinished(object? arg1, EventArgs arg2) {
+        private async Task OnRunTradeMissionRouteFinished(object? arg1, EventArgs arg2) {
             Console.WriteLine("User route finished.");
             
             State.Action = PROGRESSING_QUEST;
-            Thread.Sleep(DelayBetweenNpcInterfaceActions);
+            await Task.Delay(DelayBetweenNpcInterfaceActions).ConfigureAwait(false);
             
-            KeepTryingToInteractUntilValidInteraction(new Position(50f,188f));
+            await KeepTryingToInteractUntilValidInteraction(new Position(50f,188f)).ConfigureAwait(false);
         }
     }
 }
