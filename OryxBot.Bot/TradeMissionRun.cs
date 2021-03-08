@@ -1,10 +1,12 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Threading;
 using OryxBot.Bot.Contracts;
 using OryxBot.Bot.Services;
 using OryxBot.Shared.Contracts;
 using OryxBot.Shared.Design;
+using OryxBot.Shared.Extensions;
 using ServiceContainer = OryxBot.Shared.Design.ServiceContainer;
 
 namespace OryxBot.Bot
@@ -12,13 +14,13 @@ namespace OryxBot.Bot
     public partial class TradeMissionRun : Job, HasDependencies
     {
         private const int ClusterAvgLoadTime = 5000;
+        private const int DelayBetweenSteps = 1000;
 
-        private TradeMissionStep _step = new BankItems();
+        private TradeMissionStep _step;
         
-        private AlbionDataProvider dataProvider = null!;
         private static TradeMissionRouteProvider routeProvider = null!;
-        private LinkedList<TradeMissionRecord.RecordableStep> Route;
-        private LinkedList<TradeMissionRecord.RecordableStep> RouteBack;
+        private readonly LinkedList<TradeMissionRecord.RecordableStep> Route;
+        private readonly LinkedList<TradeMissionRecord.RecordableStep> RouteBack;
         private static InputActionFactory actions = null!;
         
         private Thread? runningThread;
@@ -30,30 +32,28 @@ namespace OryxBot.Bot
         }
         
         public void BindDependencies(ServiceContainer serviceContainer) {
-            dataProvider = serviceContainer.GetService<AlbionDataProvider>();
             routeProvider = serviceContainer.GetService<TradeMissionRouteProvider>();
             actions = (serviceContainer.GetService<ActionFactory>() as InputActionFactory)!;
         }
 
         public override void Start() {
             base.Start();
+            _step = new RunToBank();
 
             runningThread = new Thread(EntryPoint);
             runningThread.Start();
         }
 
-        public override void Stop() {
-            base.Stop();
-            _step = new BankItems();
-        }
-
         public void EntryPoint() {
             while (Running) {
                 _step.Tick();
-                Thread.Sleep(_step.Delay);
-                
-                if (_step.Finished)
+
+                if (_step.Finished) {
+                    Thread.Sleep(DelayBetweenSteps);
                     ProgressToNextStep();
+                } else {
+                    Thread.Sleep(_step.Delay);
+                }
             }
         }
 
@@ -69,6 +69,7 @@ namespace OryxBot.Bot
                 FinishQuest => new RunToBank(),
                 _ => throw new ArgumentOutOfRangeException(nameof(_step))
             };
+            Console.WriteLine("Progressed to next step: "+_step.GetType());
         }
     }
 }

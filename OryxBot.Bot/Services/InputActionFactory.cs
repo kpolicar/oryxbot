@@ -43,7 +43,7 @@ namespace OryxBot.Bot.Services
                 rightMouseIsDown = true;
             }
 
-            if (job is TradeMissionRun run) {
+            if (job is TradeMissionRun) {
                 forceReclick |= !LocalCharacter.Instance.Moving;
             }
             if (forceReclick) {

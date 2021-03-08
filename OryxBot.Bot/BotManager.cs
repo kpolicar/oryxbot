@@ -1,8 +1,10 @@
 using System;
+using System.Diagnostics;
 using OryxBot.Bot.Contracts;
 using OryxBot.Shared.Contracts;
 using OryxBot.Shared.Design;
 using OryxBot.Shared.Events;
+using OryxBot.Shared.Extensions;
 using BotManagerContract=OryxBot.Shared.Contracts.BotManager;
 
 namespace OryxBot.Bot
@@ -30,20 +32,25 @@ namespace OryxBot.Bot
                 var routeBack = routeProvider.Route();
                 if (routeBack == null) // Todo: Error
                     return;
-                EnforceBotServiceType(typeof(TradeMissionRun), new object?[] {route, routeBack});
+
+                EnforceBotServiceType(
+                    typeof(TradeMissionRun), 
+                    () => new TradeMissionRun(route, routeBack));
             }
             Bot!.ToggleStart();
         }
 
         public void ToggleTradeMissionRecord() {
-            EnforceBotServiceType(typeof(TradeMissionRecord));
+            EnforceBotServiceType(
+                typeof(TradeMissionRecord), 
+                () => new TradeMissionRecord());
             Bot!.ToggleStart();
         }
         
-        private void EnforceBotServiceType(Type botServiceType, object?[]? objects=null) {
+        private void EnforceBotServiceType(Type botServiceType, Func<BotJob> constructorCallback) {
             if (Bot == null || Bot.GetType() != botServiceType) {
                 Bot?.Stop();
-                Bot = (BotJob) Activator.CreateInstance(botServiceType, objects)!;
+                Bot = constructorCallback();
                 if (Bot is HasDependencies dependant)
                     dependant.BindDependencies(serviceContainer);
                 Bot.Started += (_, _) => Started?.Invoke(this, new BotEventArgs(Bot));
