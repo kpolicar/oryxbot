@@ -4,7 +4,7 @@ namespace OryxBot.Shared.Contracts
 {
     public interface ActionFactory
     {
-        void MoveTowards(Position origin, Position target);
+        void MoveTowards(Position target);
         void BankRewardItems();
         void UnbankTokenItem();
         void NpcQuestOpenTradeMissionsTab();
@@ -13,6 +13,6 @@ namespace OryxBot.Shared.Contracts
         void NpcQuestAcceptTradeMissionsContract();
         void NpcQuestProgress();
         void StopAllActions();
-        void InteractWith(Position origin, Position target);
+        void InteractWith(Position target);
     }
 }

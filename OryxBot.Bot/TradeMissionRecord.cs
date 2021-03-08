@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using OryxBot.Bot.Game;
 using OryxBot.Shared.Contracts;
 using OryxBot.Shared.Design;
 using OryxBot.Shared.Events;
@@ -7,26 +8,24 @@ using ServiceContainer = OryxBot.Shared.Design.ServiceContainer;
 
 namespace OryxBot.Bot
 {
-    public partial class TradeMissionRecord : Job, HasDependencies, IDisposable
+    public partial class TradeMissionRecord : Job, HasDependencies
     {
-        private const float DistanceStep = 3;
-        
         private TradeMissionRecordState state = new();
         private AlbionDataProvider dataProvider = null!;
         
 
         public void BindDependencies(ServiceContainer serviceContainer) {
             dataProvider = serviceContainer.GetService<AlbionDataProvider>();
-            dataProvider.Move += RuntimeEventListener<MoveEventArgs>(OnCharacterMove);
-            dataProvider.ChangeCluster += RuntimeEventListener<ChangeClusterEventArgs>(OnChangeCluster);
+            LocalCharacter.Instance.Move += RuntimeEventListener(OnCharacterMove);
+            LocalCharacter.Instance.ChangeCluster += RuntimeEventListener(OnChangeCluster);
         }
 
-        private void OnCharacterMove(object? sender, MoveEventArgs e) {
-            state.RecordedSteps.AddLast(MoveStep.From(e));
+        private void OnCharacterMove(object? sender, EventArgs e) {
+            state.RecordedSteps.AddLast(new MoveStep(LocalCharacter.Instance.Position));
         }
 
-        private void OnChangeCluster(object? sender, ChangeClusterEventArgs e) {
-            state.RecordedSteps.AddLast(ChangeClusterStep.From(e));
+        private void OnChangeCluster(object? sender, EventArgs e) {
+            state.RecordedSteps.AddLast(new ChangeClusterStep(LocalCharacter.Instance.Cluster));
         }
 
         public override void Stop() {
@@ -55,9 +54,5 @@ namespace OryxBot.Bot
 
         private string GenerateFileName() =>
             $"{DateTime.Now:yyyy-MM-dd_hh-mm-ss}.csv";
-
-        public void Dispose() {
-            dataProvider.Move -= OnCharacterMove;
-        }
     }
 }

@@ -6,6 +6,7 @@ using Albion.Network;
 using OryxBot.Shared.Contracts;
 using OryxBot.Shared.Design;
 using OryxBot.Shared.Events;
+using OryxBot.Shared.Game;
 using PacketDotNet;
 using SharpPcap;
 using BotManagerContract=OryxBot.Shared.Contracts.BotManager;
@@ -17,11 +18,6 @@ namespace OryxBot.Bot.Services
         private IPhotonReceiver _receiver = null!;
         private bool _running;
         
-        public event EventHandler<MoveEventArgs>? Move;
-        public event EventHandler<ChangeClusterEventArgs>? ChangeCluster;
-        public event EventHandler? RegisterToObject;
-        public event EventHandler? UnregisterFromObject;
-        public event EventHandler? InventoryMoveItem;
         public event EventHandler<RequestPacket>? NetworkRequest;
         public event EventHandler<EventPacket>? NetworkEvent;
         
@@ -76,5 +72,7 @@ namespace OryxBot.Bot.Services
 
         public void Dispose() =>
             Stop();
+
+        public Character LocalCharacter => Game.LocalCharacter.Instance;
     }
 }

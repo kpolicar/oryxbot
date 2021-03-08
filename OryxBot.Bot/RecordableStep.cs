@@ -9,12 +9,8 @@ namespace OryxBot.Bot
             public const string SerializedName = "move";
             public readonly Position Position;
 
-            private MoveStep(Position position) =>
+            public MoveStep(Position position) =>
                 Position = position;
-
-            public static MoveStep From(MoveEventArgs args) {
-                return new MoveStep(args.Position);
-            }
 
             public override string Name => SerializedName;
             protected override string CsvFormatBody =>
@@ -25,12 +21,8 @@ namespace OryxBot.Bot
             public const string SerializedName = "cluster";
             public readonly string Location;
 
-            protected ChangeClusterStep(string location) =>
+            public ChangeClusterStep(string location) =>
                 Location = location;
-
-            public static ChangeClusterStep From(ChangeClusterEventArgs args) {
-                return new ChangeClusterStep(args.Location);
-            }
 
             public override string Name => SerializedName;
             protected override string CsvFormatBody =>

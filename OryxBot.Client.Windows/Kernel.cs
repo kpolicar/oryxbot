@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using OryxBot.Bot;
 using OryxBot.Bot.Contracts;
+using OryxBot.Bot.Game;
 using OryxBot.Bot.Services;
 using OryxBot.Client.Windows.Api;
 using OryxBot.Client.Windows.Contracts;
@@ -52,6 +53,8 @@ namespace OryxBot.Client.Windows
                         service.BindDependencies(Services);
                     }
                 }
+                
+                LocalCharacter.Instance.BindDependencies(Services);
             }
 
             public void Dispose() {

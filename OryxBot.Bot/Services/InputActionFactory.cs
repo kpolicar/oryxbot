@@ -1,6 +1,7 @@
 using System;
 using System.Numerics;
 using System.Threading;
+using OryxBot.Bot.Game;
 using OryxBot.Shared.Contracts;
 using OryxBot.Shared.Design;
 using BotManagerContract=OryxBot.Shared.Contracts.BotManager;
@@ -13,7 +14,6 @@ namespace OryxBot.Bot.Services
         private Input input = null!;
         private AlbionDataProvider dataProvider = null!;
         private BotManager bot = null!;
-        private Position currentPosition;
         private BotJob job;
         private bool rightMouseIsDown = false;
 
@@ -23,14 +23,15 @@ namespace OryxBot.Bot.Services
             dataProvider = serviceContainer.GetService<AlbionDataProvider>();
             bot = (serviceContainer.GetService<BotManagerContract>() as BotManager)!;
             
-            dataProvider.Move += (_, e) => currentPosition = e.Position;
             bot.JobChanged += (sender, args) => job = args.Job;
         }
 
-        public void MoveTowards(Position origin, Position target) =>
-            MoveTowards(origin, target, false);
+        public void MoveTowards(Position target) =>
+            MoveTowards(target, false);
 
-        public void MoveTowards(Position origin, Position target, bool forceReclick = false) {
+        public void MoveTowards(Position target, bool forceReclick = false) {
+            var origin = LocalCharacter.Instance.Position;
+            
             var direction = new Vector2(target.X - origin.X, target.Y - origin.Y);
             direction = Vector2.Transform(direction, Matrix3x2.CreateRotation(-(float)Math.PI/4));
             direction = Vector2.Normalize(direction);
@@ -43,7 +44,7 @@ namespace OryxBot.Bot.Services
             }
 
             if (job is TradeMissionRun run) {
-                forceReclick |= !run.State.Moving;
+                forceReclick |= !LocalCharacter.Instance.Moving;
             }
             if (forceReclick) {
                 if (rightMouseIsDown)
@@ -53,7 +54,8 @@ namespace OryxBot.Bot.Services
             }
         }
 
-        public void InteractWith(Position origin, Position target) {
+        public void InteractWith(Position target) {
+            var origin = LocalCharacter.Instance.Position;
             var direction = new Vector2(target.X - origin.X, target.Y - origin.Y);
             direction = Vector2.Transform(direction, Matrix3x2.CreateRotation(-(float)Math.PI/4));
             direction = Vector2.Normalize(direction);

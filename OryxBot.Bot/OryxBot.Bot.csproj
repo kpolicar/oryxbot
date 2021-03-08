@@ -18,13 +18,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Compile Update="Services\NewCharacterEventHandler.cs">
-        <DependentUpon>NetworkDataProvider.cs</DependentUpon>
-      </Compile>
-      <Compile Update="Services\RaiseEvents.cs">
-        <DependentUpon>NetworkDataProvider.cs</DependentUpon>
-      </Compile>
-      <Compile Update="Services\MoveEventHandler.cs">
+      <Compile Update="Services\UpdateGameDatabase.cs">
         <DependentUpon>NetworkDataProvider.cs</DependentUpon>
       </Compile>
       <Compile Update="TradeMissionRecordState.cs">
@@ -42,10 +36,13 @@
       <Compile Update="TradeMissionBank.cs">
         <DependentUpon>TradeMissionRun.cs</DependentUpon>
       </Compile>
-      <Compile Update="TradeMissionMovementTracker.cs">
+      <Compile Update="TradeMissionProgressQuest.cs">
         <DependentUpon>TradeMissionRun.cs</DependentUpon>
       </Compile>
-      <Compile Update="TradeMissionProgressQuest.cs">
+      <Compile Update="Game\MovementStateTracker.cs">
+        <DependentUpon>LocalCharacter.cs</DependentUpon>
+      </Compile>
+      <Compile Update="TradeMissionStep.cs">
         <DependentUpon>TradeMissionRun.cs</DependentUpon>
       </Compile>
     </ItemGroup>

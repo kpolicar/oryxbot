@@ -11,12 +11,6 @@ namespace OryxBot.Bot
         public bool Running { get; private set; } = false;
 
 
-        protected EventHandler<T> RuntimeEventListener<T>(EventHandler<T> callback) =>
-            (sender, e) => {
-                if (!Running)
-                    return;
-                callback(sender, e);
-            };
         protected EventHandler RuntimeEventListener(EventHandler callback) =>
             (sender, e) => {
                 if (!Running)
