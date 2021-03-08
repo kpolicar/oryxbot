@@ -3,7 +3,6 @@ using System.IO;
 using OryxBot.Bot.Game;
 using OryxBot.Shared.Contracts;
 using OryxBot.Shared.Design;
-using OryxBot.Shared.Events;
 using ServiceContainer = OryxBot.Shared.Design.ServiceContainer;
 
 namespace OryxBot.Bot

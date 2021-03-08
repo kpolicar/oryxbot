@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using OryxBot.Shared.Design;
 using OryxBot.Shared.Events;
 
@@ -15,6 +16,9 @@ namespace OryxBot.Bot
             public override string Name => SerializedName;
             protected override string CsvFormatBody =>
                 $"{Position.X},{Position.Y}";
+
+            public static LinkedListNode<RecordableStep> From(MoveEventArgs move) =>
+                new(new MoveStep(move.Position));
         }
         
         public class ChangeClusterStep : RecordableStep {
@@ -27,6 +31,9 @@ namespace OryxBot.Bot
             public override string Name => SerializedName;
             protected override string CsvFormatBody =>
                 $"{Location}";
+
+            public static LinkedListNode<RecordableStep> From(ChangeClusterEventArgs changeCluster) =>
+                new(new ChangeClusterStep(changeCluster.Location));
         }
         
         public abstract class RecordableStep

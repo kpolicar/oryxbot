@@ -1,10 +1,6 @@
 using System;
 using System.Diagnostics;
-using System.Threading;
 using System.Threading.Tasks;
-using OryxBot.Shared.Contracts;
-using OryxBot.Shared.Design;
-using OryxBot.Shared.Events;
 
 namespace OryxBot.Bot.Game
 {
@@ -12,7 +8,7 @@ namespace OryxBot.Bot.Game
     {
         private class MovementStateTracker
         {
-            private const int StandStillDuration = 2000;
+            private const int StandStillDuration = 1000;
             private readonly LocalCharacter _character;
             private Stopwatch sw = new();
             private Task timeoutTask = Task.CompletedTask;
@@ -25,7 +21,7 @@ namespace OryxBot.Bot.Game
             private void OnCharacterMove(object? sender, EventArgs e) {
                 _character.Moving = true;
                 sw.Restart();
-                if (!timeoutTask.IsCompleted)
+                if (timeoutTask.IsCompleted)
                     timeoutTask = Task.Run(OnTimeoutTaskTick);
             }
 

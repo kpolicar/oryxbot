@@ -1,8 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Threading;
-using System.Threading.Tasks;
-using OryxBot.Bot.Attributes;
 using OryxBot.Bot.Exceptions;
 using OryxBot.Bot.Game;
 using OryxBot.Shared.Design;
@@ -48,6 +46,13 @@ namespace OryxBot.Bot
             protected override Position _interactablePosition => new(-75.5f, 0);
             
             protected override bool DoInteractions() {
+                actions.NpcQuestOpenTradeMissionsTab();
+                Thread.Sleep(Delay);
+                actions.NpcQuestOpenTradeMissionsContractTab();
+                Thread.Sleep(Delay);
+                actions.NpcQuestSelectTradeMissionsContract();
+                Thread.Sleep(Delay);
+                actions.NpcQuestAcceptTradeMissionsContract();
                 
                 return true;
             }
@@ -70,7 +75,7 @@ namespace OryxBot.Bot
             protected override Position _interactablePosition => new(-75.5f, 0);
             
             protected override bool DoInteractions() {
-                
+                actions.NpcQuestProgress();
                 return true;
             }
         }
@@ -100,6 +105,9 @@ namespace OryxBot.Bot
 
         private abstract class RunRouteStep : TradeMissionStep
         {
+            private const float MaxDistance = 4f;
+            private const int MaxSkippableSteps = 4;
+            
             public bool Finished { get; private set; }
             public int Delay => 10;
             
@@ -190,9 +198,12 @@ namespace OryxBot.Bot
 
         private abstract class InteractionStep : TradeMissionStep
         {
+            private const int DelayBetweenNpcInterfaceActions = 2000;
+            private const float MaxDistance = 3f;
+            
             public int Delay => CharacterIsNearInteractable || LocalCharacter.Instance.Interacting
                 ? 10
-                : 1000;
+                : DelayBetweenNpcInterfaceActions;
 
             protected abstract Position _interactablePosition { get; }
             public bool CharacterIsNearInteractable =>
@@ -217,38 +228,6 @@ namespace OryxBot.Bot
                     actions.MoveTowards(_interactablePosition);
                 }
             }
-        }
-
-        private Task RunRouteFromBankToQuestNpc() {
-            Console.WriteLine("Running route from Bank to Quest NPC");
-            return RunRoute(routeProvider.RouteFromBankToQuest()!, OnRouteFromBankToQuestNpcFinished);
-        }
-
-        private async Task OnRouteFromBankToQuestNpcFinished(object? sender, EventArgs eventArgs) {
-            Console.WriteLine("Route from Bank to Quest NPC finished");
-            State.Action = TAKING_QUEST;
-            await Task.Delay(DelayBetweenNpcInterfaceActions).ConfigureAwait(false);
-            
-            await KeepTryingToInteractUntilValidInteraction(new Position(-75.5f, 0)).ConfigureAwait(false);
-        }
-        
-        [CallOnRegisterToObject(RequiredState = TAKING_QUEST)]
-        private async Task TakingQuestOnRegisterToObject(EventArgs e) {
-            await Task.Delay(DelayBetweenNpcInterfaceActions).ConfigureAwait(false);
-            
-            actions.NpcQuestOpenTradeMissionsTab();
-            await Task.Delay(DelayBetweenNpcInterfaceActions).ConfigureAwait(false);
-            
-            actions.NpcQuestOpenTradeMissionsContractTab();
-            await Task.Delay(DelayBetweenNpcInterfaceActions).ConfigureAwait(false);
-            
-            actions.NpcQuestSelectTradeMissionsContract();
-            await Task.Delay(DelayBetweenNpcInterfaceActions).ConfigureAwait(false);
-            
-            actions.NpcQuestAcceptTradeMissionsContract();
-            await Task.Delay(DelayBetweenNpcInterfaceActions).ConfigureAwait(false);
-
-            await RunTradeMissionRoute().ConfigureAwait(false);
         }
     }
 }

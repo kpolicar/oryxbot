@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using OryxBot.Bot;
 using OryxBot.Bot.Contracts;
 using OryxBot.Bot.Game;
@@ -37,6 +38,10 @@ namespace OryxBot.Client.Windows
             public Kernel() {
                 BootstrapServices();
                 BindServices();
+                Task.Run(() => {
+                    var networkDataProvider = Services.GetService<AlbionDataProvider>() as NetworkAlbionDataProvider;
+                    networkDataProvider?.Run();
+                });
             }
 
             private void BootstrapServices() {

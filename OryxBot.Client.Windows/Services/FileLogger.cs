@@ -1,6 +1,7 @@
 using System.Diagnostics;
 using NLog;
 using OryxBot.Albion.Protocol;
+using OryxBot.Bot.Game;
 using OryxBot.Bot.Services;
 using OryxBot.Shared.Contracts;
 using OryxBot.Shared.Design;
@@ -33,7 +34,14 @@ namespace OryxBot.Client.Windows.Services
                 NetworkRequest.Info(opcode.ToString());
             };
             
-            dataProvider.ChangeCluster += (_, e) => Debug.WriteLine("Changed cluster:"+e.Location);
+            LocalCharacter.Instance.ChangeCluster += (_, e) =>
+                Debug.WriteLine("Changed cluster: "+LocalCharacter.Instance.Cluster);
+            LocalCharacter.Instance.Move += (_, e) =>
+                Debug.WriteLine("Move: "+LocalCharacter.Instance.Position);
+            LocalCharacter.Instance.MovingChanged += (_, e) =>
+                Debug.WriteLine("Moving state changed: "+LocalCharacter.Instance.Moving);
+            LocalCharacter.Instance.Interaction += (_, e) =>
+                Debug.WriteLine("Interacting: "+LocalCharacter.Instance.Interacting);
         }
 
         private void BindToBot(BotManager bot) {

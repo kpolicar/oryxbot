@@ -1,9 +1,7 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Albion.Network;
 using OryxBot.Albion.Protocol;
 using OryxBot.Shared.Design;
-using OryxBot.Shared.Events;
 
 namespace OryxBot.Bot.Services
 {

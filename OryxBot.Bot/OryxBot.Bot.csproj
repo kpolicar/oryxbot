@@ -27,16 +27,7 @@
       <Compile Update="RecordableStep.cs">
         <DependentUpon>TradeMissionRecord.cs</DependentUpon>
       </Compile>
-      <Compile Update="TradeMissionRunRoute.cs">
-        <DependentUpon>TradeMissionRun.cs</DependentUpon>
-      </Compile>
-      <Compile Update="TradeMissionTakeQuest.cs">
-        <DependentUpon>TradeMissionRun.cs</DependentUpon>
-      </Compile>
-      <Compile Update="TradeMissionBank.cs">
-        <DependentUpon>TradeMissionRun.cs</DependentUpon>
-      </Compile>
-      <Compile Update="TradeMissionProgressQuest.cs">
+      <Compile Update="TradeMissionSteps.cs">
         <DependentUpon>TradeMissionRun.cs</DependentUpon>
       </Compile>
       <Compile Update="Game\MovementStateTracker.cs">

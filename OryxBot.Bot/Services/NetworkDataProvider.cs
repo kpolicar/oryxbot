@@ -1,11 +1,11 @@
 using System;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Albion.Network;
 using OryxBot.Shared.Contracts;
 using OryxBot.Shared.Design;
-using OryxBot.Shared.Events;
 using OryxBot.Shared.Game;
 using PacketDotNet;
 using SharpPcap;
@@ -24,10 +24,9 @@ namespace OryxBot.Bot.Services
         
         public void BindDependencies(ServiceContainer serviceContainer) {
             var bot = serviceContainer.GetService<BotManagerContract>();
-            bot.Started += (_, _) => Run();
         }
 
-        private void Run() {
+        public void Run() {
             if (_running)
                 return;
             
@@ -40,8 +39,12 @@ namespace OryxBot.Bot.Services
             foreach (var device in CaptureDeviceList.Instance) {
                 var captureThread = new Thread(() => {
                     device.OnPacketArrival += PacketHandler;
-                    device.Open(DeviceMode.Promiscuous, 1000);
-                    device.Filter = "udp and dst port 5056";
+                    device.Open(DeviceMode.Promiscuous, 200);
+                    device.Filter = "ip and udp and dst port 5056";
+                    if (device.LinkType != LinkLayers.Ethernet) {
+                        device.Close();
+                        return;
+                    }
                     
                     device.StartCapture();
                 });
@@ -55,7 +58,10 @@ namespace OryxBot.Bot.Services
             if (!_running)
                 return;
             var stopTasks = CaptureDeviceList.Instance.Select(
-                device => Task.Run(device.StopCapture));
+                device => Task.Run(() => {
+                    device.StopCapture();
+                    device.Close();
+                }));
 
             Task.WaitAll(stopTasks.ToArray());
             _running = false;
