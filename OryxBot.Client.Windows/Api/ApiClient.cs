@@ -40,6 +40,7 @@ namespace OryxBot.Client.Windows.Api
             response.EnsureSuccessStatusCode();
 
             var result = response.Content.ReadAsStringAsync().Result;
+            Debug.WriteLine("Http response: "+result);
             var user = JsonConvert.DeserializeObject<User>(result);
 
             UserFetched?.Invoke(this, new FetchedUserEventArgs(user));
@@ -52,6 +53,7 @@ namespace OryxBot.Client.Windows.Api
             response.EnsureSuccessStatusCode();
 
             var result = response.Content.ReadAsStringAsync().Result;
+            Debug.WriteLine("Http response: "+result);
             return JsonConvert.DeserializeObject<VersionDetails>(result);
         }
 
