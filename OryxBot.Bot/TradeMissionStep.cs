@@ -103,6 +103,10 @@ namespace OryxBot.Bot
                     throw new RouteException(Step.Current);
 
                 MoveToNextRouteStep();
+
+                // Update his current position so as not to accidentally go through portal again
+                if (Step?.Current is TradeMissionRecord.MoveStep nextMove)
+                    LocalCharacter.Instance.Position = nextMove.Position;
             }
             
             private bool MoveToNextRouteStep() {
@@ -144,6 +148,9 @@ namespace OryxBot.Bot
                 } else {
                     actions.StopAllActions();
                     Finished = DoInteractions();
+                    Thread.Sleep(500);
+                    actions.CenterCursor();
+                    Thread.Sleep(500);
                 }
             }
 

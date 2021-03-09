@@ -69,10 +69,13 @@ namespace OryxBot.Bot.Services
         
         private void PacketHandler(object sender, CaptureEventArgs e)
         {
-            UdpPacket packet = Packet.ParsePacket(e.Packet.LinkLayerType, e.Packet.Data).Extract<UdpPacket>();
-            if (packet != null && (packet.SourcePort == 5056 || packet.DestinationPort == 5056))
-            {
-                _receiver.ReceivePacket(packet.PayloadData);
+            try {
+                UdpPacket packet = Packet.ParsePacket(e.Packet.LinkLayerType, e.Packet.Data).Extract<UdpPacket>();
+                if (packet != null && (packet.SourcePort == 5056 || packet.DestinationPort == 5056)) {
+                    _receiver.ReceivePacket(packet.PayloadData);
+                }
+            } catch (Exception exception) {
+                Console.Error.WriteLine($"Failed to capture packet, exception: {exception}");
             }
         }
 

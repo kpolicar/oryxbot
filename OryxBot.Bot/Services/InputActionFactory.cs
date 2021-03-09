@@ -101,5 +101,9 @@ namespace OryxBot.Bot.Services
             Thread.Sleep(15);
             input.Key('s');
         }
+
+        public void CenterCursor() {
+            input.MoveCursorRelativeToCenter(new Vector2(0,0));
+        }
     }
 }

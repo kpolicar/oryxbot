@@ -97,7 +97,8 @@ namespace OryxBot.Bot
             protected override Position _interactablePosition => new(-75.5f, 0);
             
             protected override bool DoInteractions() {
-                throw new NotImplementedException();
+                actions.NpcQuestProgress();
+                return true;
             }
         }
 
