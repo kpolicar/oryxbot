@@ -43,7 +43,7 @@ namespace OryxBot.Bot
             runningThread = new Thread(EntryPoint);
             runningThread.Start();
         }
-
+        
         public void EntryPoint() {
             while (Running) {
                 _step.Tick();

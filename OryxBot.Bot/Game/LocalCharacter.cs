@@ -45,10 +45,8 @@ namespace OryxBot.Bot.Game
         public string Cluster {
             get => _cluster;
             internal set {
-                var old = _cluster;
                 _cluster = value;
-                if (!value.Equals(old))
-                    ChangeCluster?.Invoke(this, EventArgs.Empty);
+                ChangeCluster?.Invoke(this, EventArgs.Empty);
             }
         }
         

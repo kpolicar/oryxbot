@@ -89,6 +89,8 @@ namespace OryxBot.Bot
                         break;
                     if (skips >= MaxSkippableSteps) {
                         Console.WriteLine("ROUTE EXCEPTION!");
+                        if (Step!.Current is TradeMissionRecord.MoveStep move)
+                            Console.WriteLine($"> current step: {move.Position}");
                         throw new RouteException(Step.Current);
                     }
 
