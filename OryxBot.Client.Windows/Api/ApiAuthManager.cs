@@ -1,11 +1,15 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Net.Http;
 using System.Threading.Tasks;
+using System.Windows.Forms;
+using Inkybot;
 using Newtonsoft.Json;
 using OryxBot.Client.Windows.Contracts;
 using OryxBot.Client.Windows.Domain;
 using OryxBot.Client.Windows.Events;
+using OryxBot.Client.Windows.Exceptions;
 using OryxBot.Shared;
 using OryxBot.Shared.Design;
 using OryxBot.Shared.Events;
@@ -14,15 +18,55 @@ namespace OryxBot.Client.Windows.Api
 {
     public class ApiAuthManager : AuthManager, HasDependencies
     {
+        private const int SubscriptionCheckRequestMaxAttempts = 3;
+        private int SubscriptionCheckRequestAttempts = 0;
+        private Timer subscriptionCheckTimer = new() {
+            Interval = 25000,
+        };
+
+
+        private ApiClient api = null!;
+
         public event EventHandler<ApiConnectionChangedEventArgs>? ConnectionChanged;
+        public event EventHandler<AuthChangedEvent>? AuthChanged;
 
         public User? User {
             private set; get;
         }
-        
+
+        public ApiAuthManager() {
+            subscriptionCheckTimer.Tick += OnSubscriptionCheckTimer;
+            subscriptionCheckTimer.Start();
+        }
+
         public void BindDependencies(ServiceContainer serviceContainer) {
-            var apiClient = serviceContainer.GetService<ApiClient>();
-            apiClient.UserFetched += (sender, args) => User = args.user;
+            api = serviceContainer.GetService<ApiClient>();
+            api.UserFetched += (sender, args) => User = args.user;
+        }
+
+        private async void OnSubscriptionCheckTimer(object? sender, EventArgs e) {
+            if (User == null)
+                return;
+            SubscriptionCheckRequestAttempts++;
+            bool success = false;
+            var exception = (Exception?) null;
+            
+            try {
+                var user = await api.User();
+                if (!user.is_subscribed && !user.on_free_trial)
+                    throw new UserNotSubscribedException();
+                success = true;
+            } catch (Exception ex) {
+                exception = ex;
+                if (exception is HttpRequestException && SubscriptionCheckRequestAttempts < SubscriptionCheckRequestMaxAttempts+1) {
+                    OnSubscriptionCheckTimer(sender, e);
+                    return;
+                }
+                User = null;
+            }
+            
+            AuthChanged?.Invoke(this, new AuthChangedEvent(success, exception));
+            SubscriptionCheckRequestAttempts = 0;
         }
 
         public async Task<ApiConnection?> Login(string username, string password) {

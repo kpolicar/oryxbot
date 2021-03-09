@@ -87,7 +87,7 @@ namespace Inkybot
         }
 
         private void HandleUserSubscriptionStatus(User user) {
-            if (user.is_subscribed == null)
+            if (!user.is_subscribed && !user.on_free_trial)
                 throw new UserNotSubscribedException();
         }
 

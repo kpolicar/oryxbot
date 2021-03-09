@@ -24,6 +24,9 @@ namespace OryxBot.Bot
             routeProvider = serviceContainer.GetService<TradeMissionRouteProvider>();
         }
 
+        public void Stop() =>
+            Bot?.Stop();
+
         public void ToggleTradeMissionRun() {
             if (!(Bot is TradeMissionRun)) {
                 var route = routeProvider.Route();

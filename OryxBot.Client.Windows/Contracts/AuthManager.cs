@@ -13,6 +13,7 @@ namespace OryxBot.Client.Windows.Contracts
             get;
         }
         public event EventHandler<ApiConnectionChangedEventArgs>? ConnectionChanged;
+        public event EventHandler<AuthChangedEvent>? AuthChanged;
         public Task<ApiConnection?> Login(string username, string password);
         public void Logout();
     }

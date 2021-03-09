@@ -10,5 +10,6 @@ namespace OryxBot.Shared.Contracts
 
         void ToggleTradeMissionRun();
         void ToggleTradeMissionRecord();
+        void Stop();
     }
 }

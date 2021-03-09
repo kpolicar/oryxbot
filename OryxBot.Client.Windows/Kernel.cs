@@ -7,6 +7,7 @@ using OryxBot.Bot.Game;
 using OryxBot.Bot.Services;
 using OryxBot.Client.Windows.Api;
 using OryxBot.Client.Windows.Contracts;
+using OryxBot.Client.Windows.Events;
 using OryxBot.Client.Windows.Services;
 using OryxBot.Shared.Contracts;
 using OryxBot.Shared.Design;
@@ -94,14 +95,22 @@ namespace OryxBot.Client.Windows
                 };
                 tradeMissionRouteProvider.BindToApp(app);
                 app.ShowLoginDialogue();
+                
+                var api = Services.GetService<AuthManager>();
+                api.AuthChanged += app.OnAuthChanged;
+                api.AuthChanged += AuthChanged;
+            }
+
+            private void AuthChanged(object? sender, AuthChangedEvent e) {
+                if (e.Succeeded)
+                    return;
+                var bot = Services.GetService<BotManagerContract>();
+                bot.Stop();
             }
 
             private void BindServices() {
                 var hotkey = Services.GetService<Hotkey>();
                 var bot = Services.GetService<BotManagerContract>();
-                var routeProvider = Services.GetService<TradeMissionRouteProvider>();
-                var input = Services.GetService<Input>();
-                var actions = Services.GetService<ActionFactory>();
                 var logger = (FileLogger) Services.GetService<Logger>();
                 
                 hotkey.F1 += (_, _) => bot.ToggleTradeMissionRecord();

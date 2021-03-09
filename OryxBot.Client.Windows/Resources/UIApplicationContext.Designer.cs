@@ -61,6 +61,33 @@ namespace OryxBot.Client.Windows.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Something went wrong!.
+        /// </summary>
+        internal static string ErrorMessage_Http {
+            get {
+                return ResourceManager.GetString("ErrorMessage.Http", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to User is no longer subscribed!.
+        /// </summary>
+        internal static string ErrorMessage_NoLongerSubscribed {
+            get {
+                return ResourceManager.GetString("ErrorMessage.NoLongerSubscribed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Please extend your subscription to resume..
+        /// </summary>
+        internal static string ErrorMessage_PleaseExtend {
+            get {
+                return ResourceManager.GetString("ErrorMessage.PleaseExtend", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
         /// </summary>
         internal static System.Drawing.Icon Icon {

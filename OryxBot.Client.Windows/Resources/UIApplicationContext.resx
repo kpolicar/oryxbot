@@ -54,4 +54,13 @@ v1.0.0</value>
     <data name="ToolStripCloseButton.Text" xml:space="preserve">
         <value>Close</value>
     </data>
+    <data name="ErrorMessage.Http" xml:space="preserve">
+        <value>Something went wrong!</value>
+    </data>
+    <data name="ErrorMessage.NoLongerSubscribed" xml:space="preserve">
+        <value>User is no longer subscribed!</value>
+    </data>
+    <data name="ErrorMessage.PleaseExtend" xml:space="preserve">
+        <value>Please extend your subscription to resume.</value>
+    </data>
 </root>
