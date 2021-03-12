@@ -14,7 +14,6 @@ namespace OryxBot.Bot
 {
     public partial class TradeMissionRun : Job, HasDependencies
     {
-        private const int ClusterAvgLoadTime = 5000;
         private const int DelayBetweenSteps = 1000;
 
         private TradeMissionStep _step;
@@ -39,7 +38,7 @@ namespace OryxBot.Bot
 
         public override void Start() {
             base.Start();
-            //_step = new RunToBank();
+            _step = new RunToBank();
 
             runningThread = new Thread(EntryPoint);
             runningThread.Start();

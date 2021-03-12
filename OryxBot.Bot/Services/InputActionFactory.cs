@@ -43,11 +43,9 @@ namespace OryxBot.Bot.Services
             direction = Vector2.Transform(direction, Matrix3x2.CreateRotation(-(float)Math.PI/4));
             
             // Try to get unstuck
-            if (!LocalCharacter.Instance.Moving && !LocalCharacter.Instance.RecentlyChangedCluster) {
-                var rand = new Random();
-                var directionToChange = rand.Next(-1, 1);
+            if (!LocalCharacter.Instance.Moving) {
                 fixingCourse = true;
-                direction = Vector2.Transform(direction, Matrix3x2.CreateRotation(directionToChange * (7f * (float)Math.PI/6f)));
+                direction = Vector2.Transform(direction, Matrix3x2.CreateRotation(-(float)Math.PI/3));
             }
             
             direction = Vector2.Normalize(direction);
