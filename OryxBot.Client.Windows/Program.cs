@@ -21,7 +21,7 @@ namespace OryxBot.Client.Windows
         
         #endif
         public const string VersionNumber = "1";
-        public const string Version = "v0.1";
+        public const string Version = "v0.1 Beta";
         public const string VersionEndpoint = "v0.1";
         
         public static readonly Kernel _kernel = new();

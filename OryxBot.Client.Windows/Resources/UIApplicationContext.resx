@@ -24,8 +24,7 @@
         </value>
     </data>
     <data name="Text" xml:space="preserve">
-        <value>OryxBot
-v1.0.0</value>
+        <value>OryxBot</value>
     </data>
     <data name="ToolStipToggleBotTradeMissionRecordButton.TextStop" xml:space="preserve">
         <value>Stop Recording (F1)</value>

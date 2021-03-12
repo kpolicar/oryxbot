@@ -84,8 +84,8 @@ namespace OryxBot.Client.Windows
                 var bot = Services.GetService<BotManagerContract>();
                 var tradeMissionRouteProvider = (FileDialogTradeMissionRouteProvider) Services.GetService<TradeMissionRouteProvider>();
                 
-                app.ToolStipToggleBotTradeMissionRecordButton.Click += (_, _) => bot.ToggleTradeMissionRecord();
-                app.ToolStipToggleBotTradeMissionRunButton.Click += (_, _) => bot.ToggleTradeMissionRun();
+                app.ToolStipToggleBotTradeMissionRecordButton.Click += (_, _) => AuthorizedToggleTradeMissionRecord();
+                app.ToolStipToggleBotTradeMissionRunButton.Click += (_, _) => AuthorizedToggleTradeMissionRun();
                 
                 bot.Started += (sender, e) => {
                     if (e.Job is TradeMissionRecord)
@@ -116,13 +116,28 @@ namespace OryxBot.Client.Windows
 
             private void BindServices() {
                 var hotkey = Services.GetService<Hotkey>();
-                var bot = Services.GetService<BotManagerContract>();
                 var logger = (FileLogger) Services.GetService<Logger>();
-                
-                hotkey.F1 += (_, _) => bot.ToggleTradeMissionRecord();
-                hotkey.F2 += (_, _) => bot.ToggleTradeMissionRun();
+
+                hotkey.F1 += (_, _) => AuthorizedToggleTradeMissionRecord();
+                hotkey.F2 += (_, _) => AuthorizedToggleTradeMissionRun();
                 logger.BindToServices(Services);
                 NLog.LogManager.Shutdown();
+            }
+
+            private void AuthorizedToggleTradeMissionRecord() {
+                var bot = Services.GetService<BotManagerContract>();
+                var auth = Services.GetService<AuthManager>();
+                
+                if (auth.User?.is_subscribed ?? false)
+                    bot.ToggleTradeMissionRun();
+                
+            }
+            private void AuthorizedToggleTradeMissionRun() {
+                var bot = Services.GetService<BotManagerContract>();
+                var auth = Services.GetService<AuthManager>();
+                
+                if (auth.User?.is_subscribed ?? false)
+                    bot.ToggleTradeMissionRun();
             }
         }
     }

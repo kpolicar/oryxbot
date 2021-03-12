@@ -77,7 +77,7 @@ namespace OryxBot.Client.Windows
                     new ToolStripSeparator(),
                     ToolStipToggleBotTradeMissionRecordButton,
                     ToolStipToggleBotTradeMissionRunButton,
-                    ToolStipPanelButton,
+                    //ToolStipPanelButton,
                     new ToolStripSeparator(),
                     ToolStripCloseButton
                 },
@@ -89,7 +89,7 @@ namespace OryxBot.Client.Windows
             trayIcon = new NotifyIcon {
                 Icon = Resources.UIApplicationContext.Icon,
                 ContextMenuStrip = contextMenuStrip,
-                Text = Resources.UIApplicationContext.Text,
+                Text = Resources.UIApplicationContext.Text+"\n"+Program.Version,
             };
         }
 
