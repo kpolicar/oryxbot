@@ -9,6 +9,7 @@
         <Product>OryxBot</Product>
         <NeutralLanguage>en</NeutralLanguage>
         <AssemblyName>OryxBot</AssemblyName>
+        <ApplicationIcon>./../Resources/oryx_icon_small_colored.ico</ApplicationIcon>
     </PropertyGroup>
 
     <ItemGroup>
