@@ -14,6 +14,7 @@ namespace OryxBot.Bot
 {
     public partial class TradeMissionRun : Job, HasDependencies
     {
+        public event EventHandler? Finished;
         private const int DelayBetweenSteps = 1000;
 
         private TradeMissionStep _step;
@@ -24,6 +25,7 @@ namespace OryxBot.Bot
         private static InputActionFactory actions = null!;
         
         private Thread? runningThread;
+        
 
 
         public TradeMissionRun(LinkedList<TradeMissionRecord.RecordableStep> steps, LinkedList<TradeMissionRecord.RecordableStep> stepsBack) {
@@ -63,6 +65,8 @@ namespace OryxBot.Bot
                     Thread.Sleep(_step.Delay);
                 }
             }
+
+            Finished?.Invoke(this, EventArgs.Empty);
         }
 
         private void ProgressToNextStep() {
