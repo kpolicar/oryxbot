@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Diagnostics;
 using System.Threading;
 using OryxBot.Client.Windows.Bot.Exceptions;
@@ -24,8 +25,24 @@ namespace OryxBot.Client.Windows.Bot
         
         private abstract class RunRouteStep : TradeMissionStep
         {
-            private const int AverageClusterChangeDuration = 8000;
-            private const float MaxDistance = 4f;
+            static RunRouteStep() {
+                var successfulParse =
+                    int.TryParse(ConfigurationManager.AppSettings.Get("averageTimeToLoadCluster")!, out AverageClusterChangeDuration);
+                if (!successfulParse)
+                    AverageClusterChangeDuration = DefaultAverageClusterChangeDuration;
+                
+                successfulParse =
+                    float.TryParse(ConfigurationManager.AppSettings.Get("reachedWaypointDistance")!, out MaxDistance);
+                if (!successfulParse)
+                    MaxDistance = DefaultMaxDistance;
+            }
+        
+            private const int DefaultAverageClusterChangeDuration = 10000;
+            private static readonly int AverageClusterChangeDuration;
+            
+            private const float DefaultMaxDistance = 4f;
+            private static readonly float MaxDistance;
+            
             private const int MaxSkippableSteps = 4;
             
             public bool Finished { get; private set; }

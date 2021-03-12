@@ -1,4 +1,5 @@
 using System;
+using System.Configuration;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading;
@@ -15,6 +16,19 @@ namespace OryxBot.Client.Windows.Bot.Services
 {
     public partial class NetworkAlbionDataProvider : AlbionDataProvider, IDisposable, HasDependencies
     {
+        static NetworkAlbionDataProvider() {
+            var successfulParse =
+                int.TryParse(ConfigurationManager.AppSettings.Get("queryNetworkInterval")!, out QueryNetworkInterval);
+            if (!successfulParse)
+                QueryNetworkInterval = DefaultQueryNetworkInterval;
+            
+            QueryNetworkInterval = System.Math.Min(QueryNetworkInterval, 1000);
+            QueryNetworkInterval = System.Math.Max(QueryNetworkInterval, -1);
+        }
+        private const int DefaultQueryNetworkInterval = 200;
+        internal static readonly int QueryNetworkInterval;
+        
+        
         private IPhotonReceiver _receiver = null!;
         private bool _running;
         
@@ -39,7 +53,7 @@ namespace OryxBot.Client.Windows.Bot.Services
             foreach (var device in CaptureDeviceList.Instance) {
                 var captureThread = new Thread(() => {
                     device.OnPacketArrival += PacketHandler;
-                    device.Open(DeviceMode.Promiscuous, 200);
+                    device.Open(DeviceMode.Promiscuous, QueryNetworkInterval);
                     device.Filter = "ip and udp and (port 5056 or port 5055 or port 4535)";
                     if (device.LinkType != LinkLayers.Ethernet) {
                         device.Close();

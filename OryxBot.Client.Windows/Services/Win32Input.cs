@@ -1,3 +1,4 @@
+using System.Configuration;
 using System.Diagnostics;
 using System.Drawing;
 using System.Numerics;
@@ -13,7 +14,16 @@ namespace OryxBot.Client.Windows.Services
 {
     public class Win32Input : Input
     {
-        private const int MaxTimeToMoveCursor = 200; // todo 400
+        static Win32Input() {
+            var successfulParse =
+                int.TryParse(ConfigurationManager.AppSettings.Get("cursorMoveDuration")!, out MaxTimeToMoveCursor);
+            if (!successfulParse)
+                MaxTimeToMoveCursor = DefaultMaxTimeToMoveCursor;
+        }
+        
+        private const int DefaultMaxTimeToMoveCursor = 300;
+        private static readonly int MaxTimeToMoveCursor;
+        
         private Task moveCursorTask = Task.CompletedTask;
         private Point cursorPosition;
         private Point cursorTargetPosition;
