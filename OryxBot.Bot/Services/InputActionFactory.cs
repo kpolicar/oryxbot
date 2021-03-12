@@ -93,7 +93,7 @@ namespace OryxBot.Bot.Services
         }
 
         public void StopAllActions() {
-            Console.WriteLine("Stopping all actions.");
+            Console.WriteLine(@"Stopping all actions.");
             if (rightMouseIsDown) {
                 rightMouseIsDown = false;
                 input.RightMouseUp();

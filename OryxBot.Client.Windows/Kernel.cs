@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Threading.Tasks;
 using OryxBot.Bot;
 using OryxBot.Bot.Contracts;
@@ -8,6 +9,7 @@ using OryxBot.Bot.Services;
 using OryxBot.Client.Windows.Api;
 using OryxBot.Client.Windows.Contracts;
 using OryxBot.Client.Windows.Events;
+using OryxBot.Client.Windows.Native;
 using OryxBot.Client.Windows.Services;
 using OryxBot.Shared.Contracts;
 using OryxBot.Shared.Design;
@@ -40,6 +42,10 @@ namespace OryxBot.Client.Windows
                 BootstrapServices();
                 BindServices();
                 Task.Run(() => {
+                    (ResponsivePoint.CurrentScreenWidth, ResponsivePoint.CurrentScreenHeight) = (
+                        User32.GetSystemMetrics(User32.SM_CXFULLSCREEN), 
+                        User32.GetSystemMetrics(User32.SM_CYFULLSCREEN));
+                    
                     var networkDataProvider = Services.GetService<AlbionDataProvider>() as NetworkAlbionDataProvider;
                     networkDataProvider?.Run();
                 });

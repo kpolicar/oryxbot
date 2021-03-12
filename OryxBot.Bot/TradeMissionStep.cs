@@ -88,9 +88,9 @@ namespace OryxBot.Bot
                     if (Step!.Current is TradeMissionRecord.ChangeClusterStep)
                         break;
                     if (skips >= MaxSkippableSteps) {
-                        Console.WriteLine("ROUTE EXCEPTION!");
+                        Console.WriteLine(@"ROUTE EXCEPTION!");
                         if (Step!.Current is TradeMissionRecord.MoveStep move)
-                            Console.WriteLine($"> current step: {move.Position}");
+                            Console.WriteLine($@"> current step: {move.Position}");
                         throw new RouteException(Step.Current);
                     }
 
@@ -121,7 +121,7 @@ namespace OryxBot.Bot
             }
             
             private void finishRoute() {
-                Console.WriteLine("route finished!");
+                Console.WriteLine(@"route finished!");
                 actions.StopAllActions();
                 Finished = true;
             }

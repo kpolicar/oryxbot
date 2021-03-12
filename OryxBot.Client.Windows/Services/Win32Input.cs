@@ -106,14 +106,7 @@ namespace OryxBot.Client.Windows.Services
         public void RightMouseUp() =>
             input.Mouse.RightButtonUp();
 
-        public Point ResolveScreenCenter() {
-            var dimensions = ResolveScreenDimensions();
-            return new Point(dimensions.X/2, dimensions.Y/2);
-        }
-
-        public Point ResolveScreenDimensions() =>
-            new(
-                User32.GetSystemMetrics(User32.SM_CXFULLSCREEN), 
-                User32.GetSystemMetrics(User32.SM_CYFULLSCREEN));
+        public Point ResolveScreenCenter() =>
+            new(ResponsivePoint.CurrentScreenWidth/2, ResponsivePoint.CurrentScreenHeight/2);
     }
 }

@@ -1,5 +1,6 @@
 using System;
 using System.Windows.Forms;
+using OryxBot.Bot;
 using ServiceContainer = OryxBot.Shared.Design.ServiceContainer;
 
 namespace OryxBot.Client.Windows
@@ -15,7 +16,7 @@ namespace OryxBot.Client.Windows
         #else
         
         public const string Url = "https://oryxbot.com";
-        public const string GrantId = "1";
+        public const string GrantId = "2";
         public const string GrantSecret = "***REMOVED***";
         
         #endif

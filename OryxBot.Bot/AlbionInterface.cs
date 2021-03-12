@@ -21,9 +21,9 @@ namespace OryxBot.Bot
             new(150, 375, 1920, 1080, AnchorStyle.Left);
         
         public static ResponsivePoint QuestNpcAcceptTradeMissionContract =
-            new(1080, 820, 1920, 1080, AnchorStyle.Left);
+            new(1080, 820, 1920, 1080, AnchorStyle.Center);
         
         public static ResponsivePoint QuestNpcProgressContract =
-            new(1080, 820, 1920, 1080, AnchorStyle.Left);
+            new(1080, 820, 1920, 1080, AnchorStyle.Center);
     }
 }
