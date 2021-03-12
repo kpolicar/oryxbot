@@ -2,8 +2,6 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OryxBot.Client.Windows", "OryxBot.Client.Windows\OryxBot.Client.Windows.csproj", "{CD0E5260-DC95-4A07-8FF3-613A1950FE76}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OryxBot.Bot", "OryxBot.Bot\OryxBot.Bot.csproj", "{04DB2652-E821-4D58-9232-EF7DCD04478A}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OryxBot.Shared", "OryxBot.Shared\OryxBot.Shared.csproj", "{4D56C687-C96B-4EAD-B87E-F406A1E18CA0}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OryxBot.Albion", "OryxBot.Albion\OryxBot.Albion.csproj", "{FE31CA59-6FA9-4FC7-A263-693A03CF72C8}"
@@ -18,10 +16,6 @@ Global
 		{CD0E5260-DC95-4A07-8FF3-613A1950FE76}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CD0E5260-DC95-4A07-8FF3-613A1950FE76}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CD0E5260-DC95-4A07-8FF3-613A1950FE76}.Release|Any CPU.Build.0 = Release|Any CPU
-		{04DB2652-E821-4D58-9232-EF7DCD04478A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{04DB2652-E821-4D58-9232-EF7DCD04478A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{04DB2652-E821-4D58-9232-EF7DCD04478A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{04DB2652-E821-4D58-9232-EF7DCD04478A}.Release|Any CPU.Build.0 = Release|Any CPU
 		{4D56C687-C96B-4EAD-B87E-F406A1E18CA0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{4D56C687-C96B-4EAD-B87E-F406A1E18CA0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4D56C687-C96B-4EAD-B87E-F406A1E18CA0}.Release|Any CPU.ActiveCfg = Release|Any CPU

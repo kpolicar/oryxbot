@@ -1,13 +1,13 @@
 using System;
 using System.Numerics;
 using System.Threading;
-using OryxBot.Bot.Game;
+using OryxBot.Client.Windows.Bot.Game;
 using OryxBot.Shared.Contracts;
 using OryxBot.Shared.Design;
 using BotManagerContract=OryxBot.Shared.Contracts.BotManager;
 
 
-namespace OryxBot.Bot.Services
+namespace OryxBot.Client.Windows.Bot.Services
 {
     public class InputActionFactory : ActionFactory, HasDependencies
     {
@@ -40,12 +40,12 @@ namespace OryxBot.Bot.Services
             
             var direction = new Vector2(target.X - origin.X, target.Y - origin.Y);
             
-            direction = Vector2.Transform(direction, Matrix3x2.CreateRotation(-(float)Math.PI/4));
+            direction = Vector2.Transform(direction, Matrix3x2.CreateRotation(-(float)System.Math.PI/4));
             
             // Try to get unstuck
             if (!LocalCharacter.Instance.Moving) {
                 fixingCourse = true;
-                direction = Vector2.Transform(direction, Matrix3x2.CreateRotation(-(float)Math.PI/3));
+                direction = Vector2.Transform(direction, Matrix3x2.CreateRotation(-(float)System.Math.PI/3));
             }
             
             direction = Vector2.Normalize(direction);
@@ -77,7 +77,7 @@ namespace OryxBot.Bot.Services
             EnforceBotIsRunning();
             var origin = LocalCharacter.Instance.Position;
             var direction = new Vector2(target.X - origin.X, target.Y - origin.Y);
-            direction = Vector2.Transform(direction, Matrix3x2.CreateRotation(-(float)Math.PI/4));
+            direction = Vector2.Transform(direction, Matrix3x2.CreateRotation(-(float)System.Math.PI/4));
             direction = Vector2.Normalize(direction);
 
             input.MoveCursorRelativeToCenter(direction);

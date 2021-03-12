@@ -1,4 +1,4 @@
-namespace OryxBot.Bot.Exceptions
+namespace OryxBot.Client.Windows.Bot.Exceptions
 {
     public class CharacterDiedException : RouteException
     {

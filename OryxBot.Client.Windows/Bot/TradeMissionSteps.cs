@@ -1,12 +1,12 @@
 using System;
 using System.Collections.Generic;
 using System.Threading;
-using OryxBot.Bot.Exceptions;
-using OryxBot.Bot.Game;
+using OryxBot.Client.Windows.Bot.Exceptions;
+using OryxBot.Client.Windows.Bot.Game;
 using OryxBot.Shared.Design;
 using OryxBot.Shared.Extensions;
 
-namespace OryxBot.Bot
+namespace OryxBot.Client.Windows.Bot
 {
     public partial class TradeMissionRun
     {

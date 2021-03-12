@@ -5,7 +5,7 @@ using Albion.Network;
 using OryxBot.Albion.Protocol;
 using OryxBot.Shared.Design;
 
-namespace OryxBot.Bot.Services
+namespace OryxBot.Client.Windows.Bot.Services
 {
     public partial class NetworkAlbionDataProvider
     {

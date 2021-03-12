@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace OryxBot.Bot.Contracts
+namespace OryxBot.Client.Windows.Bot.Contracts
 {
     public interface TradeMissionRouteProvider
     {

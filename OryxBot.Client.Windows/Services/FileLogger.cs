@@ -1,8 +1,8 @@
 using System.Diagnostics;
 using NLog;
 using OryxBot.Albion.Protocol;
-using OryxBot.Bot.Game;
-using OryxBot.Bot.Services;
+using OryxBot.Client.Windows.Bot.Game;
+using OryxBot.Client.Windows.Bot.Services;
 using OryxBot.Shared.Contracts;
 using OryxBot.Shared.Design;
 using LoggerContract = OryxBot.Shared.Contracts.Logger;

@@ -19,7 +19,11 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\OryxBot.Bot\OryxBot.Bot.csproj" />
+      <ProjectReference Include="..\OryxBot.Albion\OryxBot.Albion.csproj" />
+      <ProjectReference Include="..\OryxBot.Shared\OryxBot.Shared.csproj" />
+        <PackageReference Include="Albion.Network" Version="5.0.0" />
+        <PackageReference Include="MouseKeyHook" Version="5.6.0" />
+        <PackageReference Include="SharpPcap" Version="5.4.0" />
     </ItemGroup>
 
     <ItemGroup>
@@ -47,6 +51,10 @@
       <EmbeddedResource Update="WelcomeDialogue.resx">
         <DependentUpon>WelcomeDialogue.cs</DependentUpon>
       </EmbeddedResource>
+      <EmbeddedResource Include="Bot\Resources\route_lymhurst_bank_to_quest.csv" />
+      <EmbeddedResource Include="Bot\Resources\route_lymhurst_quest_to_bank.csv" />
+      <EmbeddedResource Include="Bot\Resources\route_lymhurst_trademission.csv" />
+      <EmbeddedResource Include="Bot\Resources\route_lymhurst_trademission_back.csv" />
     </ItemGroup>
 
     <ItemGroup>

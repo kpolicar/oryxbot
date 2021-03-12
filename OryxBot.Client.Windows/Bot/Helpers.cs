@@ -2,7 +2,7 @@ using System.Numerics;
 using OryxBot.Shared.Design;
 using SMath=System.Math;
 
-namespace OryxBot.Bot
+namespace OryxBot.Client.Windows.Bot
 {
     public static class Helpers
     {

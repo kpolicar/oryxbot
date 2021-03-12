@@ -2,10 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Threading.Tasks;
-using OryxBot.Bot;
-using OryxBot.Bot.Contracts;
-using OryxBot.Bot.Game;
-using OryxBot.Bot.Services;
+using OryxBot.Client.Windows.Bot;
+using OryxBot.Client.Windows.Bot.Contracts;
+using OryxBot.Client.Windows.Bot.Game;
+using OryxBot.Client.Windows.Bot.Services;
 using OryxBot.Client.Windows.Api;
 using OryxBot.Client.Windows.Contracts;
 using OryxBot.Client.Windows.Events;
@@ -13,7 +13,7 @@ using OryxBot.Client.Windows.Native;
 using OryxBot.Client.Windows.Services;
 using OryxBot.Shared.Contracts;
 using OryxBot.Shared.Design;
-using BotManager = OryxBot.Bot.BotManager;
+using BotManager = OryxBot.Client.Windows.Bot.BotManager;
 using BotManagerContract=OryxBot.Shared.Contracts.BotManager;
 using ServiceContainer = OryxBot.Shared.Design.ServiceContainer;
 
@@ -100,7 +100,6 @@ namespace OryxBot.Client.Windows
                         app.OnBotTradeMissionRunStopped(sender, e);
                 };
                 tradeMissionRouteProvider.BindToApp(app);
-                app.ShowLoginDialogue();
                 
                 var api = Services.GetService<AuthManager>();
                 api.AuthChanged += app.OnAuthChanged;

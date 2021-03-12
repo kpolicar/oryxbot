@@ -21,7 +21,7 @@ namespace OryxBot.Client.Windows
             InitializeComponents();
             WelcomeDialogue.LoggingIn += (_, _) => UpdateControlsForUnauthenticated();
         }
-
+        
         public void BindDependencies(ServiceContainer serviceContainer) {
             api = serviceContainer.GetService<ApiClient>();
             api.UserFetched += OnFetchedUser;
@@ -45,7 +45,7 @@ namespace OryxBot.Client.Windows
             if (loginSuccess)
                 UpdateControlsForAuthenticated();
             else
-                Task.Run(Application.Exit);
+                Application.Exit();
         }
 
         private void UpdateControlsForUnauthenticated() {

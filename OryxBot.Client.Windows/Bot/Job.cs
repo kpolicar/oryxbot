@@ -1,7 +1,7 @@
 using System;
 using OryxBot.Shared.Contracts;
 
-namespace OryxBot.Bot
+namespace OryxBot.Client.Windows.Bot
 {
     public abstract class Job : BotJob
     {

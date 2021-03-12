@@ -3,7 +3,7 @@ using System.Diagnostics;
 using System.Threading.Tasks;
 using OryxBot.Shared.Design;
 
-namespace OryxBot.Bot.Game
+namespace OryxBot.Client.Windows.Bot.Game
 {
     public partial class LocalCharacter
     {

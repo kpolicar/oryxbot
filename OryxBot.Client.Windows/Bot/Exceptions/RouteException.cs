@@ -1,6 +1,6 @@
 using System;
 
-namespace OryxBot.Bot.Exceptions
+namespace OryxBot.Client.Windows.Bot.Exceptions
 {
     public class RouteException : ApplicationException
     {

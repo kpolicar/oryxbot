@@ -11,7 +11,7 @@ using PacketDotNet;
 using SharpPcap;
 using BotManagerContract=OryxBot.Shared.Contracts.BotManager;
 
-namespace OryxBot.Bot.Services
+namespace OryxBot.Client.Windows.Bot.Services
 {
     public partial class NetworkAlbionDataProvider : AlbionDataProvider, IDisposable, HasDependencies
     {

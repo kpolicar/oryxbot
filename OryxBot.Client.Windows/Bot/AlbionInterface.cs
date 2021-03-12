@@ -1,7 +1,7 @@
 using OryxBot.Shared.Design;
 using static OryxBot.Shared.Design.ResponsivePoint;
 
-namespace OryxBot.Bot
+namespace OryxBot.Client.Windows.Bot
 {
     public static class AlbionInterface
     {

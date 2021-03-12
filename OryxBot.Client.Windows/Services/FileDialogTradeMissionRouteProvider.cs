@@ -4,8 +4,8 @@ using System.IO;
 using System.Reflection;
 using System.Windows.Forms;
 using Microsoft.VisualBasic.FileIO;
-using OryxBot.Bot;
-using OryxBot.Bot.Contracts;
+using OryxBot.Client.Windows.Bot;
+using OryxBot.Client.Windows.Bot.Contracts;
 using OryxBot.Shared.Events;
 
 namespace OryxBot.Client.Windows.Services
@@ -27,7 +27,7 @@ namespace OryxBot.Client.Windows.Services
             
             var resource = "Bot.Resources.route_lymhurst_bank_to_quest.csv";
             using var resourceStream =
-                Assembly.GetAssembly(typeof(OryxBot.Bot.BotManager))!
+                Assembly.GetAssembly(typeof(OryxBot.Client.Windows.Bot.BotManager))!
                     .GetManifestResourceStream(resource)!;
             
             using var textStream = new StreamReader(resourceStream);
@@ -37,7 +37,7 @@ namespace OryxBot.Client.Windows.Services
         public LinkedList<TradeMissionRecord.RecordableStep>? RouteBack() {
             var resource = "Bot.Resources.route_lymhurst_trademission.csv";
             using var resourceStream =
-                Assembly.GetAssembly(typeof(OryxBot.Bot.BotManager))!
+                Assembly.GetAssembly(typeof(OryxBot.Client.Windows.Bot.BotManager))!
                     .GetManifestResourceStream(resource)!;
             
             using var textStream = new StreamReader(resourceStream);
@@ -47,7 +47,7 @@ namespace OryxBot.Client.Windows.Services
         public LinkedList<TradeMissionRecord.RecordableStep>? RouteFromBankToQuest() {
             var resource = "Bot.Resources.route_lymhurst_trademission_back.csv";
             using var resourceStream =
-                Assembly.GetAssembly(typeof(OryxBot.Bot.BotManager))!
+                Assembly.GetAssembly(typeof(OryxBot.Client.Windows.Bot.BotManager))!
                     .GetManifestResourceStream(resource)!;
             
             using var textStream = new StreamReader(resourceStream);
@@ -57,7 +57,7 @@ namespace OryxBot.Client.Windows.Services
         public LinkedList<TradeMissionRecord.RecordableStep>? RouteFromQuestToBank() {
             var resource = "Bot.Resources.route_lymhurst_quest_to_bank.csv";
             using var resourceStream =
-                Assembly.GetAssembly(typeof(OryxBot.Bot.BotManager))!
+                Assembly.GetAssembly(typeof(OryxBot.Client.Windows.Bot.BotManager))!
                     .GetManifestResourceStream(resource)!;
             
             var textStream = new StreamReader(resourceStream);

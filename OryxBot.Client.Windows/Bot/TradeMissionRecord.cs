@@ -1,11 +1,11 @@
 using System;
 using System.IO;
-using OryxBot.Bot.Game;
+using OryxBot.Client.Windows.Bot.Game;
 using OryxBot.Shared.Contracts;
 using OryxBot.Shared.Design;
 using ServiceContainer = OryxBot.Shared.Design.ServiceContainer;
 
-namespace OryxBot.Bot
+namespace OryxBot.Client.Windows.Bot
 {
     public partial class TradeMissionRecord : Job, HasDependencies
     {

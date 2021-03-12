@@ -2,15 +2,15 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading;
-using OryxBot.Bot.Contracts;
-using OryxBot.Bot.Exceptions;
-using OryxBot.Bot.Services;
+using OryxBot.Client.Windows.Bot.Contracts;
+using OryxBot.Client.Windows.Bot.Exceptions;
+using OryxBot.Client.Windows.Bot.Services;
 using OryxBot.Shared.Contracts;
 using OryxBot.Shared.Design;
 using OryxBot.Shared.Extensions;
 using ServiceContainer = OryxBot.Shared.Design.ServiceContainer;
 
-namespace OryxBot.Bot
+namespace OryxBot.Client.Windows.Bot
 {
     public partial class TradeMissionRun : Job, HasDependencies
     {

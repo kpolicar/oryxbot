@@ -4,7 +4,7 @@ using OryxBot.Shared.Contracts;
 using OryxBot.Shared.Design;
 using OryxBot.Shared.Game;
 
-namespace OryxBot.Bot.Game
+namespace OryxBot.Client.Windows.Bot.Game
 {
     public partial class LocalCharacter : Character, HasDependencies
     {

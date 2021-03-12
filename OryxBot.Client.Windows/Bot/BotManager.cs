@@ -1,13 +1,13 @@
 using System;
 using System.Diagnostics;
-using OryxBot.Bot.Contracts;
+using OryxBot.Client.Windows.Bot.Contracts;
 using OryxBot.Shared.Contracts;
 using OryxBot.Shared.Design;
 using OryxBot.Shared.Events;
 using OryxBot.Shared.Extensions;
 using BotManagerContract=OryxBot.Shared.Contracts.BotManager;
 
-namespace OryxBot.Bot
+namespace OryxBot.Client.Windows.Bot
 {
     public class BotManager : BotManagerContract, HasDependencies
     {

@@ -1,6 +1,6 @@
 using System;
 using System.Windows.Forms;
-using OryxBot.Bot;
+using OryxBot.Client.Windows.Bot;
 using ServiceContainer = OryxBot.Shared.Design.ServiceContainer;
 
 namespace OryxBot.Client.Windows

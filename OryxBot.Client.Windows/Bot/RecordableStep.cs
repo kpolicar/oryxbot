@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using OryxBot.Shared.Design;
 using OryxBot.Shared.Events;
 
-namespace OryxBot.Bot
+namespace OryxBot.Client.Windows.Bot
 {
     public partial class TradeMissionRecord
     {

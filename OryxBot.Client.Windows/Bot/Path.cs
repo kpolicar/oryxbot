@@ -1,6 +1,6 @@
 using System.Drawing;
 
-namespace OryxBot.Bot
+namespace OryxBot.Client.Windows.Bot
 {
     public class Path
     {

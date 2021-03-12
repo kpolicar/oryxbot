@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace OryxBot.Bot
+namespace OryxBot.Client.Windows.Bot
 {
     public partial class TradeMissionRecord
     {
