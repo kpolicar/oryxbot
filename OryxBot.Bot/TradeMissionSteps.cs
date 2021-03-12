@@ -25,7 +25,7 @@ namespace OryxBot.Bot
             protected override bool DoInteractions() {
                 actions.BankRewardItems();
                 Thread.Sleep(Delay);
-                actions.UnbankTokenItem();
+                actions.UnbankTokenItem(Delay);
 
                 return true;
             }
@@ -72,7 +72,7 @@ namespace OryxBot.Bot
         
         private class ProgressQuest : InteractionStep
         {
-            protected override Position _interactablePosition => new(50.437626f, 190.18253f);
+            protected override Position _interactablePosition => new(50.012352f, 190.30232f);
             
             protected override bool DoInteractions() {
                 actions.NpcQuestProgress();

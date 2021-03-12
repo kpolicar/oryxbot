@@ -40,7 +40,7 @@ namespace OryxBot.Bot.Services
                 var captureThread = new Thread(() => {
                     device.OnPacketArrival += PacketHandler;
                     device.Open(DeviceMode.Promiscuous, 200);
-                    device.Filter = "ip and udp and dst port 5056";
+                    device.Filter = "ip and udp and (port 5056 or port 5055 or port 4535)";
                     if (device.LinkType != LinkLayers.Ethernet) {
                         device.Close();
                         return;

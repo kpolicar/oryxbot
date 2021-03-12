@@ -14,11 +14,34 @@ namespace OryxBot.Bot.Services
             builder.AddRequestHandler(new UpdateCharacterCluster());
             builder.AddRequestHandler(new UpdateCharacterAddInteracting());
             builder.AddRequestHandler(new RaiseUnRegisterFromObjectEvent());
+            builder.AddEventHandler(new CharacaterDied());
             
             // builder.AddHandler(new AsyncRaiseRequestPacketEvent(this));
             // builder.AddHandler(new AsyncRaiseEventPacketEvent(this));
         }
 
+        private class CharacaterDied : EventPacketHandler<DiedEvent>
+        {
+            public CharacaterDied() :
+                base((int) OperationCodes.RegisterToObject) {
+            }
+            
+            protected override Task OnActionAsync(DiedEvent value) {
+                Debug.WriteLine(">>>>>>>>>>>>>>>>>>> DEATH!!");
+                
+                return Task.Run(async () => {
+                    for (int i = 0; i < 20; i++) {
+                        await Task.Delay(100);
+                        if (Game.LocalCharacter.Instance.Moving)
+                            continue;
+                        Debug.WriteLine(">>>>>>>>>>>>>>>>>>> DEATH EVENT MUST BE SENT!!");
+                        Game.LocalCharacter.Instance.SendDieEvent();
+                        return;
+                    }
+                });
+            }
+        }
+        
         private class UpdateCharacterPosition : RequestPacketHandler<MoveOperation>
         {
             public UpdateCharacterPosition() :

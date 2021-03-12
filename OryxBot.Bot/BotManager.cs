@@ -33,7 +33,7 @@ namespace OryxBot.Bot
                 var route = routeProvider.Route();
                 if (route == null) // Todo: Error
                     return;
-                var routeBack = routeProvider.Route();
+                var routeBack = routeProvider.RouteBack();
                 if (routeBack == null) // Todo: Error
                     return;
 

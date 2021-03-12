@@ -24,24 +24,53 @@ namespace OryxBot.Bot
         
         private abstract class RunRouteStep : TradeMissionStep
         {
+            private const int AverageClusterChangeDuration = 8000;
             private const float MaxDistance = 4f;
             private const int MaxSkippableSteps = 4;
             
             public bool Finished { get; private set; }
             public int Delay => 10;
+            private bool preparing = true;
+            private bool clusterChanged = false;
             
             protected abstract LinkedList<TradeMissionRecord.RecordableStep> Route { get; }
             private ITwoWayEnumerator<TradeMissionRecord.RecordableStep>? Step;
+            private bool _characterHasDied;
 
             public RunRouteStep() {
-                LocalCharacter.Instance.ChangeCluster += OnChangeCluster;
+                LocalCharacter.Instance.ChangeCluster += (_, _) => clusterChanged = true;
+                LocalCharacter.Instance.Died += OnCharacterDied;
+            }
+
+            private void OnCharacterDied(object? sender, EventArgs e) {
+                Debug.WriteLine(">>>>>>>>>>>>>>>>>>> DEATH HAS BEEN MARKED!!");
+                if (Step?.Current != null) {
+                    Debug.WriteLine(">>>>>>>>>>>>>>>>>>> DEATH HAS BEEN MARKED TRUE!!");
+                    _characterHasDied = true;
+                }
             }
 
             public void Tick() {
+                if (clusterChanged) {
+                    OnChangeCluster();
+                    clusterChanged = false;
+                    return;
+                }
+                
+                if (preparing) {
+                    actions.CenterCursor();
+                    preparing = false;
+                    Thread.Sleep(500);
+                }
+                
                 if (Step == null) {
                     Step = Route.GetTwoWayEnumerator();
                     Step.MoveNext();
                 }
+                #if DEBUG
+                if (_characterHasDied)
+                    throw new CharacterDiedException(Step.Current);
+                #endif
                 
                 ProgressMoveStepsAndSkipIfAlreadyAhead();
                 
@@ -49,6 +78,7 @@ namespace OryxBot.Bot
                     actions.MoveTowards(target.Position);
                 }
                 if (Step?.Current is TradeMissionRecord.ChangeClusterStep) {
+                    Thread.Sleep(1000);
                     actions.MoveInSameDirection();
                 }
             }
@@ -85,18 +115,19 @@ namespace OryxBot.Bot
                 Step?.Current is TradeMissionRecord.MoveStep move &&
                 LocalCharacter.Instance.DistanceFrom(move.Position) <= MaxDistance;
             
-            private void OnChangeCluster(object? sender, EventArgs e) {
+            private void OnChangeCluster() {
                 for (var skips = 0 ;; skips++)
                 {
                     if (Step!.Current is TradeMissionRecord.ChangeClusterStep)
                         break;
-                    if (skips >= MaxSkippableSteps) {
-                        for (var i = 0; i < skips; i++)
-                            Step.MovePrevious();
-                        break;
+                    if (skips >= MaxSkippableSteps*2) {
                         Console.WriteLine(@"ROUTE EXCEPTION!");
                         if (Step!.Current is TradeMissionRecord.MoveStep move)
                             Console.WriteLine($@"> current step: {move.Position}");
+                        for (var i = 0; i < skips; i++)
+                            Step.MovePrevious();
+                        return;
+                        Console.WriteLine(@"ROUTE EXCEPTION!");
                         throw new RouteException(Step.Current);
                     }
 
@@ -113,6 +144,8 @@ namespace OryxBot.Bot
                 // Update his current position so as not to accidentally go through portal again
                 if (Step?.Current is TradeMissionRecord.MoveStep nextMove)
                     LocalCharacter.Instance.Position = nextMove.Position;
+                
+                Thread.Sleep(AverageClusterChangeDuration);
             }
             
             private bool MoveToNextRouteStep() {

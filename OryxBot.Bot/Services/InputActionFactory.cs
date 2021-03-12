@@ -34,15 +34,20 @@ namespace OryxBot.Bot.Services
             MoveTowards(previousTarget);
         
         public void MoveTowards(Position target, bool forceReclick = false) {
+            var fixingCourse = false;
             EnforceBotIsRunning();
             var origin = LocalCharacter.Instance.Position;
             
             var direction = new Vector2(target.X - origin.X, target.Y - origin.Y);
+            
             direction = Vector2.Transform(direction, Matrix3x2.CreateRotation(-(float)Math.PI/4));
             
             // Try to get unstuck
-            if (!LocalCharacter.Instance.Moving) {
-                direction = Vector2.Transform(direction, Matrix3x2.CreateRotation(-(float)Math.PI/3));
+            if (!LocalCharacter.Instance.Moving && !LocalCharacter.Instance.RecentlyChangedCluster) {
+                var rand = new Random();
+                var directionToChange = rand.Next(-1, 1);
+                fixingCourse = true;
+                direction = Vector2.Transform(direction, Matrix3x2.CreateRotation(directionToChange * (7f * (float)Math.PI/6f)));
             }
             
             direction = Vector2.Normalize(direction);
@@ -65,6 +70,9 @@ namespace OryxBot.Bot.Services
                 input.RightMouseDown(); 
             }
             previousTarget = target;
+            
+            if (fixingCourse)
+                Thread.Sleep(1000);
         }
 
         public void InteractWith(Position target) {
@@ -83,9 +91,32 @@ namespace OryxBot.Bot.Services
             input.ShiftClick(AlbionInterface.FirstItemInInventory);
         }
 
-        public void UnbankTokenItem() {
+        public void UnbankTokenItem() =>
+            UnbankTokenItem(1000);
+        
+        public void UnbankTokenItem(int delay) {
             EnforceBotIsRunning();
-            input.ShiftClick(AlbionInterface.FirstItemInBank);
+            input.Click(AlbionInterface.FirstItemInBank);
+            
+            Thread.Sleep(delay);
+            EnforceBotIsRunning();
+            input.Click(AlbionInterface.IncreaseSplitQuantityButton);
+            
+            Thread.Sleep(delay);
+            EnforceBotIsRunning();
+            input.Click(AlbionInterface.IncreaseSplitQuantityButton);
+            
+            Thread.Sleep(delay);
+            EnforceBotIsRunning();
+            input.Click(AlbionInterface.SplitButton);
+            
+            Thread.Sleep(delay);
+            EnforceBotIsRunning();
+            input.Click(AlbionInterface.CloseSplitButton);
+            
+            Thread.Sleep(delay);
+            EnforceBotIsRunning();
+            input.ShiftClick(AlbionInterface.SecondItemInBank);
         }
 
         public void NpcQuestOpenTradeMissionsTab() {
@@ -132,6 +163,11 @@ namespace OryxBot.Bot.Services
         private void EnforceBotIsRunning() {
             if (!bot.IsRunning)
                 throw new OperationCanceledException();
+        }
+
+        public void Respawn() {
+            EnforceBotIsRunning();
+            input.Click(AlbionInterface.RespawnButton);
         }
     }
 }

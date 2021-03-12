@@ -11,25 +11,37 @@ namespace OryxBot.Bot.Game
         {
             private const float MinDistanceConsideredAsMove = 0.2f;
             private const int StandStillDuration = 1000;
+            private const int RecentlyChangeClusterDuration = 30000;
             private readonly LocalCharacter _character;
             private Stopwatch sw = new();
-            private Task timeoutTask = Task.CompletedTask;
+            private Stopwatch sw_cluster = new();
+            private Task movementTimeoutTask = Task.CompletedTask;
+            private Task clusterChangeTimeoutTask = Task.CompletedTask;
             private Position? _previousPosition;
 
             public MovementStateTracker(LocalCharacter character) {
                 _character = character;
                 _character.Move += OnCharacterMove;
+                _character.ChangeCluster += OnCharacterChangeCluster;
             }
-            
+
             private void OnCharacterMove(object? sender, EventArgs e) {
                 _character.Moving =
                     _previousPosition == null ||
                     _character.DistanceFrom(_previousPosition.Value) >= MinDistanceConsideredAsMove;
                 
                 sw.Restart();
-                if (timeoutTask.IsCompleted)
-                    timeoutTask = Task.Run(OnTimeoutTaskTick);
+                if (movementTimeoutTask.IsCompleted)
+                    movementTimeoutTask = Task.Run(OnTimeoutTaskTick);
                 _previousPosition = _character.Position;
+            }
+
+            private void OnCharacterChangeCluster(object? sender, EventArgs e) {
+                _character.RecentlyChangedCluster = true;
+                
+                sw_cluster.Restart();
+                if (movementTimeoutTask.IsCompleted)
+                    movementTimeoutTask = Task.Run(OnClusterTimeoutTaskTick);
             }
 
             private async Task OnTimeoutTaskTick() {
@@ -37,6 +49,13 @@ namespace OryxBot.Bot.Game
                     await Task.Delay(10);
                 }
                 _character.Moving = false;
+            }
+
+            private async Task OnClusterTimeoutTaskTick() {
+                while (sw_cluster.ElapsedMilliseconds < RecentlyChangeClusterDuration) {
+                    await Task.Delay(1000);
+                }
+                _character.RecentlyChangedCluster = false;
             }
         }
     }

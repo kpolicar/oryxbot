@@ -43,7 +43,7 @@ namespace OryxBot.Client.Windows.Services
 
         public void MoveCursor(ResponsivePoint point) {
             if (cursorTargetPosition == new Point(point.X, point.Y))
-                cursorPosition = default;
+                cursorPosition = new Point(point.X, point.Y+1);
             cursorTargetPosition = new Point(point.X, point.Y);
             EnsureCursorMoveTaskIsRunning();
         }
@@ -67,9 +67,7 @@ namespace OryxBot.Client.Windows.Services
 
         public void Click(ResponsivePoint point) {
             MoveCursor(point);
-            moveCursorTask.Wait();
-            
-            input.Mouse.LeftButtonClick();
+            Click();
         }
 
         private void EnsureCursorMoveTaskIsRunning() {

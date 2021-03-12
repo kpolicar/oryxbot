@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading;
 using OryxBot.Bot.Contracts;
+using OryxBot.Bot.Exceptions;
 using OryxBot.Bot.Services;
 using OryxBot.Shared.Contracts;
 using OryxBot.Shared.Design;
@@ -38,7 +39,7 @@ namespace OryxBot.Bot
 
         public override void Start() {
             base.Start();
-            _step = new RunToBank();
+            //_step = new RunToBank();
 
             runningThread = new Thread(EntryPoint);
             runningThread.Start();
@@ -49,6 +50,11 @@ namespace OryxBot.Bot
                 try {
                     _step.Tick();
                 } catch (OperationCanceledException) {
+                } catch (CharacterDiedException) {
+                    Debug.WriteLine(">>>>>>>>>>>>>>>>>>> CHARACTER HAS DIED. RESPAWNING!!");
+                    actions.Respawn();
+                    Thread.Sleep(2000);
+                    _step = new RunToBank();
                 }
 
                 if (_step.Finished) {

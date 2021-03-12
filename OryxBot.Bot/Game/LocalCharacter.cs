@@ -20,8 +20,13 @@ namespace OryxBot.Bot.Game
         public event EventHandler? ChangeCluster;
         public event EventHandler? Interaction;
         public event EventHandler? MovingChanged;
+        public event EventHandler? Died;
         
         private MovementStateTracker stateTracker;
+
+        public void SendDieEvent() {
+            Died?.Invoke(this, EventArgs.Empty);
+        }
 
         private LocalCharacter() {
             stateTracker = new MovementStateTracker(this);
@@ -73,6 +78,10 @@ namespace OryxBot.Bot.Game
                 if (!value.Equals(old))
                     MovingChanged?.Invoke(this, EventArgs.Empty);
             }
+        }
+
+        public bool RecentlyChangedCluster {
+            get; private set;
         }
     }
 }
