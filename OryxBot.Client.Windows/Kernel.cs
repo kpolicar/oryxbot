@@ -80,7 +80,7 @@ namespace OryxBot.Client.Windows
             }
 
             public void OnLoadForm(object? sender, EventArgs e) {
-                var app = (sender as UIApplicationContext)!;
+                var app = (sender as MainForm)!;
                 var bot = Services.GetService<BotManagerContract>();
                 var tradeMissionRouteProvider = (FileDialogTradeMissionRouteProvider) Services.GetService<TradeMissionRouteProvider>();
                 
@@ -128,7 +128,7 @@ namespace OryxBot.Client.Windows
                 var auth = Services.GetService<AuthManager>();
                 
                 if (auth.User?.is_subscribed ?? false)
-                    bot.ToggleTradeMissionRun();
+                    bot.ToggleTradeMissionRecord();
                 
             }
             private void AuthorizedToggleTradeMissionRun() {

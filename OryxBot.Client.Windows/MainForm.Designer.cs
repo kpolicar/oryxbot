@@ -5,7 +5,7 @@ using System.Windows.Forms;
 
 namespace OryxBot.Client.Windows
 {
-    partial class WelcomeDialogue
+    partial class MainForm
     {
         private static readonly Color darkGrayColor =
             System.Drawing.Color.FromArgb(((int) (((byte) (37)))), ((int) (((byte) (40)))), ((int) (((byte) (45)))));
@@ -34,6 +34,87 @@ namespace OryxBot.Client.Windows
 
             base.Dispose(disposing);
         }
+        
+        public ToolStripMenuItem ToolStipPanelButton { private set; get; }
+        public ToolStripMenuItem ToolStipToggleBotTradeMissionRecordButton { private set; get; }
+        public ToolStripLabel ToolStipUsernameLabel { private set; get; }
+        public ToolStripMenuItem ToolStipToggleBotTradeMissionRunButton { private set; get; }
+        public ToolStripMenuItem ToolStripCloseButton { private set; get; }
+        public OpenFileDialog TradeMissionRunRouteFile { private set; get; }
+        private ContextMenuStrip contextMenuStrip;
+        private NotifyIcon trayIcon;
+
+        private void InitializeCustomComponent() {
+            
+            //
+            // toolStipPanelButton
+            //
+            ToolStipPanelButton = new ToolStripMenuItem {
+                Name = "toolStipPanelButton",
+                Text = Resources.UIApplicationContext.ToolStipPanelButton_Text,
+            };
+            ToolStipPanelButton.Click += OnPanelClicked;
+            //
+            // ToolStipUsernameLabel
+            //
+            ToolStipUsernameLabel = new ToolStripLabel {
+                Name = "toolStipUsernameLabel",
+                Text = Resources.UIApplicationContext.ToolStipUsernameLabel_Text,
+            };
+            //
+            // toolStipToggleBotTradeMissionRecordButton
+            //
+            ToolStipToggleBotTradeMissionRecordButton = new ToolStripMenuItem {
+                Name = "toolStipToggleBotTradeMissionRecordButton",
+                Text = Resources.UIApplicationContext.ToolStipToggleBotTradeMissionRecordButton_TextStart,
+            };
+            //
+            // toolStipToggleBotTradeMissionRunButton
+            //
+            ToolStipToggleBotTradeMissionRunButton = new ToolStripMenuItem {
+                Name = "toolStipToggleBotTradeMissionRunButton",
+                Text = Resources.UIApplicationContext.ToolStipToggleBotTradeMissionRunButton_TextStart,
+            };
+            //
+            // TradeMissionRunRouteFile
+            //
+            TradeMissionRunRouteFile = new OpenFileDialog {
+                Title = Resources.UIApplicationContext.TradeMissionRunRouteFile_Title,
+                Filter = "Route Files (*.csv)|*.csv",
+            };
+            //
+            // toolStripCloseButton
+            //
+            ToolStripCloseButton = new ToolStripMenuItem {
+                Name = "toolStripCloseButton",
+                Text = Resources.UIApplicationContext.ToolStripCloseButton_Text,
+            };
+            ToolStripCloseButton.Click += OnExitClicked;
+            //
+            // contextMenuStrip
+            //
+            contextMenuStrip = new ContextMenuStrip() {
+                Name = "contextMenuStrip",
+                Items = {
+                    ToolStipUsernameLabel,
+                    new ToolStripSeparator(),
+                    ToolStipToggleBotTradeMissionRecordButton,
+                    ToolStipToggleBotTradeMissionRunButton,
+                    //ToolStipPanelButton,
+                    new ToolStripSeparator(),
+                    ToolStripCloseButton
+                },
+                ShowItemToolTips = false,
+            };
+            //
+            // trayIcon
+            //
+            trayIcon = new NotifyIcon {
+                Icon = Resources.UIApplicationContext.Icon,
+                ContextMenuStrip = contextMenuStrip,
+                Text = Resources.UIApplicationContext.Text+"\n"+Program.Version,
+            };
+        }
 
         #region Windows Form Designer generated code
 
@@ -42,7 +123,7 @@ namespace OryxBot.Client.Windows
         /// the contents of this method with the code editor.
         /// </summary>
         private void InitializeComponent() {
-            resources = new System.ComponentModel.ComponentResourceManager(typeof(WelcomeDialogue));
+            resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.linkLabel2 = new System.Windows.Forms.LinkLabel();
             this.label2 = new System.Windows.Forms.Label();
@@ -250,8 +331,10 @@ namespace OryxBot.Client.Windows
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
-            this.Name = "WelcomeDialogue";
-            this.Load += new System.EventHandler(this.LoginForm_Load);
+            this.TopMost = true;
+            this.Name = "MainForm";
+            this.Load += new System.EventHandler(this.MainForm_Load);
+            this.VisibleChanged += new System.EventHandler(this.MainForm_VisibleChanged);
             this.splitContainer1.Panel1.ResumeLayout(false);
             this.splitContainer1.Panel1.PerformLayout();
             this.splitContainer1.Panel2.ResumeLayout(false);

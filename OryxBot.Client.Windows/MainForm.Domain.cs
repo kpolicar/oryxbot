@@ -3,7 +3,7 @@ using OryxBot.Shared.Events;
 
 namespace OryxBot.Client.Windows
 {
-    public partial class UIApplicationContext
+    public partial class MainForm
     {
         public void OnBotTradeMissionRecordingStarted(object? sender, EventArgs e) =>
             ToolStipToggleBotTradeMissionRecordButton.Text =

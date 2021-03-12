@@ -410,7 +410,7 @@
     <value>3</value>
   </data>
   <data name="&gt;&gt;$this.Name" xml:space="preserve">
-    <value>WelcomeDialogue</value>
+    <value>MainForm</value>
   </data>
   <data name="&gt;&gt;usernameTextBox.Name" xml:space="preserve">
     <value>usernameTextBox</value>

@@ -35,11 +35,14 @@
         <DependentUpon>ApplicationContext.resx</DependentUpon>
         <DesignTime>True</DesignTime>
       </Compile>
-      <Compile Update="UIApplicationContext.Domain..cs">
-        <DependentUpon>UIApplicationContext.cs</DependentUpon>
+      <Compile Update="MainForm.Designer.cs">
+        <DependentUpon>MainForm.cs</DependentUpon>
       </Compile>
-      <Compile Update="WelcomeDialogue.Designer.cs">
-        <DependentUpon>WelcomeDialogue.cs</DependentUpon>
+      <Compile Update="MainForm.Domain.cs">
+        <DependentUpon>MainForm.cs</DependentUpon>
+      </Compile>
+      <Compile Update="MainFormToolstrip.cs">
+        <DependentUpon>MainForm.cs</DependentUpon>
       </Compile>
     </ItemGroup>
 
@@ -48,8 +51,8 @@
         <Generator>ResXFileCodeGenerator</Generator>
         <LastGenOutput>UIApplicationContext.Designer.cs</LastGenOutput>
       </EmbeddedResource>
-      <EmbeddedResource Update="WelcomeDialogue.resx">
-        <DependentUpon>WelcomeDialogue.cs</DependentUpon>
+      <EmbeddedResource Update="MainForm.resx">
+        <DependentUpon>MainForm.cs</DependentUpon>
       </EmbeddedResource>
       <EmbeddedResource Include="Bot\Resources\route_lymhurst_bank_to_quest.csv" />
       <EmbeddedResource Include="Bot\Resources\route_lymhurst_quest_to_bank.csv" />

@@ -11,25 +11,27 @@ using OryxBot.Client.Windows;
 using OryxBot.Client.Windows.Api;
 using OryxBot.Client.Windows.Contracts;
 using OryxBot.Client.Windows.Domain;
+using OryxBot.Client.Windows.Events;
 using OryxBot.Client.Windows.Exceptions;
+using OryxBot.Shared.Design;
+using OryxBot.Shared.Events;
 using static OryxBot.Client.Windows.Native.User32;
 using User = OryxBot.Shared.User;
 
 namespace OryxBot.Client.Windows
 {
-    public partial class WelcomeDialogue : Form
+    public partial class MainForm : Form
     {
-        private readonly ApiClient api;
+        private ApiClient api;
         private AuthManager auth;
         public static event EventHandler? LoggingIn;
 
-        public WelcomeDialogue(string errorMessage) : this() {
-            this.errorMessage.Text = errorMessage;
-        }
-
-        public WelcomeDialogue() {
+        public MainForm() {
             InitializeComponent();
+            InitializeCustomComponent();
             InitializeIcons();
+            
+            LoggingIn += (_, _) => UpdateControlsForUnauthenticated();
             VisibleChanged += OnVisibleChanged;
             
             errorMessage.Text = "";
@@ -82,8 +84,8 @@ namespace OryxBot.Client.Windows
                 {"email", usernameTextBox.Text},
                 {"password", rememberPasswordCheckbox.Checked ? passwordTextBox.Text : ""},
             });
-            
-            DialogResult = DialogResult.OK;
+
+            Hide();
         }
 
         private void HandleUserSubscriptionStatus(User user) {
@@ -91,7 +93,7 @@ namespace OryxBot.Client.Windows
                 throw new UserNotSubscribedException();
         }
 
-        private async void LoginForm_Load(object sender, EventArgs e) {
+        private async void MainForm_Load(object sender, EventArgs e) {
             try {
                 var newestVersion = await api.NewestVersion();
                 if (Program.VersionNumber != newestVersion.number) {
@@ -101,6 +103,14 @@ namespace OryxBot.Client.Windows
                 }
             } catch (Exception) {
                 // ignored
+            }
+        }
+
+        private void MainForm_VisibleChanged(object sender, EventArgs e) {
+            if (Visible) {
+                UpdateControlsForUnauthenticated();
+            } else {
+                UpdateControlsForAuthenticated();
             }
         }
 
@@ -131,6 +141,30 @@ namespace OryxBot.Client.Windows
         private void resetSettings_Clicked(object sender, EventArgs eventArgs) {
             UserSettings.Reset();
             Application.Restart();
+        }
+        
+        public void BindDependencies(ServiceContainer serviceContainer) {
+            api = serviceContainer.GetService<ApiClient>();
+            api.UserFetched += OnFetchedUser;
+        }
+
+        public void ShowLoginDialogue(string message = "") {
+            errorMessage.Text = message;
+            Show();
+        }
+
+        public void OnAuthChanged(object? sender, AuthChangedEvent e) {
+            if (e.Succeeded)
+                return;
+            
+            var message = e.Exception switch {
+                HttpRequestException _ => Resources.UIApplicationContext.ErrorMessage_Http,
+                UserNotSubscribedException _ =>
+                    Resources.UIApplicationContext.ErrorMessage_NoLongerSubscribed+"\n"+
+                    Resources.UIApplicationContext.ErrorMessage_PleaseExtend,
+                _ => ""
+            };
+            ShowLoginDialogue(message);
         }
     }
 }
