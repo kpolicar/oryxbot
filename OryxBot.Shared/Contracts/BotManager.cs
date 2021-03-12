@@ -7,7 +7,8 @@ namespace OryxBot.Shared.Contracts
     {
         event EventHandler<BotEventArgs>? Started;
         event EventHandler<BotEventArgs>? Stopped;
-
+        bool IsRunning { get; }
+        
         void ToggleTradeMissionRun();
         void ToggleTradeMissionRecord();
         void Stop();

@@ -17,6 +17,7 @@ namespace OryxBot.Bot
         private ServiceContainer serviceContainer = null!;
         private TradeMissionRouteProvider routeProvider = null!;
         public BotJob? Bot;
+        public bool IsRunning { get; private set; }
 
 
         public void BindDependencies(ServiceContainer serviceContainer) {
@@ -56,6 +57,8 @@ namespace OryxBot.Bot
                 Bot = constructorCallback();
                 if (Bot is HasDependencies dependant)
                     dependant.BindDependencies(serviceContainer);
+                Bot.Started += (_, _) => IsRunning = (Bot as Job)!.Running;
+                Bot.Stopped += (_, _) => IsRunning = (Bot as Job)!.Running;
                 Bot.Started += (_, _) => Started?.Invoke(this, new BotEventArgs(Bot));
                 Bot.Stopped += (_, _) => Stopped?.Invoke(this, new BotEventArgs(Bot));
                 

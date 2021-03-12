@@ -48,6 +48,9 @@ namespace OryxBot.Bot
                 if (Step?.Current is TradeMissionRecord.MoveStep target) {
                     actions.MoveTowards(target.Position);
                 }
+                if (Step?.Current is TradeMissionRecord.ChangeClusterStep) {
+                    actions.MoveInSameDirection();
+                }
             }
             
             private void ProgressMoveStepsAndSkipIfAlreadyAhead() {
@@ -88,6 +91,9 @@ namespace OryxBot.Bot
                     if (Step!.Current is TradeMissionRecord.ChangeClusterStep)
                         break;
                     if (skips >= MaxSkippableSteps) {
+                        for (var i = 0; i < skips; i++)
+                            Step.MovePrevious();
+                        break;
                         Console.WriteLine(@"ROUTE EXCEPTION!");
                         if (Step!.Current is TradeMissionRecord.MoveStep move)
                             Console.WriteLine($@"> current step: {move.Position}");
@@ -148,6 +154,7 @@ namespace OryxBot.Bot
                 } else {
                     actions.StopAllActions();
                     Finished = DoInteractions();
+
                     Thread.Sleep(500);
                     actions.CenterCursor();
                     Thread.Sleep(500);

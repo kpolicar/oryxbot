@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using OryxBot.Shared.Contracts;
 using OryxBot.Shared.Design;
 using OryxBot.Shared.Game;
@@ -62,9 +63,10 @@ namespace OryxBot.Bot.Game
         }
         
         private bool _moving;
-
         public bool Moving {
-            get => _moving;
+            get {
+                return _moving;
+            }
             internal set {
                 var old = _moving;
                 _moving = value;

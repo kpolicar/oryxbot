@@ -46,7 +46,10 @@ namespace OryxBot.Bot
         
         public void EntryPoint() {
             while (Running) {
-                _step.Tick();
+                try {
+                    _step.Tick();
+                } catch (OperationCanceledException) {
+                }
 
                 if (_step.Finished) {
                     Thread.Sleep(DelayBetweenSteps);
