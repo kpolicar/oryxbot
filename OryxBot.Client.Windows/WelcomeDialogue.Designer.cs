@@ -3,7 +3,7 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
 
-namespace Inkybot
+namespace OryxBot.Client.Windows
 {
     partial class WelcomeDialogue
     {

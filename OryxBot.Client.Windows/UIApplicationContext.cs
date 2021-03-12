@@ -3,7 +3,7 @@ using System.Diagnostics;
 using System.Net.Http;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Inkybot;
+using OryxBot.Client.Windows;
 using OryxBot.Client.Windows.Api;
 using OryxBot.Client.Windows.Events;
 using OryxBot.Client.Windows.Exceptions;

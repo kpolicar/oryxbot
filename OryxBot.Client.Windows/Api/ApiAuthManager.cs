@@ -4,7 +4,7 @@ using System.Diagnostics;
 using System.Net.Http;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Inkybot;
+using OryxBot.Client.Windows;
 using Newtonsoft.Json;
 using OryxBot.Client.Windows.Contracts;
 using OryxBot.Client.Windows.Domain;

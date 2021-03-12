@@ -15,7 +15,7 @@ using OryxBot.Client.Windows.Exceptions;
 using static OryxBot.Client.Windows.Native.User32;
 using User = OryxBot.Shared.User;
 
-namespace Inkybot
+namespace OryxBot.Client.Windows
 {
     public partial class WelcomeDialogue : Form
     {
