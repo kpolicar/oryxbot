@@ -1,4 +1,5 @@
 using System;
+using System.Windows.Forms;
 
 namespace OryxBot.Client.Windows
 {
@@ -18,7 +19,7 @@ namespace OryxBot.Client.Windows
         }
 
         private void OnExitClicked(object? sender, EventArgs e) =>
-            Close();
+            Application.Exit();
 
         private void OnPanelClicked(object? sender, EventArgs e) {
             // Todo: Open website

@@ -17,7 +17,7 @@ namespace OryxBot.Client.Windows
         /// <summary>
         /// Required designer variable.
         /// </summary>
-        private IContainer components = null;
+        private Container components = new();
 
         private System.ComponentModel.ComponentResourceManager resources;
 
@@ -109,7 +109,7 @@ namespace OryxBot.Client.Windows
             //
             // trayIcon
             //
-            trayIcon = new NotifyIcon {
+            trayIcon = new NotifyIcon(components) {
                 Icon = Resources.UIApplicationContext.Icon,
                 ContextMenuStrip = contextMenuStrip,
                 Text = Resources.UIApplicationContext.Text+"\n"+Program.Version,
