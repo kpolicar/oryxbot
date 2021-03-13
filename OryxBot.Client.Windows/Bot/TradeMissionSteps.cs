@@ -12,13 +12,13 @@ namespace OryxBot.Client.Windows.Bot
     {
         #region BANKING
         
-        private class RunToBank : RunRouteStep
+        internal class RunToBank : RunRouteStep
         {
             protected override LinkedList<TradeMissionRecord.RecordableStep> Route =>
                 routeProvider.RouteFromQuestToBank()!;
         }
 
-        private class BankItems : InteractionStep
+        internal class BankItems : InteractionStep
         {
             protected override Position _interactablePosition => new(0, 0);
             
@@ -35,13 +35,13 @@ namespace OryxBot.Client.Windows.Bot
 
         #region TAKE_QUEST
 
-        private class RunToQuest : RunRouteStep
+        internal class RunToQuest : RunRouteStep
         {
             protected override LinkedList<TradeMissionRecord.RecordableStep> Route =>
                 routeProvider.RouteFromBankToQuest()!;
         }
         
-        private class TakeQuest : InteractionStep
+        internal class TakeQuest : InteractionStep
         {
             protected override Position _interactablePosition => new(-75.5f, 0);
             
@@ -62,7 +62,7 @@ namespace OryxBot.Client.Windows.Bot
         
         #region RUN_QUEST
         
-        private class RunRouteToDestination : RunRouteStep
+        internal class RunRouteToDestination : RunRouteStep
         {
             protected override LinkedList<TradeMissionRecord.RecordableStep> Route { get; }
 
@@ -70,7 +70,7 @@ namespace OryxBot.Client.Windows.Bot
                 Route = route;
         }
         
-        private class ProgressQuest : InteractionStep
+        internal class ProgressQuest : InteractionStep
         {
             protected override Position _interactablePosition => new(50.012352f, 190.30232f);
             
@@ -80,7 +80,7 @@ namespace OryxBot.Client.Windows.Bot
             }
         }
         
-        private class RunRouteBack : RunRouteStep
+        internal class RunRouteBack : RunRouteStep
         {
             protected override LinkedList<TradeMissionRecord.RecordableStep> Route { get; }
 
@@ -92,7 +92,7 @@ namespace OryxBot.Client.Windows.Bot
 
         #region FINISH
         
-        private class FinishQuest : InteractionStep
+        internal class FinishQuest : InteractionStep
         {
             protected override Position _interactablePosition => new(-75.5f, 0);
             

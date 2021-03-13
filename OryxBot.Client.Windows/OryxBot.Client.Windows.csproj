@@ -10,6 +10,7 @@
         <NeutralLanguage>en</NeutralLanguage>
         <AssemblyName>OryxBot</AssemblyName>
         <ApplicationIcon>./../Resources/oryx_icon_small_colored.ico</ApplicationIcon>
+        <ProduceReferenceAssembly>false</ProduceReferenceAssembly>
     </PropertyGroup>
 
     <ItemGroup>

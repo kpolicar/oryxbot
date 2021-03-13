@@ -12,7 +12,7 @@ namespace OryxBot.Client.Windows.Bot
 {
     public partial class TradeMissionRun
     {
-        private interface TradeMissionStep
+        internal interface TradeMissionStep
         {
             bool Finished {
                 get;
@@ -23,7 +23,7 @@ namespace OryxBot.Client.Windows.Bot
             void Tick();
         }
         
-        private abstract class RunRouteStep : TradeMissionStep
+        internal abstract class RunRouteStep : TradeMissionStep
         {
             static RunRouteStep() {
                 var successfulParse =
@@ -44,7 +44,7 @@ namespace OryxBot.Client.Windows.Bot
             private static readonly float MaxDistance;
             
             private const int MaxSkippableSteps = 4;
-            
+
             public bool Finished { get; private set; }
             public int Delay => 10;
             private bool preparing = true;
@@ -183,7 +183,7 @@ namespace OryxBot.Client.Windows.Bot
             }
         }
 
-        private abstract class InteractionStep : TradeMissionStep
+        internal abstract class InteractionStep : TradeMissionStep
         {
             private const int DelayBetweenNpcInterfaceActions = 2000;
             private const float MaxDistance = 3f;

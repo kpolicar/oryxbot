@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading;
 using OryxBot.Client.Windows.Bot.Contracts;
+using OryxBot.Client.Windows.Bot.Events;
 using OryxBot.Client.Windows.Bot.Exceptions;
 using OryxBot.Client.Windows.Bot.Services;
 using OryxBot.Shared.Contracts;
@@ -15,6 +16,7 @@ namespace OryxBot.Client.Windows.Bot
     public partial class TradeMissionRun : Job, HasDependencies
     {
         public event EventHandler? Finished;
+        internal event EventHandler<TradeMissionEvent>? Progress;
         private const int DelayBetweenSteps = 1000;
 
         private TradeMissionStep _step;
@@ -81,6 +83,7 @@ namespace OryxBot.Client.Windows.Bot
                 FinishQuest => new RunToBank(),
                 _ => throw new ArgumentOutOfRangeException(nameof(_step))
             };
+            Progress?.Invoke(this, new TradeMissionEvent(_step));
             Console.WriteLine("Progressed to next step: "+_step.GetType());
         }
     }
