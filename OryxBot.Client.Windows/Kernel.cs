@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 using OryxBot.Client.Windows.Bot;
 using OryxBot.Client.Windows.Bot.Contracts;
 using OryxBot.Client.Windows.Bot.Game;
@@ -104,6 +105,20 @@ namespace OryxBot.Client.Windows
                 var api = Services.GetService<AuthManager>();
                 api.AuthChanged += app.OnAuthChanged;
                 api.AuthChanged += AuthChanged;
+                
+                var hotkey = Services.GetService<Hotkey>();
+                hotkey.Insert += (_, _) => AuthorizedShowContextMenuStrip(app);
+                hotkey.F3 += (_, _) =>AuthorizedShowContextMenuStrip(app);
+            }
+
+            private void AuthorizedShowContextMenuStrip(MainForm app) {
+                var auth = Services.GetService<AuthManager>();
+                
+                if (auth.User?.is_subscribed ?? false)
+                    if (!app.ContextMenuStrip.Visible)
+                        app.ContextMenuStrip.Show(new Point(ResponsivePoint.CurrentScreenWidth-100-app.ContextMenuStrip.Width, ResponsivePoint.CurrentScreenHeight-50));
+                    else
+                        app.ContextMenuStrip.Hide();
             }
 
             private void AuthChanged(object? sender, AuthChangedEvent e) {
