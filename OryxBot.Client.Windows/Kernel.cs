@@ -134,8 +134,17 @@ namespace OryxBot.Client.Windows
 
                 hotkey.F1 += (_, _) => AuthorizedToggleTradeMissionRecord();
                 hotkey.F2 += (_, _) => AuthorizedToggleTradeMissionRun();
+                hotkey.Space += (_, _) => AuthorizedPauseTradeMissionRun();
                 logger.BindToServices(Services);
                 NLog.LogManager.Shutdown();
+            }
+
+            private void AuthorizedPauseTradeMissionRun() {
+                var bot = Services.GetService<BotManagerContract>();
+                var auth = Services.GetService<AuthManager>();
+                
+                if (auth.User?.is_subscribed ?? false)
+                    bot.ToggleTradeMissionPause();
             }
 
             private void AuthorizedToggleTradeMissionRecord() {

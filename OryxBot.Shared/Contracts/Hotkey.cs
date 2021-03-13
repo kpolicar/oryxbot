@@ -8,6 +8,7 @@ namespace OryxBot.Shared.Contracts
         public event EventHandler? F2;
         public event EventHandler? F3;
         public event EventHandler? Insert;
+        public event EventHandler? Space;
         public event EventHandler? Escape;
     }
 }

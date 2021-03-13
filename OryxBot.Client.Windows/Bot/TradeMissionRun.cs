@@ -27,6 +27,7 @@ namespace OryxBot.Client.Windows.Bot
         private static InputActionFactory actions = null!;
         
         private Thread? runningThread;
+        private bool _paused;
         
 
 
@@ -42,12 +43,29 @@ namespace OryxBot.Client.Windows.Bot
 
         public override void Start() {
             base.Start();
-            _step = new RunToBank();
+            if (!_paused)
+                Reset();
 
             runningThread = new Thread(EntryPoint);
             runningThread.Start();
         }
-        
+
+        public override void Stop() {
+            base.Stop();
+            _paused = false;
+        }
+
+        public void Pause() {
+            if (Running)
+                Stop();
+            else
+                Start();
+            _paused = true;
+        }
+
+        private void Reset() =>
+            _step = new RunToBank();
+
         public void EntryPoint() {
             while (Running) {
                 try {

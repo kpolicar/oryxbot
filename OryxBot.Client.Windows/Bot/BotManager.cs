@@ -44,6 +44,12 @@ namespace OryxBot.Client.Windows.Bot
             Bot!.ToggleStart();
         }
 
+        public void ToggleTradeMissionPause() {
+            if (Bot is TradeMissionRun run) {
+                run.Pause();
+            }
+        }
+
         public void ToggleTradeMissionRecord() {
             EnforceBotServiceType(
                 typeof(TradeMissionRecord), 

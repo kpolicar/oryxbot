@@ -12,6 +12,7 @@ namespace OryxBot.Client.Windows.Services
         public event EventHandler? F3;
         public event EventHandler? Insert;
         public event EventHandler? Escape;
+        public event EventHandler? Space;
         private IKeyboardMouseEvents? m_GlobalHook;
         private Random rand = new Random();
         
@@ -22,6 +23,7 @@ namespace OryxBot.Client.Windows.Services
                 {Combination.FromString("F1"), () => F1?.Invoke(this, EventArgs.Empty)},
                 {Combination.FromString("F2"), () => F2?.Invoke(this, EventArgs.Empty)},
                 {Combination.FromString("F3"), () => F3?.Invoke(this, EventArgs.Empty)},
+                {Combination.FromString("Space"), () => Space?.Invoke(this, EventArgs.Empty)},
                 {Combination.FromString("Insert"), () => Insert?.Invoke(this, EventArgs.Empty)},
                 {Combination.FromString("Escape"), () => Escape?.Invoke(this, EventArgs.Empty)}
             };

@@ -25,15 +25,6 @@ namespace OryxBot.Client.Windows.Services
             // using var textStream = new StreamReader(path);
             // return RouteFromStream(textStream.BaseStream);
             
-            var resource = "OryxBot.Client.Windows.Bot.Resources.route_lymhurst_bank_to_quest.csv";
-            using var resourceStream =
-                Assembly.GetAssembly(GetType())!.GetManifestResourceStream(resource)!;
-            
-            using var textStream = new StreamReader(resourceStream);
-            return RouteFromStream(textStream.BaseStream);
-        }
-
-        public LinkedList<TradeMissionRecord.RecordableStep>? RouteBack() {
             var resource = "OryxBot.Client.Windows.Bot.Resources.route_lymhurst_trademission.csv";
             using var resourceStream =
                 Assembly.GetAssembly(GetType())!.GetManifestResourceStream(resource)!;
@@ -42,8 +33,17 @@ namespace OryxBot.Client.Windows.Services
             return RouteFromStream(textStream.BaseStream);
         }
 
-        public LinkedList<TradeMissionRecord.RecordableStep>? RouteFromBankToQuest() {
+        public LinkedList<TradeMissionRecord.RecordableStep>? RouteBack() {
             var resource = "OryxBot.Client.Windows.Bot.Resources.route_lymhurst_trademission_back.csv";
+            using var resourceStream =
+                Assembly.GetAssembly(GetType())!.GetManifestResourceStream(resource)!;
+            
+            using var textStream = new StreamReader(resourceStream);
+            return RouteFromStream(textStream.BaseStream);
+        }
+
+        public LinkedList<TradeMissionRecord.RecordableStep>? RouteFromBankToQuest() {
+            var resource = "OryxBot.Client.Windows.Bot.Resources.route_lymhurst_bank_to_quest.csv";
             using var resourceStream =
                 Assembly.GetAssembly(GetType())!.GetManifestResourceStream(resource)!;
             

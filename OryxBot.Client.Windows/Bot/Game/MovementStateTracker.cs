@@ -11,7 +11,8 @@ namespace OryxBot.Client.Windows.Bot.Game
         private class MovementStateTracker
         {
             private const float MinDistanceConsideredAsMove = 0.2f;
-            private int StandStillDuration => NetworkAlbionDataProvider.QueryNetworkInterval * 5;
+            private int StandStillDuration =>
+                System.Math.Max(NetworkAlbionDataProvider.QueryNetworkInterval * 4, 1300);
             private const int RecentlyChangeClusterDuration = 30000;
             private readonly LocalCharacter _character;
             private Stopwatch sw = new();
