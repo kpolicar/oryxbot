@@ -49,12 +49,27 @@ namespace OryxBot.Client.Windows.Bot.Services
             BindEventRaiseHandlers(builder);
             
             _receiver = builder.Build();
+
+            var ports = new[] { 5056, 5055, 4535 };
+            var customPorts = ConfigurationManager.AppSettings.Get("networkPorts")?.Split(',');
+            if (customPorts != null &&
+                customPorts.All(customPort => int.TryParse(customPort, out _)))
+            {
+                var validCustomPorts = customPorts.Select(int.Parse).ToArray();
+                if (validCustomPorts.Length > 0) {
+                    ports = validCustomPorts;
+                }
+            }
+
     
             foreach (var device in CaptureDeviceList.Instance) {
                 var captureThread = new Thread(() => {
                     device.OnPacketArrival += PacketHandler;
                     device.Open(DeviceMode.Promiscuous, QueryNetworkInterval);
-                    device.Filter = "ip and udp and (port 5056 or port 5055 or port 4535)";
+                    
+                    var portsFilter = "port " + string.Join(" or port ", ports);
+                    device.Filter = $"ip and udp and ({portsFilter})";
+                    
                     if (device.LinkType != LinkLayers.Ethernet) {
                         device.Close();
                         return;
@@ -85,9 +100,8 @@ namespace OryxBot.Client.Windows.Bot.Services
         {
             try {
                 UdpPacket packet = Packet.ParsePacket(e.Packet.LinkLayerType, e.Packet.Data).Extract<UdpPacket>();
-                if (packet != null && (packet.SourcePort == 5056 || packet.DestinationPort == 5056)) {
+                if (packet != null)
                     _receiver.ReceivePacket(packet.PayloadData);
-                }
             } catch (Exception exception) {
                 Console.Error.WriteLine($"Failed to capture packet, exception: {exception}");
             }
