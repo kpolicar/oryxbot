@@ -66,8 +66,8 @@ namespace OryxBot.Client.Windows.Native
         
         // https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getsystemmetrics
         public const int SM_CMONITORS = 80;
-        public const int SM_CXFULLSCREEN = 0;
-        public const int SM_CYFULLSCREEN = 1;
+        public const int SM_CXFULLSCREEN = 16;
+        public const int SM_CYFULLSCREEN = 17;
 
 
         [StructLayout(LayoutKind.Sequential)]

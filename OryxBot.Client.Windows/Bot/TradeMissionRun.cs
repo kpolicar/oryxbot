@@ -17,6 +17,7 @@ namespace OryxBot.Client.Windows.Bot
     {
         public event EventHandler? Finished;
         internal event EventHandler<TradeMissionEvent>? Progress;
+        internal event EventHandler? Reset;
         private const int DelayBetweenSteps = 1000;
 
         private TradeMissionStep _step;
@@ -44,7 +45,7 @@ namespace OryxBot.Client.Windows.Bot
         public override void Start() {
             base.Start();
             if (!_paused)
-                Reset();
+                ResetRun();
 
             runningThread = new Thread(EntryPoint);
             runningThread.Start();
@@ -63,8 +64,10 @@ namespace OryxBot.Client.Windows.Bot
             _paused = true;
         }
 
-        private void Reset() =>
+        private void ResetRun() {
             _step = new RunToBank();
+            Reset?.Invoke(this, EventArgs.Empty);
+        }
 
         public void EntryPoint() {
             while (Running) {

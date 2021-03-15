@@ -74,6 +74,8 @@ namespace OryxBot.Client.Windows.Services
         private void BindToTradeMissionRunJob(TradeMissionRun run) {
             run.Progress += (_, e) =>
                 Common.Info("Trade mission run step progression: "+RunRouteStepResolveName(e.Step));
+            run.Reset += (_, _) =>
+                Common.Info("Trade mission run reset!");
         }
 
         private object RunRouteStepResolveName(TradeMissionRun.TradeMissionStep step) => step switch {

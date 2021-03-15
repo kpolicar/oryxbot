@@ -25,6 +25,10 @@ namespace OryxBot.Client.Windows.Bot.Services
             bot = (serviceContainer.GetService<BotManagerContract>() as BotManager)!;
             
             bot.JobChanged += (sender, args) => job = args.Job;
+            bot.Stopped += (_, _) => {
+                if (rightMouseIsDown)
+                    input.RightMouseUp();
+            };
         }
 
         public void MoveTowards(Position target) =>
