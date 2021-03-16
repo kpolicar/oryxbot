@@ -5,6 +5,9 @@ namespace OryxBot.Client.Windows.Bot
 {
     public static class AlbionInterface
     {
+        public static ResponsivePoint Character =
+            new(1280, 615, 2560, 1440, AnchorStyle.Center);
+        
         public static ResponsivePoint FirstItemInInventory =
             new(1590, 550, 1920, 1080, AnchorStyle.Right);
         

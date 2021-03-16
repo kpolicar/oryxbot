@@ -6,6 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using WindowsInput;
 using WindowsInput.Native;
+using OryxBot.Client.Windows.Bot;
 using OryxBot.Client.Windows.Native;
 using OryxBot.Shared.Contracts;
 using OryxBot.Shared.Design;
@@ -115,6 +116,6 @@ namespace OryxBot.Client.Windows.Services
             input.Mouse.RightButtonUp();
 
         public Point ResolveScreenCenter() =>
-            new(ResponsivePoint.CurrentScreenWidth/2, ResponsivePoint.CurrentScreenHeight/2);
+            new(AlbionInterface.Character.X, AlbionInterface.Character.Y);
     }
 }

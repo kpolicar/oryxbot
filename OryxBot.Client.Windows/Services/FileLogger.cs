@@ -28,7 +28,11 @@ namespace OryxBot.Client.Windows.Services
             BindToDataProvider(dataProvider);
             BindToBot(bot);
             BindToLocalCharacter();
+            ResponsivePoint.ResolutionChanged += OnResolutionChanged;
         }
+
+        private void OnResolutionChanged(object? sender, EventArgs e) =>
+            Common.Info($"Screen resolution changed: {ResponsivePoint.CurrentResolution}");
 
         private void BindToDataProvider(NetworkAlbionDataProvider dataProvider) {
             #if DEBUG

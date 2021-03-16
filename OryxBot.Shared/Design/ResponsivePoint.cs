@@ -6,6 +6,7 @@ namespace OryxBot.Shared.Design
 {
     public readonly struct ResponsivePoint
     {
+        
         [Flags]
         public enum AnchorStyle
         {
@@ -22,15 +23,24 @@ namespace OryxBot.Shared.Design
         private readonly int _screenHeight;
         private readonly double _screenRatio => 1d*_screenWidth/_screenHeight;
 
+        public static event EventHandler? ResolutionChanged;
+        public static (int width, int height) CurrentResolution {
+            set {
+                (CurrentScreenWidth, CurrentScreenHeight) = (value.width, value.height);
+                ResolutionChanged?.Invoke(null, EventArgs.Empty);
+            }
+            get => (CurrentScreenWidth, CurrentScreenHeight);
+        }
+            
         private static int? _currentScreenWidth;
         public static int CurrentScreenWidth {
             get => _currentScreenWidth ?? throw new UnknownScreenResolutionExtension();
-            set => _currentScreenWidth = value;
+            private set => _currentScreenWidth = value;
         }
         private static int? _currentScreenHeight;
         public static int CurrentScreenHeight {
             get => _currentScreenHeight?? throw new UnknownScreenResolutionExtension();
-            set => _currentScreenHeight = value;
+            private set => _currentScreenHeight = value;
         }
         
         private double _currentScreenRatio => 1d*CurrentScreenWidth/CurrentScreenHeight;

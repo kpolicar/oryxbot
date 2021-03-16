@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Reflection;
 using System.Windows.Forms;
@@ -74,7 +75,9 @@ namespace OryxBot.Client.Windows.Services
                 
                 if (step == TradeMissionRecord.MoveStep.SerializedName) {
                     
-                    var move = new MoveEventArgs(float.Parse(fields[1]), float.Parse(fields[2]));
+                    var move = new MoveEventArgs(
+                        float.Parse(fields[1], CultureInfo.InvariantCulture.NumberFormat), 
+                        float.Parse(fields[2], CultureInfo.InvariantCulture.NumberFormat));
                     steps.AddLast(TradeMissionRecord.MoveStep.From(move));
                 } else if (step == TradeMissionRecord.ChangeClusterStep.SerializedName) {
                     
@@ -85,7 +88,7 @@ namespace OryxBot.Client.Windows.Services
                     Debug.Fail("Something went wrong");
                 }
             }
-
+            
             return steps;
         }
 

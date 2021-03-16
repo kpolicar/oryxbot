@@ -42,11 +42,10 @@ namespace OryxBot.Client.Windows
             public Kernel() {
                 BootstrapServices();
                 BindServices();
-                Task.Run(() => {
-                    (ResponsivePoint.CurrentScreenWidth, ResponsivePoint.CurrentScreenHeight) = (
-                        User32.GetSystemMetrics(User32.SM_CXFULLSCREEN), 
-                        User32.GetSystemMetrics(User32.SM_CYFULLSCREEN));
-                    
+                Task.Run(() => { 
+                    ResponsivePoint.CurrentResolution = (
+                        User32.GetSystemMetrics(User32.SM_CXSCREEN), 
+                        User32.GetSystemMetrics(User32.SM_CYSCREEN));
                     var networkDataProvider = Services.GetService<AlbionDataProvider>() as NetworkAlbionDataProvider;
                     networkDataProvider?.Run();
                 });
