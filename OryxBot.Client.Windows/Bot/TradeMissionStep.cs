@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Diagnostics;
+using System.Globalization;
 using System.Threading;
 using OryxBot.Client.Windows.Bot.Exceptions;
 using OryxBot.Client.Windows.Bot.Game;
@@ -32,12 +33,16 @@ namespace OryxBot.Client.Windows.Bot
                     AverageClusterChangeDuration = DefaultAverageClusterChangeDuration;
                 
                 successfulParse =
-                    float.TryParse(ConfigurationManager.AppSettings.Get("reachedWaypointDistance")!, out MaxDistance);
+                    float.TryParse(
+                        ConfigurationManager.AppSettings.Get("reachedWaypointDistance")!,
+                        NumberStyles.Float | NumberStyles.AllowThousands,
+                        CultureInfo.InvariantCulture.NumberFormat,
+                        out MaxDistance);
                 if (!successfulParse)
                     MaxDistance = DefaultMaxDistance;
             }
         
-            private const int DefaultAverageClusterChangeDuration = 10000;
+            private const int DefaultAverageClusterChangeDuration = 8000;
             private static readonly int AverageClusterChangeDuration;
             
             private const float DefaultMaxDistance = 4f;

@@ -49,7 +49,10 @@ namespace OryxBot.Client.Windows.Bot.Services
             // Try to get unstuck
             if (!LocalCharacter.Instance.Moving) {
                 fixingCourse = true;
-                direction = Vector2.Transform(direction, Matrix3x2.CreateRotation(-(float)System.Math.PI/3));
+                
+                direction = LocalCharacter.Instance.RecentlyChangedCluster
+                    ? Vector2.Transform(direction, Matrix3x2.CreateRotation(-(float) System.Math.PI / 3f))
+                    : Vector2.Transform(direction, Matrix3x2.CreateRotation(-5f*(float) System.Math.PI / 3f));
             }
             
             direction = Vector2.Normalize(direction);

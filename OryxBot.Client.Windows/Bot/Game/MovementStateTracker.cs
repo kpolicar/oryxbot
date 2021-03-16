@@ -1,4 +1,5 @@
 using System;
+using System.Configuration;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using OryxBot.Client.Windows.Bot.Services;
@@ -10,10 +11,20 @@ namespace OryxBot.Client.Windows.Bot.Game
     {
         private class MovementStateTracker
         {
+            static MovementStateTracker() {
+                var successfulParse =
+                    int.TryParse(ConfigurationManager.AppSettings.Get("averageTimeToLoadCluster")!, out AverageClusterChangeDuration);
+                if (!successfulParse)
+                    AverageClusterChangeDuration = DefaultAverageClusterChangeDuration;
+            }
+        
+            private const int DefaultAverageClusterChangeDuration = 10000;
+            private static readonly int AverageClusterChangeDuration;
+            
             private const float MinDistanceConsideredAsMove = 0.2f;
             private int StandStillDuration =>
                 System.Math.Max(NetworkAlbionDataProvider.QueryNetworkInterval * 4, 1300);
-            private const int RecentlyChangeClusterDuration = 30000;
+            private int RecentlyChangeClusterDuration => AverageClusterChangeDuration*3;
             private readonly LocalCharacter _character;
             private Stopwatch sw = new();
             private Stopwatch sw_cluster = new();
@@ -42,8 +53,8 @@ namespace OryxBot.Client.Windows.Bot.Game
                 _character.RecentlyChangedCluster = true;
                 
                 sw_cluster.Restart();
-                if (movementTimeoutTask.IsCompleted)
-                    movementTimeoutTask = Task.Run(OnClusterTimeoutTaskTick);
+                if (clusterChangeTimeoutTask.IsCompleted)
+                    clusterChangeTimeoutTask = Task.Run(OnClusterTimeoutTaskTick);
             }
 
             private async Task OnTimeoutTaskTick() {
