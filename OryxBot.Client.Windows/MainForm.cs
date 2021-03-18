@@ -6,6 +6,7 @@ using System.Drawing;
 using System.Net.Http;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Inkybot.Api;
 using Microsoft.VisualBasic.ApplicationServices;
 using OryxBot.Client.Windows;
 using OryxBot.Client.Windows.Api;

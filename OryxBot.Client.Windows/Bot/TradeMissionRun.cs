@@ -16,6 +16,7 @@ namespace OryxBot.Client.Windows.Bot
     public partial class TradeMissionRun : Job, HasDependencies
     {
         public event EventHandler? Finished;
+        public event EventHandler? RunComplete;
         internal event EventHandler<TradeMissionEvent>? Progress;
         internal event EventHandler? Reset;
         private const int DelayBetweenSteps = 1000;
@@ -105,6 +106,10 @@ namespace OryxBot.Client.Windows.Bot
             };
             Progress?.Invoke(this, new TradeMissionEvent(_step));
             Console.WriteLine("Progressed to next step: "+_step.GetType());
+            
+            if (_step is RunToBank) {
+                RunComplete?.Invoke(this, EventArgs.Empty);
+            }
         }
     }
 }

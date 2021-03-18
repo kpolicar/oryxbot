@@ -56,6 +56,12 @@ namespace OryxBot.Client.Windows.Api
             Debug.WriteLine("Http response: "+result);
             return JsonConvert.DeserializeObject<VersionDetails>(result);
         }
+        
+        public async Task NotifyRunComplete() {
+            await WaitForStableConnection();
+            Connection?.Request()
+                .PostAsync($"{Server.ApiUrl}/notify/trademission/complete", new StringContent(""));
+        }
 
         public void BindDependencies(ServiceContainer serviceContainer) {
             var authManager = serviceContainer.GetService<AuthManager>();

@@ -1,8 +1,10 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Inkybot.Api;
 using OryxBot.Client.Windows.Bot;
 using OryxBot.Client.Windows.Bot.Contracts;
 using OryxBot.Client.Windows.Bot.Game;
@@ -27,6 +29,7 @@ namespace OryxBot.Client.Windows
             public readonly ServiceContainer Services = new();
 
             private readonly Dictionary<Type, object> _services = new() {
+                {typeof(ApiNotifier), new ApiNotifier()},
                 {typeof(ApiClient), new ApiClient()},
                 {typeof(AuthManager), new ApiAuthManager()},
                 {typeof(Input), new Win32Input()},

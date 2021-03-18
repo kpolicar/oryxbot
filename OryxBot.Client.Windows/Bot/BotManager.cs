@@ -14,11 +14,13 @@ namespace OryxBot.Client.Windows.Bot
         public event EventHandler<BotEventArgs>? Started;
         public event EventHandler<BotEventArgs>? Stopped;
         public event EventHandler<BotEventArgs>? JobChanged;
+        public event EventHandler<BotEventArgs>? TradeMissionRun;
+        public event EventHandler<BotEventArgs>? TradeMissionRecord;
         private ServiceContainer serviceContainer = null!;
         private TradeMissionRouteProvider routeProvider = null!;
         public BotJob? Bot;
         public bool IsRunning { get; private set; }
-
+        
 
         public void BindDependencies(ServiceContainer serviceContainer) {
             this.serviceContainer = serviceContainer;
@@ -69,6 +71,10 @@ namespace OryxBot.Client.Windows.Bot
                 Bot.Stopped += (_, _) => Stopped?.Invoke(this, new BotEventArgs(Bot));
                 
                 JobChanged?.Invoke(this, new BotEventArgs(Bot));
+                if (Bot is TradeMissionRun)
+                    TradeMissionRun?.Invoke(this, new BotEventArgs(Bot));
+                else if (Bot is TradeMissionRecord)
+                    TradeMissionRecord?.Invoke(this, new BotEventArgs(Bot));
             }
         }
     }
