@@ -14,16 +14,16 @@ namespace OryxBot.Client.Windows.Bot.Services
             builder.AddRequestHandler(new UpdateCharacterCluster());
             builder.AddRequestHandler(new UpdateCharacterAddInteracting());
             builder.AddRequestHandler(new RaiseUnRegisterFromObjectEvent());
-            builder.AddEventHandler(new CharacaterDied());
+            builder.AddEventHandler(new CharacterDied());
             
             // builder.AddHandler(new AsyncRaiseRequestPacketEvent(this));
             // builder.AddHandler(new AsyncRaiseEventPacketEvent(this));
         }
 
-        private class CharacaterDied : EventPacketHandler<DiedEvent>
+        private class CharacterDied : EventPacketHandler<DiedEvent>
         {
-            public CharacaterDied() :
-                base((int) OperationCodes.RegisterToObject) {
+            public CharacterDied() :
+                base((int) EventCodes.Died) {
             }
             
             protected override Task OnActionAsync(DiedEvent value) {

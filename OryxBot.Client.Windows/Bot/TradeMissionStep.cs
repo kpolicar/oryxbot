@@ -157,10 +157,6 @@ namespace OryxBot.Client.Windows.Bot
                         return;
                 }
 
-                var changeCluster = (Step.Current as TradeMissionRecord.ChangeClusterStep)!;
-                if (changeCluster.Location != LocalCharacter.Instance.Cluster)
-                    throw new RouteException(Step.Current);
-
                 MoveToNextRouteStep();
 
                 // Update his current position so as not to accidentally go through portal again

@@ -16,31 +16,41 @@ namespace OryxBot.Client.Windows.Services
         private MainForm App = null!;
         
         public LinkedList<TradeMissionRecord.RecordableStep>? Route() {
-            // var result = App.TradeMissionRunRouteFile.ShowDialog();
-            // if (result != DialogResult.OK)
-            //     return null;
-            //
-            // var path = App.TradeMissionRunRouteFile.FileName;
-            // if (path == null)
-            //     return null;
-            // using var textStream = new StreamReader(path);
-            // return RouteFromStream(textStream.BaseStream);
+            var result = App.TradeMissionRunRouteFile.ShowDialog();
+            if (result != DialogResult.OK)
+                return null;
             
-            var resource = "OryxBot.Client.Windows.Bot.Resources.route_lymhurst_trademission.csv";
-            using var resourceStream =
-                Assembly.GetAssembly(GetType())!.GetManifestResourceStream(resource)!;
-            
-            using var textStream = new StreamReader(resourceStream);
+            var path = App.TradeMissionRunRouteFile.FileName;
+            if (path == null)
+                return null;
+            using var textStream = new StreamReader(path);
             return RouteFromStream(textStream.BaseStream);
+            
+            // var resource = "OryxBot.Client.Windows.Bot.Resources.route_lymhurst_trademission.csv";
+            // using var resourceStream =
+            //     Assembly.GetAssembly(GetType())!.GetManifestResourceStream(resource)!;
+            //
+            // using var textStream = new StreamReader(resourceStream);
+            // return RouteFromStream(textStream.BaseStream);
         }
 
         public LinkedList<TradeMissionRecord.RecordableStep>? RouteBack() {
-            var resource = "OryxBot.Client.Windows.Bot.Resources.route_lymhurst_trademission_back.csv";
-            using var resourceStream =
-                Assembly.GetAssembly(GetType())!.GetManifestResourceStream(resource)!;
+            var result = App.TradeMissionRunRouteFile.ShowDialog();
+            if (result != DialogResult.OK)
+                return null;
             
-            using var textStream = new StreamReader(resourceStream);
+            var path = App.TradeMissionRunRouteFile.FileName;
+            if (path == null)
+                return null;
+            using var textStream = new StreamReader(path);
             return RouteFromStream(textStream.BaseStream);
+            
+            // var resource = "OryxBot.Client.Windows.Bot.Resources.route_lymhurst_trademission_back.csv";
+            // using var resourceStream =
+            //     Assembly.GetAssembly(GetType())!.GetManifestResourceStream(resource)!;
+            //
+            // using var textStream = new StreamReader(resourceStream);
+            // return RouteFromStream(textStream.BaseStream);
         }
 
         public LinkedList<TradeMissionRecord.RecordableStep>? RouteFromBankToQuest() {

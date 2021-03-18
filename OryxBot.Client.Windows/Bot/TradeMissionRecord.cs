@@ -42,6 +42,7 @@ namespace OryxBot.Client.Windows.Bot
                 return;
             
             var fileName = GenerateFileName();
+            Directory.CreateDirectory("recordings");
             using var fileStream = new StreamWriter($"recordings/{fileName}");
 
             lock (state) {

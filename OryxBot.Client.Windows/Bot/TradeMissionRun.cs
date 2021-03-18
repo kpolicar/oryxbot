@@ -57,11 +57,10 @@ namespace OryxBot.Client.Windows.Bot
         }
 
         public void Pause() {
-            if (Running)
+            if (Running) {
                 Stop();
-            else
-                Start();
-            _paused = true;
+                _paused = true;
+            }
         }
 
         private void ResetRun() {
