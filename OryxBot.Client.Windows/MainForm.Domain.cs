@@ -1,4 +1,5 @@
 using System;
+using OryxBot.Client.Windows.Bot.Contracts;
 using OryxBot.Shared.Events;
 
 namespace OryxBot.Client.Windows
@@ -24,6 +25,12 @@ namespace OryxBot.Client.Windows
         private void OnFetchedUser(object? sender, FetchedUserEventArgs e) {
             ToolStipUsernameLabel.Text = Resources.UIApplicationContext.ToolStipUsernameLabel_TextLoggedInAs
                 .Replace(":name", e.user.name);
+        }
+        
+        private void OnRouteProviderModeChanged(object? sender, EventArgs e) {
+            ToolStripEnableCustomRoutesButton.Text = routeProvider.CustomRoutes
+                ? Resources.UIApplicationContext.ToolStripEnableCustomRoutesButton_Text_Custom
+                : Resources.UIApplicationContext.ToolStripEnableCustomRoutesButton_Text;
         }
     }
 }

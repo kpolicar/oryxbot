@@ -107,15 +107,6 @@ namespace OryxBot.Client.Windows.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Panel.
-        /// </summary>
-        internal static string ToolStipPanelButton_Text {
-            get {
-                return ResourceManager.GetString("ToolStipPanelButton.Text", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Start Recording (F1).
         /// </summary>
         internal static string ToolStipToggleBotTradeMissionRecordButton_TextStart {
@@ -175,6 +166,24 @@ namespace OryxBot.Client.Windows.Resources {
         internal static string ToolStripCloseButton_Text {
             get {
                 return ResourceManager.GetString("ToolStripCloseButton.Text", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enable Custom Routes.
+        /// </summary>
+        internal static string ToolStripEnableCustomRoutesButton_Text {
+            get {
+                return ResourceManager.GetString("ToolStripEnableCustomRoutesButton.Text", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Disable Custom Routes.
+        /// </summary>
+        internal static string ToolStripEnableCustomRoutesButton_Text_Custom {
+            get {
+                return ResourceManager.GetString("ToolStripEnableCustomRoutesButton.Text_Custom", resourceCulture);
             }
         }
         

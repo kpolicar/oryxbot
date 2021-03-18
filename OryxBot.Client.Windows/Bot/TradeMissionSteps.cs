@@ -72,7 +72,7 @@ namespace OryxBot.Client.Windows.Bot
         
         internal class ProgressQuest : InteractionStep
         {
-            protected override Position _interactablePosition => new(50.012352f, 190.30232f);
+            protected override Position _interactablePosition => new(69.94549f, -240.07866f);
             
             protected override bool DoInteractions() {
                 actions.NpcQuestProgress();

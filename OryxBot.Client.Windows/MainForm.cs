@@ -9,6 +9,7 @@ using System.Windows.Forms;
 using Microsoft.VisualBasic.ApplicationServices;
 using OryxBot.Client.Windows;
 using OryxBot.Client.Windows.Api;
+using OryxBot.Client.Windows.Bot.Contracts;
 using OryxBot.Client.Windows.Contracts;
 using OryxBot.Client.Windows.Domain;
 using OryxBot.Client.Windows.Events;
@@ -24,6 +25,7 @@ namespace OryxBot.Client.Windows
     {
         private ApiClient api;
         private AuthManager auth;
+        private TradeMissionRouteProvider routeProvider;
         public static event EventHandler? LoggingIn;
 
         public MainForm() {
@@ -41,6 +43,8 @@ namespace OryxBot.Client.Windows
             rememberPasswordCheckbox.Checked = ConfigurationManager.AppSettings.Get("password")?.Length > 0;
             auth = Program.Services.GetService<AuthManager>();
             api = Program.Services.GetService<ApiClient>();
+            routeProvider = Program.Services.GetService<TradeMissionRouteProvider>();
+            routeProvider.ModeChanged += OnRouteProviderModeChanged;
         }
 
         private void OnVisibleChanged(object? sender, EventArgs e) {

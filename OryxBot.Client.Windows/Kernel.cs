@@ -86,6 +86,7 @@ namespace OryxBot.Client.Windows
                 
                 app.ToolStipToggleBotTradeMissionRecordButton.Click += (_, _) => AuthorizedToggleTradeMissionRecord();
                 app.ToolStipToggleBotTradeMissionRunButton.Click += (_, _) => AuthorizedToggleTradeMissionRun();
+                app.ToolStripEnableCustomRoutesButton.Click += (_, _) => AuthorizedToggleCustomTradeMissionMode();
                 
                 bot.Started += (sender, e) => {
                     if (e.Job is TradeMissionRecord)
@@ -160,6 +161,13 @@ namespace OryxBot.Client.Windows
                 
                 if (auth.User?.is_subscribed ?? false)
                     bot.ToggleTradeMissionRun();
+            }
+            private void AuthorizedToggleCustomTradeMissionMode() {
+                var routeProvider = Services.GetService<TradeMissionRouteProvider>();
+                var auth = Services.GetService<AuthManager>();
+                
+                if (auth.User?.is_subscribed ?? false)
+                    routeProvider.ToggleCustomMode();
             }
         }
     }

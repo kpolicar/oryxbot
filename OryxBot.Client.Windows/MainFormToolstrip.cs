@@ -20,9 +20,5 @@ namespace OryxBot.Client.Windows
 
         private void OnExitClicked(object? sender, EventArgs e) =>
             Application.Exit();
-
-        private void OnPanelClicked(object? sender, EventArgs e) {
-            // Todo: Open website
-        }
     }
 }

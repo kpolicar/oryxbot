@@ -41,8 +41,11 @@
     <data name="TradeMissionRunRouteFile.Title" xml:space="preserve">
         <value>Select Route File</value>
     </data>
-    <data name="ToolStipPanelButton.Text" xml:space="preserve">
-        <value>Panel</value>
+    <data name="ToolStripEnableCustomRoutesButton.Text" xml:space="preserve">
+        <value>Enable Custom Routes</value>
+    </data>
+    <data name="ToolStripEnableCustomRoutesButton.Text_Custom" xml:space="preserve">
+        <value>Disable Custom Routes</value>
     </data>
     <data name="ToolStipUsernameLabel.TextLoggedInAs" xml:space="preserve">
         <value>Logged in as :name</value>
