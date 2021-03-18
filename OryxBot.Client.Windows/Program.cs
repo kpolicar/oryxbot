@@ -20,9 +20,9 @@ namespace OryxBot.Client.Windows
         public const string GrantSecret = "***REMOVED***";
         
         #endif
-        public const string VersionNumber = "1";
-        public const string Version = "v0.1 Beta";
-        public const string VersionEndpoint = "v0.1";
+        public const string VersionNumber = "2";
+        public const string Version = "v0.2 Beta";
+        public const string VersionEndpoint = "v0.2";
         
         public static readonly Kernel _kernel = new();
         public static ServiceContainer Services => _kernel.Services;
