@@ -39,8 +39,10 @@ namespace OryxBot.Client.Windows
             }
         }
         
-        public static string Encrypt(string plainText, string key)
+        public static string Encrypt(string plainText, byte[]? key=null)
         {
+            key ??= Program.AppKey;
+            
             try
             {
                 RijndaelManaged aes = new RijndaelManaged();
@@ -49,7 +51,7 @@ namespace OryxBot.Client.Windows
                 aes.Padding = PaddingMode.PKCS7;
                 aes.Mode = CipherMode.CBC;
 
-                aes.Key = encoding.GetBytes(key);
+                aes.Key = key;
                 aes.GenerateIV();
 
                 ICryptoTransform AESEncrypt = aes.CreateEncryptor(aes.Key, aes.IV);
@@ -76,9 +78,9 @@ namespace OryxBot.Client.Windows
             }
         }
         
-        static byte[] HmacSHA256(String data, String key)
+        static byte[] HmacSHA256(String data, byte[] key)
         {
-            using (HMACSHA256 hmac = new HMACSHA256(encoding.GetBytes(key)))
+            using (HMACSHA256 hmac = new HMACSHA256(key))
             {
                 return hmac.ComputeHash(encoding.GetBytes(data));
             }
