@@ -12,17 +12,21 @@ namespace OryxBot.Client.Windows
         public const string Url = "http://oryxbot.test";
         public const string GrantId = "1";
         public const string GrantSecret = "***REMOVED***";
+        public const string _appKey = "***REMOVED***";
         
         #else
         
         public const string Url = "https://oryxbot.com";
         public const string GrantId = "2";
         public const string GrantSecret = "***REMOVED***";
+        public const string _appKey = "***REMOVED***";
         
         #endif
-        public const string VersionNumber = "2";
-        public const string Version = "v0.2 Beta";
-        public const string VersionEndpoint = "v0.2";
+        
+        public static byte[] AppKey => System.Convert.FromBase64String(_appKey);
+        public const string VersionNumber = "3";
+        public const string Version = "v0.3 Beta";
+        public const string VersionEndpoint = "v0.3";
         
         public static readonly Kernel _kernel = new();
         public static ServiceContainer Services => _kernel.Services;

@@ -36,32 +36,34 @@ namespace OryxBot.Client.Windows.Api
 
             var client = Connection!.Request();
             var response = await client.GetAsync($"{Server.ApiUrl}/user");
-            
             response.EnsureSuccessStatusCode();
-
-            var result = response.Content.ReadAsStringAsync().Result;
+            var result = await GetResultFromEncryptedResponse(response);
+            
             Debug.WriteLine("Http response: "+result);
             var user = JsonConvert.DeserializeObject<User>(result);
 
             UserFetched?.Invoke(this, new FetchedUserEventArgs(user));
             return user;
         }
-        
+
         public async Task<VersionDetails> NewestVersion() {
             var client = new HttpClient();
             var response = await client.GetAsync(Server.ApiUrl);
             response.EnsureSuccessStatusCode();
-
-            var result = response.Content.ReadAsStringAsync().Result;
+            var result = await GetResultFromEncryptedResponse(response);
+            
             Debug.WriteLine("Http response: "+result);
             return JsonConvert.DeserializeObject<VersionDetails>(result);
         }
-        
+
         public async Task NotifyRunComplete() {
             await WaitForStableConnection();
             Connection?.Request()
                 .PostAsync($"{Server.ApiUrl}/notify/trademission/complete", new StringContent(""));
         }
+
+        private async Task<string> GetResultFromEncryptedResponse(HttpResponseMessage response) =>
+            Aes256CbcEncrypter.Decrypt(await response.Content.ReadAsStringAsync());
 
         public void BindDependencies(ServiceContainer serviceContainer) {
             var authManager = serviceContainer.GetService<AuthManager>();

@@ -6,21 +6,21 @@ namespace OryxBot.Shared
     #pragma warning disable 8618
     public class User
     {
-        public string email => CXpD6X71WZhYsHf;
+        public string email => KEwTWbPyWmdjUKh;
         [Obfuscation(Exclude = true)]
-        public string CXpD6X71WZhYsHf;
+        public string KEwTWbPyWmdjUKh;
         
-        public string name => i30jfVx9krmacQH;
+        public string name => efteqXlZxvUNNvi;
         [Obfuscation(Exclude = true)]
-        public string i30jfVx9krmacQH;
+        public string efteqXlZxvUNNvi;
         
-        public bool is_subscribed => wVakGMaAnUQkCFZ;
+        public bool is_subscribed => MVsdYkjeqDKCQBD;
         [Obfuscation(Exclude = true)]
-        public bool wVakGMaAnUQkCFZ;
+        public bool MVsdYkjeqDKCQBD;
 
-        public bool on_free_trial => Sw6mNjvR0HZofKj;
+        public bool on_free_trial => uCdeLPhkzFyOSTE;
         [Obfuscation(Exclude = true)]
-        public bool Sw6mNjvR0HZofKj;
+        public bool uCdeLPhkzFyOSTE;
     }
     #pragma warning restore 8618
 }

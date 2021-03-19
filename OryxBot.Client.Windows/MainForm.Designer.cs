@@ -215,9 +215,9 @@ namespace OryxBot.Client.Windows
             // 
             // newVersionLabel
             // 
-            this.newVersionLabel.ActiveLinkColor = System.Drawing.SystemColors.Control;
+            this.newVersionLabel.ActiveLinkColor = System.Drawing.SystemColors.ControlLightLight;
             resources.ApplyResources(this.newVersionLabel, "newVersionLabel");
-            this.newVersionLabel.LinkColor = System.Drawing.Color.FromArgb(((int) (((byte) (50)))), ((int) (((byte) (50)))), ((int) (((byte) (50)))));
+            this.newVersionLabel.LinkColor = System.Drawing.SystemColors.Control;
             this.newVersionLabel.Name = "newVersionLabel";
             this.newVersionLabel.TabStop = true;
             this.newVersionLabel.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.newVersionLabel_LinkClicked);
