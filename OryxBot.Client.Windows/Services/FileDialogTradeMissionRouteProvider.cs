@@ -8,14 +8,18 @@ using System.Windows.Forms;
 using Microsoft.VisualBasic.FileIO;
 using OryxBot.Client.Windows.Bot;
 using OryxBot.Client.Windows.Bot.Contracts;
+using OryxBot.Shared.Design;
 using OryxBot.Shared.Events;
+using OryxBot.Shared.Game;
+using BotManager = OryxBot.Shared.Contracts.BotManager;
 
 namespace OryxBot.Client.Windows.Services
 {
-    public class FileDialogTradeMissionRouteProvider : TradeMissionRouteProvider
+    public class FileDialogTradeMissionRouteProvider : TradeMissionRouteProvider, HasDependencies
     {
-        private MainForm App = null!;
-
+        private MainForm app = null!;
+        private BotManager bot = null!;
+        
         private bool _customRoutes;
         public bool CustomRoutes {
             private set {
@@ -25,8 +29,11 @@ namespace OryxBot.Client.Windows.Services
             get => _customRoutes;
         }
         public event EventHandler? ModeChanged;
-
         
+        public void BindDependencies(ServiceContainer serviceContainer) =>
+            bot = serviceContainer.GetService<BotManager>();
+
+
         public LinkedList<TradeMissionRecord.RecordableStep>? Route() =>
             !CustomRoutes
                 ? DefaultRoute()
@@ -38,46 +45,34 @@ namespace OryxBot.Client.Windows.Services
                 : RouteFromFileSelector();
 
         private LinkedList<TradeMissionRecord.RecordableStep>? RouteFromFileSelector() {
-            var result = App.TradeMissionRunRouteFile.ShowDialog();
+            var result = app.TradeMissionRunRouteFile.ShowDialog();
             if (result != DialogResult.OK)
                 return null;
             
-            var path = App.TradeMissionRunRouteFile.FileName;
+            var path = app.TradeMissionRunRouteFile.FileName;
             if (path == null)
                 return null;
             using var textStream = new StreamReader(path);
             return RouteFromStream(textStream.BaseStream);
         }
+        
+        public void ToggleCustomMode() =>
+            CustomRoutes = !CustomRoutes;
 
-        private LinkedList<TradeMissionRecord.RecordableStep>? DefaultRoute() {
-            var resource = "OryxBot.Client.Windows.Bot.Resources.route_lymhurst_trademission.csv";
-            using var resourceStream =
-                Assembly.GetAssembly(GetType())!.GetManifestResourceStream(resource)!;
-            
-            using var textStream = new StreamReader(resourceStream);
-            return RouteFromStream(textStream.BaseStream);
-        }
+        public LinkedList<TradeMissionRecord.RecordableStep>? DefaultRoute() =>
+            RouteFromResource("OryxBot.Client.Windows.Bot.Resources.route_{city}_trademission.csv");
 
-        private LinkedList<TradeMissionRecord.RecordableStep>? DefaultRouteBack() {
-            var resource = "OryxBot.Client.Windows.Bot.Resources.route_lymhurst_trademission_back.csv";
-            using var resourceStream =
-                Assembly.GetAssembly(GetType())!.GetManifestResourceStream(resource)!;
-            
-            using var textStream = new StreamReader(resourceStream);
-            return RouteFromStream(textStream.BaseStream);
-        }
+        public LinkedList<TradeMissionRecord.RecordableStep>? DefaultRouteBack() =>
+            RouteFromResource("OryxBot.Client.Windows.Bot.Resources.route_{city}_trademission_back.csv");
 
-        public LinkedList<TradeMissionRecord.RecordableStep>? RouteFromBankToQuest() {
-            var resource = "OryxBot.Client.Windows.Bot.Resources.route_lymhurst_bank_to_quest.csv";
-            using var resourceStream =
-                Assembly.GetAssembly(GetType())!.GetManifestResourceStream(resource)!;
-            
-            using var textStream = new StreamReader(resourceStream);
-            return RouteFromStream(textStream.BaseStream);
-        }
+        public LinkedList<TradeMissionRecord.RecordableStep>? RouteFromBankToQuest() =>
+            RouteFromResource("OryxBot.Client.Windows.Bot.Resources.route_{city}_bank_to_quest.csv");
 
-        public LinkedList<TradeMissionRecord.RecordableStep>? RouteFromQuestToBank() {
-            var resource = "OryxBot.Client.Windows.Bot.Resources.route_lymhurst_quest_to_bank.csv";
+        public LinkedList<TradeMissionRecord.RecordableStep>? RouteFromQuestToBank() =>
+            RouteFromResource("OryxBot.Client.Windows.Bot.Resources.route_{city}_quest_to_bank.csv");
+
+        protected LinkedList<TradeMissionRecord.RecordableStep>? RouteFromResource(string resource) {
+            resource = resource.Replace("{city}", CityResourcePrefix);
             using var resourceStream =
                 Assembly.GetAssembly(GetType())!.GetManifestResourceStream(resource)!;
             
@@ -85,9 +80,15 @@ namespace OryxBot.Client.Windows.Services
             return RouteFromStream(textStream.BaseStream);
         }
 
-        public void ToggleCustomMode() {
-            CustomRoutes = !CustomRoutes;
-        }
+        public string CityResourcePrefix => bot.ActiveCity switch {
+            City.Caerleon => "caerleon",
+            City.Thetford => "thetford",
+            City.FortSterling => "fortsterling",
+            City.Lymhurst => "lymhurst",
+            City.Bridgewatch => "bridgewatch",
+            City.Martlock => "martlock",
+            _ => throw new ArgumentOutOfRangeException()
+        };
 
         protected LinkedList<TradeMissionRecord.RecordableStep>? RouteFromStream(Stream stream) {
             using var parser = new TextFieldParser(stream) {
@@ -121,6 +122,6 @@ namespace OryxBot.Client.Windows.Services
         }
 
         public void BindToApp(MainForm app) =>
-            App = app;
+            this.app = app;
     }
 }
