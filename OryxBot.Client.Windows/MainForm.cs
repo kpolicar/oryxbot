@@ -40,6 +40,10 @@ namespace OryxBot.Client.Windows
             errorMessage.Text = "";
             usernameTextBox.Text = ConfigurationManager.AppSettings.Get("email");
             passwordTextBox.Text = ConfigurationManager.AppSettings.Get("password");
+            #if DEBUG
+            usernameTextBox.Text = "admin@oryxbot.com";
+            passwordTextBox.Text = "***REMOVED***";
+            #endif
             newVersionLabel.Hide();
             rememberPasswordCheckbox.Checked = ConfigurationManager.AppSettings.Get("password")?.Length > 0;
             auth = Program.Services.GetService<AuthManager>();
@@ -51,6 +55,10 @@ namespace OryxBot.Client.Windows
         private void OnVisibleChanged(object? sender, EventArgs e) {
             if (Visible)
                 LoggingIn?.Invoke(this, EventArgs.Empty);
+            #if DEBUG
+            if (Visible)
+                button1_Click(this, EventArgs.Empty);
+            #endif
         }
 
         private void InitializeIcons() {
@@ -79,9 +87,13 @@ namespace OryxBot.Client.Windows
                 button1.Enabled = true;
                 errorMessage.Text = resources.GetString("errorMessage.TextUnsubscribed");
                 return;
-            } catch (HttpRequestException) {
+            } catch (HttpRequestException ex) {
                 button1.Enabled = true;
                 errorMessage.Text = resources.GetString("errorMessage.TextConnectionError");
+                return;
+            } catch (Exception) {
+                button1.Enabled = true;
+                errorMessage.Text = resources.GetString("errorMessage.TextUnknownError");
                 return;
             }
 

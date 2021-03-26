@@ -38,7 +38,7 @@ namespace OryxBot.Client.Windows.Api
             var response = await client.GetAsync($"{Server.ApiUrl}/user");
             response.EnsureSuccessStatusCode();
             var result = await GetResultFromEncryptedResponse(response);
-            
+
             Debug.WriteLine("Http response: "+result);
             var user = JsonConvert.DeserializeObject<User>(result);
 

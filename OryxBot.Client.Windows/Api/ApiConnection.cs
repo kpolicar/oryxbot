@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
@@ -18,7 +19,7 @@ namespace OryxBot.Client.Windows.Api
         public ApiConnection(AuthDetails authDetails) {
             this.authDetails = authDetails;
             refreshTokenTimer = new Timer();
-            refreshTokenTimer.Interval = 53000;
+            refreshTokenTimer.Interval = 55000;
             refreshTokenTimer.Tick += OnRefreshTokenTimer;
             refreshTokenTimer.Start();
         }
@@ -52,15 +53,22 @@ namespace OryxBot.Client.Windows.Api
                 {"client_secret", Program.GrantSecret},
                 {"scope", ""}
             };
-            var content = new FormUrlEncodedContent(form_params);
+            var jsonMessage = JsonConvert.SerializeObject(form_params);
+            var encrypted = Aes256CbcEncrypter.Encrypt(jsonMessage);
+            
+            var content = new StringContent(encrypted);
             var response = await client.PostAsync(url, content);
 
             if (!response.IsSuccessStatusCode)
                 return false;
 
-            var result = response.Content.ReadAsStringAsync().Result;
+            var result = await GetResultFromEncryptedResponse(response);
             authDetails = JsonConvert.DeserializeObject<AuthDetails>(result);
+            Debug.WriteLine("Http response: "+result);
             return true;
         }
+        
+        private async Task<string> GetResultFromEncryptedResponse(HttpResponseMessage response) =>
+            Aes256CbcEncrypter.Decrypt(await response.Content.ReadAsStringAsync());
     }
 }

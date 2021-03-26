@@ -847,6 +847,9 @@ Trade Mission Bot</value>
   <data name="errorMessage.TextConnectionError" xml:space="preserve">
     <value>Could not connect to Oryxbot!</value>
   </data>
+  <data name="errorMessage.TextUnknownError" xml:space="preserve">
+    <value>Unknown error occured!</value>
+  </data>
   <data name="errorMessage.TextTrialExpired" xml:space="preserve">
     <value>You have already used your free trial!</value>
   </data>

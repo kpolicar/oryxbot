@@ -15,9 +15,6 @@ namespace OryxBot.Client.Windows.Bot.Services
             builder.AddRequestHandler(new UpdateCharacterAddInteracting());
             builder.AddRequestHandler(new RaiseUnRegisterFromObjectEvent());
             builder.AddEventHandler(new CharacterDied());
-            
-            // builder.AddHandler(new AsyncRaiseRequestPacketEvent(this));
-            // builder.AddHandler(new AsyncRaiseEventPacketEvent(this));
         }
 
         private class CharacterDied : EventPacketHandler<DiedEvent>
