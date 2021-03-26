@@ -20,6 +20,7 @@ namespace OryxBot.Client.Windows.Bot
         private ServiceContainer serviceContainer = null!;
         private TradeMissionRouteProvider routeProvider = null!;
         public BotJob? Bot;
+        
         public bool IsRunning { get; private set; }
         public City ActiveCity { get; private set; } = City.Lymhurst;
         
