@@ -45,7 +45,7 @@
       <Compile Update="MainForm.Domain.cs">
         <DependentUpon>MainForm.cs</DependentUpon>
       </Compile>
-      <Compile Update="MainFormToolstrip.cs">
+      <Compile Update="MainForm.Toolstrip.cs">
         <DependentUpon>MainForm.cs</DependentUpon>
       </Compile>
     </ItemGroup>

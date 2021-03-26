@@ -1,5 +1,6 @@
 using System;
 using OryxBot.Shared.Events;
+using OryxBot.Shared.Game;
 
 namespace OryxBot.Shared.Contracts
 {
@@ -13,5 +14,6 @@ namespace OryxBot.Shared.Contracts
         void ToggleTradeMissionRecord();
         void ToggleTradeMissionPause();
         void Stop();
+        void SetActiveCity(City city);
     }
 }

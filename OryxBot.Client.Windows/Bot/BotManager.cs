@@ -5,6 +5,7 @@ using OryxBot.Shared.Contracts;
 using OryxBot.Shared.Design;
 using OryxBot.Shared.Events;
 using OryxBot.Shared.Extensions;
+using OryxBot.Shared.Game;
 using BotManagerContract=OryxBot.Shared.Contracts.BotManager;
 
 namespace OryxBot.Client.Windows.Bot
@@ -20,6 +21,7 @@ namespace OryxBot.Client.Windows.Bot
         private TradeMissionRouteProvider routeProvider = null!;
         public BotJob? Bot;
         public bool IsRunning { get; private set; }
+        public City ActiveCity { get; private set; }
         
 
         public void BindDependencies(ServiceContainer serviceContainer) {
@@ -30,6 +32,9 @@ namespace OryxBot.Client.Windows.Bot
 
         public void Stop() =>
             Bot?.Stop();
+
+        public void SetActiveCity(City city) =>
+            ActiveCity = city;
 
         public void ToggleTradeMissionRun() {
             if (!(Bot is TradeMissionRun)) {
