@@ -52,6 +52,8 @@ namespace OryxBot.Client.Windows.Services
                 Common.Info("Changed cluster: "+LocalCharacter.Instance.Cluster);
             LocalCharacter.Instance.Move += (_, _) =>
                 Common.Debug("Move: "+LocalCharacter.Instance.Position);
+            LocalCharacter.Instance.Move += (_, _) =>
+                Debug.WriteLine("Move: "+LocalCharacter.Instance.Position);
             LocalCharacter.Instance.MovingChanged += (_, _) =>
                 Common.Info("Moving state changed: "+LocalCharacter.Instance.Moving);
             LocalCharacter.Instance.Interaction += (_, _) =>

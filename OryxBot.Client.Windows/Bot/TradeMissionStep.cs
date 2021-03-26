@@ -90,8 +90,8 @@ namespace OryxBot.Client.Windows.Bot
                     Step.MoveNext();
                 }
                 #if DEBUG
-                if (_characterHasDied)
-                    throw new CharacterDiedException(Step.Current);
+                // if (_characterHasDied)
+                //     throw new CharacterDiedException(Step.Current);
                 #endif
                 
                 ProgressMoveStepsAndSkipIfAlreadyAhead();

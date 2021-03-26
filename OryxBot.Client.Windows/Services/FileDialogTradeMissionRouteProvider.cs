@@ -72,12 +72,17 @@ namespace OryxBot.Client.Windows.Services
             RouteFromResource("OryxBot.Client.Windows.Bot.Resources.route_{city}_quest_to_bank.csv");
 
         protected LinkedList<TradeMissionRecord.RecordableStep>? RouteFromResource(string resource) {
-            resource = resource.Replace("{city}", CityResourcePrefix);
-            using var resourceStream =
-                Assembly.GetAssembly(GetType())!.GetManifestResourceStream(resource)!;
-            
-            var textStream = new StreamReader(resourceStream);
-            return RouteFromStream(textStream.BaseStream);
+            try {
+                resource = resource.Replace("{city}", CityResourcePrefix);
+                using var resourceStream =
+                    Assembly.GetAssembly(GetType())!.GetManifestResourceStream(resource)!;
+
+                var textStream = new StreamReader(resourceStream);
+                return RouteFromStream(textStream.BaseStream);
+            } catch (Exception) {
+                Debug.WriteLine("failed "+resource);
+                return new LinkedList<TradeMissionRecord.RecordableStep>();
+            }
         }
 
         public string CityResourcePrefix => bot.ActiveCity switch {

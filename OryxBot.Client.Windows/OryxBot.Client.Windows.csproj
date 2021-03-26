@@ -58,6 +58,16 @@
       <EmbeddedResource Update="MainForm.resx">
         <DependentUpon>MainForm.cs</DependentUpon>
       </EmbeddedResource>
+      <EmbeddedResource Include="Bot\Resources\route_martlock_bank_to_quest.csv" />
+      <EmbeddedResource Include="Bot\Resources\route_martlock_quest_to_bank.csv" />
+      <EmbeddedResource Include="Bot\Resources\route_thetford_bank_to_quest.csv" />
+      <EmbeddedResource Include="Bot\Resources\route_thetford_quest_to_bank.csv" />
+      <EmbeddedResource Include="Bot\Resources\route_fortsterling_bank_to_quest.csv" />
+      <EmbeddedResource Include="Bot\Resources\route_fortsterling_quest_to_bank.csv" />
+      <EmbeddedResource Include="Bot\Resources\route_bridgewatch_bank_to_quest.csv" />
+      <EmbeddedResource Include="Bot\Resources\route_bridgewatch_quest_to_bank.csv" />
+      <EmbeddedResource Include="Bot\Resources\route_caerleon_bank_to_quest.csv" />
+      <EmbeddedResource Include="Bot\Resources\route_caerleon_quest_to_bank.csv" />
       <EmbeddedResource Include="Bot\Resources\route_lymhurst_bank_to_quest.csv" />
       <EmbeddedResource Include="Bot\Resources\route_lymhurst_quest_to_bank.csv" />
       <EmbeddedResource Include="Bot\Resources\route_lymhurst_trademission.csv" />

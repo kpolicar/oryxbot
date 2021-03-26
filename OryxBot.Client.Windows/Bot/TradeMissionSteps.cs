@@ -5,6 +5,7 @@ using OryxBot.Client.Windows.Bot.Exceptions;
 using OryxBot.Client.Windows.Bot.Game;
 using OryxBot.Shared.Design;
 using OryxBot.Shared.Extensions;
+using OryxBot.Shared.Game;
 
 namespace OryxBot.Client.Windows.Bot
 {
@@ -43,7 +44,11 @@ namespace OryxBot.Client.Windows.Bot
         
         internal class TakeQuest : InteractionStep
         {
-            protected override Position _interactablePosition => new(-75.5f, 0);
+            private City City;
+            public TakeQuest(City city) =>
+                City = city;
+
+            protected override Position _interactablePosition => Npc.FactionLeader.Position(City);
             
             protected override bool DoInteractions() {
                 actions.NpcQuestOpenTradeMissionsTab();

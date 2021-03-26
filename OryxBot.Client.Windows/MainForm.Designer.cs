@@ -118,8 +118,8 @@ namespace OryxBot.Client.Windows
                 Items = {
                     ToolStipUsernameLabel,
                     new ToolStripSeparator(),
-                    ToolStripEnableCustomRoutesButton,
                     ToolStripCitySelector,
+                    ToolStripEnableCustomRoutesButton,
                     ToolStipToggleBotTradeMissionRecordButton,
                     ToolStipToggleBotTradeMissionRunButton,
                     //ToolStipPanelButton,

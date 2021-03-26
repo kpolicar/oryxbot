@@ -9,6 +9,7 @@ using OryxBot.Client.Windows.Bot.Services;
 using OryxBot.Shared.Contracts;
 using OryxBot.Shared.Design;
 using OryxBot.Shared.Extensions;
+using OryxBot.Shared.Game;
 using ServiceContainer = OryxBot.Shared.Design.ServiceContainer;
 
 namespace OryxBot.Client.Windows.Bot
@@ -30,10 +31,16 @@ namespace OryxBot.Client.Windows.Bot
         
         private Thread? runningThread;
         private bool _paused;
+        private City City;
         
 
 
-        public TradeMissionRun(LinkedList<TradeMissionRecord.RecordableStep> steps, LinkedList<TradeMissionRecord.RecordableStep> stepsBack) {
+        public TradeMissionRun(
+            City city,
+            LinkedList<TradeMissionRecord.RecordableStep> steps,
+            LinkedList<TradeMissionRecord.RecordableStep> stepsBack)
+        {
+            City = city;
             Route = steps;
             RouteBack = stepsBack;
         }
@@ -96,7 +103,7 @@ namespace OryxBot.Client.Windows.Bot
             _step = _step switch {
                 RunToBank => new BankItems(),
                 BankItems => new RunToQuest(),
-                RunToQuest => new TakeQuest(),
+                RunToQuest => new TakeQuest(City),
                 TakeQuest => new RunRouteToDestination(Route),
                 RunRouteToDestination => new ProgressQuest(),
                 ProgressQuest => new RunRouteBack(RouteBack),
