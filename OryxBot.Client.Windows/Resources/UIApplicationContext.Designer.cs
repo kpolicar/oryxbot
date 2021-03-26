@@ -107,7 +107,7 @@ namespace OryxBot.Client.Windows.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Start Recording (F1).
+        ///   Looks up a localized string similar to Begin Recording Route (F1).
         /// </summary>
         internal static string ToolStipToggleBotTradeMissionRecordButton_TextStart {
             get {
@@ -116,7 +116,7 @@ namespace OryxBot.Client.Windows.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Stop Recording (F1).
+        ///   Looks up a localized string similar to Stop Recording Route (F1).
         /// </summary>
         internal static string ToolStipToggleBotTradeMissionRecordButton_TextStop {
             get {
@@ -125,7 +125,7 @@ namespace OryxBot.Client.Windows.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Start Route (F2).
+        ///   Looks up a localized string similar to Begin Trade Mission (F2).
         /// </summary>
         internal static string ToolStipToggleBotTradeMissionRunButton_TextStart {
             get {
@@ -134,7 +134,7 @@ namespace OryxBot.Client.Windows.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Stop Route (F2).
+        ///   Looks up a localized string similar to Stop Trade Mission (F2).
         /// </summary>
         internal static string ToolStipToggleBotTradeMissionRunButton_TextStop {
             get {

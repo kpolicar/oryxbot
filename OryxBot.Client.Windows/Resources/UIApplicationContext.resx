@@ -27,16 +27,16 @@
         <value>OryxBot</value>
     </data>
     <data name="ToolStipToggleBotTradeMissionRecordButton.TextStop" xml:space="preserve">
-        <value>Stop Recording (F1)</value>
+        <value>Stop Recording Route (F1)</value>
     </data>
     <data name="ToolStipToggleBotTradeMissionRecordButton.TextStart" xml:space="preserve">
-        <value>Start Recording (F1)</value>
+        <value>Begin Recording Route (F1)</value>
     </data>
     <data name="ToolStipToggleBotTradeMissionRunButton.TextStop" xml:space="preserve">
-        <value>Stop Route (F2)</value>
+        <value>Stop Trade Mission (F2)</value>
     </data>
     <data name="ToolStipToggleBotTradeMissionRunButton.TextStart" xml:space="preserve">
-        <value>Start Route (F2)</value>
+        <value>Begin Trade Mission (F2)</value>
     </data>
     <data name="TradeMissionRunRouteFile.Title" xml:space="preserve">
         <value>Select Route File</value>
