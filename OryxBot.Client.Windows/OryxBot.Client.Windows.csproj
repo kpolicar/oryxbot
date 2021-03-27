@@ -60,6 +60,8 @@
       </EmbeddedResource>
       <EmbeddedResource Include="Bot\Resources\route_martlock_bank_to_quest.csv" />
       <EmbeddedResource Include="Bot\Resources\route_martlock_quest_to_bank.csv" />
+      <EmbeddedResource Include="Bot\Resources\route_martlock_trademission.csv" />
+      <EmbeddedResource Include="Bot\Resources\route_martlock_trademission_back.csv" />
       <EmbeddedResource Include="Bot\Resources\route_thetford_bank_to_quest.csv" />
       <EmbeddedResource Include="Bot\Resources\route_thetford_quest_to_bank.csv" />
       <EmbeddedResource Include="Bot\Resources\route_thetford_trademission.csv" />

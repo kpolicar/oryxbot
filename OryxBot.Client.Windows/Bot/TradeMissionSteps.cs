@@ -48,7 +48,7 @@ namespace OryxBot.Client.Windows.Bot
             public TakeQuest(City city) =>
                 City = city;
 
-            protected override Position _interactablePosition => Npc.FactionLeader.Position(City);
+            protected override Position _interactablePosition => Npc.FactionLeader.Position[City];
             
             protected override bool DoInteractions() {
                 actions.NpcQuestOpenTradeMissionsTab();
