@@ -47,13 +47,6 @@
     <data name="ToolStripEnableCustomRoutesButton.Text_Custom" xml:space="preserve">
         <value>Disable Custom Routes</value>
     </data>
-    <data name="InfoMessage.Starting_Route_Title" xml:space="preserve">
-        <value>Route Started</value>
-    </data>
-    <data name="InfoMessage.Starting_Route" xml:space="preserve">
-        <value>:name
-You have selected to run a trade mission route from :origin to :destination.</value>
-    </data>
     <data name="ToolStipUsernameLabel.TextLoggedInAs" xml:space="preserve">
         <value>Logged in as :name</value>
     </data>

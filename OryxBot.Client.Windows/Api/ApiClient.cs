@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -60,6 +61,22 @@ namespace OryxBot.Client.Windows.Api
             await WaitForStableConnection();
             Connection?.Request()
                 .PostAsync($"{Server.ApiUrl}/notify/trademission/complete", new StringContent(""));
+        }
+
+        public async Task NotifyRunStarting(string title, string message) {
+            await WaitForStableConnection();
+            
+            if (title.Length > 40)
+                title = title.Substring(0, 40) + "...";
+            
+            var form_params = new Dictionary<string, string> {
+                {"title", title},
+                {"message", message}
+            };
+            var encrypted = Aes256CbcEncrypter.Encrypt(form_params);
+            
+            Connection?.Request()
+                .PostAsync($"{Server.ApiUrl}/notify/trademission/starting", new StringContent(encrypted));
         }
 
         private async Task<string> GetResultFromEncryptedResponse(HttpResponseMessage response) =>

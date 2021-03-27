@@ -39,6 +39,9 @@ namespace OryxBot.Client.Windows
             }
         }
         
+        public static string Encrypt(Dictionary<string,string> data, byte[]? key = null) =>
+            Encrypt(JsonConvert.SerializeObject(data), key);
+        
         public static string Encrypt(string plainText, byte[]? key=null)
         {
             key ??= Program.AppKey;

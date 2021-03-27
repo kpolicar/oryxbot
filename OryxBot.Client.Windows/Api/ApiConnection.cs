@@ -53,8 +53,7 @@ namespace OryxBot.Client.Windows.Api
                 {"client_secret", Program.GrantSecret},
                 {"scope", ""}
             };
-            var jsonMessage = JsonConvert.SerializeObject(form_params);
-            var encrypted = Aes256CbcEncrypter.Encrypt(jsonMessage);
+            var encrypted = Aes256CbcEncrypter.Encrypt(form_params);
             
             var content = new StringContent(encrypted);
             var response = await client.PostAsync(url, content);
