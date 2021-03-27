@@ -72,7 +72,7 @@ namespace OryxBot.Client.Windows.Bot
         }
 
         private void ResetRun() {
-            _step = new RunRouteBack(RouteBack);
+            _step = new RunToBank();
             Reset?.Invoke(this, EventArgs.Empty);
         }
 
