@@ -8,10 +8,10 @@ namespace OryxBot.Client.Windows.Bot.Contracts
     {
         public bool CustomRoutes { get; }
         event EventHandler? ModeChanged;
-        LinkedList<TradeMissionRecord.RecordableStep>? Route();
-        LinkedList<TradeMissionRecord.RecordableStep>? RouteBack();
-        LinkedList<TradeMissionRecord.RecordableStep>? RouteFromBankToQuest();
-        LinkedList<TradeMissionRecord.RecordableStep>? RouteFromQuestToBank();
+        Route? Route();
+        Route? RouteBack();
+        Route? RouteFromBankToQuest();
+        Route? RouteFromQuestToBank();
         void ToggleCustomMode();
     }
 }

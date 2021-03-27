@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Windows.Forms;
 using Microsoft.VisualBasic.FileIO;
@@ -34,17 +35,17 @@ namespace OryxBot.Client.Windows.Services
             bot = serviceContainer.GetService<BotManager>();
 
 
-        public LinkedList<TradeMissionRecord.RecordableStep>? Route() =>
+        public Route? Route() =>
             !CustomRoutes
                 ? DefaultRoute()
                 : RouteFromFileSelector();
         
-        public LinkedList<TradeMissionRecord.RecordableStep>? RouteBack() =>
+        public Route? RouteBack() =>
             !CustomRoutes
                 ? DefaultRouteBack()
                 : RouteFromFileSelector();
 
-        private LinkedList<TradeMissionRecord.RecordableStep>? RouteFromFileSelector() {
+        private Route? RouteFromFileSelector() {
             var result = app.TradeMissionRunRouteFile.ShowDialog();
             if (result != DialogResult.OK)
                 return null;
@@ -59,19 +60,19 @@ namespace OryxBot.Client.Windows.Services
         public void ToggleCustomMode() =>
             CustomRoutes = !CustomRoutes;
 
-        public LinkedList<TradeMissionRecord.RecordableStep>? DefaultRoute() =>
+        public Route? DefaultRoute() =>
             RouteFromResource("OryxBot.Client.Windows.Bot.Resources.route_{city}_trademission.csv");
 
-        public LinkedList<TradeMissionRecord.RecordableStep>? DefaultRouteBack() =>
+        public Route? DefaultRouteBack() =>
             RouteFromResource("OryxBot.Client.Windows.Bot.Resources.route_{city}_trademission_back.csv");
 
-        public LinkedList<TradeMissionRecord.RecordableStep>? RouteFromBankToQuest() =>
+        public Route? RouteFromBankToQuest() =>
             RouteFromResource("OryxBot.Client.Windows.Bot.Resources.route_{city}_bank_to_quest.csv");
 
-        public LinkedList<TradeMissionRecord.RecordableStep>? RouteFromQuestToBank() =>
+        public Route? RouteFromQuestToBank() =>
             RouteFromResource("OryxBot.Client.Windows.Bot.Resources.route_{city}_quest_to_bank.csv");
 
-        protected LinkedList<TradeMissionRecord.RecordableStep>? RouteFromResource(string resource) {
+        protected Route? RouteFromResource(string resource) {
             try {
                 resource = resource.Replace("{city}", CityResourcePrefix);
                 using var resourceStream =
@@ -81,7 +82,7 @@ namespace OryxBot.Client.Windows.Services
                 return RouteFromStream(textStream.BaseStream);
             } catch (Exception) {
                 Debug.WriteLine("failed "+resource);
-                return new LinkedList<TradeMissionRecord.RecordableStep>();
+                return new Route();
             }
         }
 
@@ -95,15 +96,26 @@ namespace OryxBot.Client.Windows.Services
             _ => throw new ArgumentOutOfRangeException()
         };
 
-        protected LinkedList<TradeMissionRecord.RecordableStep>? RouteFromStream(Stream stream) {
+        protected Route? RouteFromStream(Stream stream) {
             using var parser = new TextFieldParser(stream) {
                 TextFieldType = FieldType.Delimited,
                 Delimiters = new []{ "," }
             };
 
-            var steps = new LinkedList<TradeMissionRecord.RecordableStep>();
+            var metadata = new Dictionary<string, string>();
+
+            var steps = new Route();
             while (!parser.EndOfData) {
                 var fields = parser.ReadFields();
+                
+                if (parser.LineNumber == 0 && fields[0] == "metadata") {
+                    metadata = fields
+                        .Skip(1)
+                        .ToDictionary(
+                            s => s.Split(':')[0], 
+                            s => s.Split(':')[1]);
+                    continue;
+                }
 
                 var step = fields[0];
                 
@@ -122,6 +134,11 @@ namespace OryxBot.Client.Windows.Services
                     Debug.Fail("Something went wrong");
                 }
             }
+
+            if (metadata.ContainsKey("origin"))
+                steps.Origin = Regions.Region(metadata["origin"]);
+            if (metadata.ContainsKey("destination"))
+                steps.Destination = Regions.Region(metadata["destination"]);
             
             return steps;
         }

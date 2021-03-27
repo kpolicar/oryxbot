@@ -37,13 +37,9 @@ namespace OryxBot.Client.Windows.Bot
 
         public TradeMissionRun(
             City city,
-            LinkedList<TradeMissionRecord.RecordableStep> steps,
-            LinkedList<TradeMissionRecord.RecordableStep> stepsBack)
-        {
-            City = city;
-            Route = steps;
-            RouteBack = stepsBack;
-        }
+            Route route,
+            Route routeBack)
+        => (City, Route, RouteBack) = (city, route, routeBack);
         
         public void BindDependencies(ServiceContainer serviceContainer) {
             routeProvider = serviceContainer.GetService<TradeMissionRouteProvider>();

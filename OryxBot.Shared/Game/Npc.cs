@@ -26,7 +26,7 @@ namespace OryxBot.Shared.Game
                 { Region.CairnFidair, new Position(-110.5f, 60.35f) }, // Thetford trade mission
                 { Region.BlackthorneQuarry, new Position(338.62f, 260.92f) }, // Caerleon trade mission
                 { Region.Aspenwood, new Position(-280.89f, 370.87f) }, // Fort sterling trade mission
-                { Region.NightcreakMarsh, new Position( -81.14f, -199.17f) }, // Fort sterling trade mission
+                { Region.NightcreakMarsh, new Position( -81.14f, -199.17f) }, // Martlock trade mission
             };
         }
     }

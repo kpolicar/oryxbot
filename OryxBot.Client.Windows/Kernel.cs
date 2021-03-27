@@ -27,6 +27,7 @@ namespace OryxBot.Client.Windows
     {
         internal sealed class Kernel : IDisposable
         {
+            private MainForm app = null!;
             public readonly ServiceContainer Services = new();
 
             private readonly Dictionary<Type, object> _services = new() {
@@ -84,7 +85,7 @@ namespace OryxBot.Client.Windows
             }
 
             public void OnLoadForm(object? sender, EventArgs e) {
-                var app = (sender as MainForm)!;
+                app = (sender as MainForm)!;
                 var bot = Services.GetService<BotManagerContract>();
                 var tradeMissionRouteProvider = (FileDialogTradeMissionRouteProvider) Services.GetService<TradeMissionRouteProvider>();
                 
@@ -165,9 +166,19 @@ namespace OryxBot.Client.Windows
             private void AuthorizedToggleTradeMissionRun() {
                 var bot = Services.GetService<BotManagerContract>();
                 var auth = Services.GetService<AuthManager>();
+                var routeProvider = Services.GetService<TradeMissionRouteProvider>();
+
+                if (!(auth.User?.is_subscribed ?? false))
+                    return;
+
+                if (!bot.IsRunning && !routeProvider.CustomRoutes) {
+                    var selectedCity = app.ShowSelectCityForm();
+                    if (!selectedCity.HasValue)
+                        return;
+                    bot.SetActiveCity(selectedCity.Value);
+                }
                 
-                if (auth.User?.is_subscribed ?? false)
-                    bot.ToggleTradeMissionRun();
+                bot.ToggleTradeMissionRun();
             }
             private void AuthorizedToggleCustomTradeMissionMode() {
                 var routeProvider = Services.GetService<TradeMissionRouteProvider>();

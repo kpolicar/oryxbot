@@ -82,6 +82,7 @@ namespace OryxBot.Client.Windows
             this.cancelButton.TabIndex = 2;
             this.cancelButton.Text = "Cancel";
             this.cancelButton.UseVisualStyleBackColor = false;
+            this.cancelButton.Click += new System.EventHandler(this.cancelButton_Click);
             // 
             // confirmButton
             // 
@@ -134,6 +135,7 @@ namespace OryxBot.Client.Windows
             this.Name = "SelectCityForm";
             this.Text = "Select a City";
             this.TopMost = true;
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.labelPanel.ResumeLayout(false);
             this.formPanel.ResumeLayout(false);
             this.formPanel.PerformLayout();

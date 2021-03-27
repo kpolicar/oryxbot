@@ -17,6 +17,7 @@ using OryxBot.Client.Windows.Events;
 using OryxBot.Client.Windows.Exceptions;
 using OryxBot.Shared.Design;
 using OryxBot.Shared.Events;
+using OryxBot.Shared.Game;
 using static OryxBot.Client.Windows.Native.User32;
 using User = OryxBot.Shared.User;
 
@@ -28,6 +29,7 @@ namespace OryxBot.Client.Windows
         private AuthManager auth;
         private TradeMissionRouteProvider routeProvider;
         public static event EventHandler? LoggingIn;
+        private SelectCityForm selectCityForm;
 
         public MainForm() {
             InitializeComponent();
@@ -50,6 +52,7 @@ namespace OryxBot.Client.Windows
             api = Program.Services.GetService<ApiClient>();
             routeProvider = Program.Services.GetService<TradeMissionRouteProvider>();
             routeProvider.ModeChanged += OnRouteProviderModeChanged;
+            selectCityForm = new SelectCityForm();
         }
 
         private void OnVisibleChanged(object? sender, EventArgs e) {
@@ -66,6 +69,16 @@ namespace OryxBot.Client.Windows
             var taskbarIcon = (Icon) resources.GetObject("$this.IconTaskbar")!;
             SendMessage(Handle, WM_SETICON, ICON_SMALL, titlebarIcon.Handle);
             SendMessage(Handle, WM_SETICON, ICON_BIG, taskbarIcon.Handle);
+        }
+
+        public City? ShowSelectCityForm() {
+            if (selectCityForm.Visible)
+                return null;
+            
+            var result = selectCityForm.ShowDialog(this);
+            return result == DialogResult.OK
+                ? selectCityForm.SelectedCity
+                : null;
         }
 
         private async void button1_Click(object sender, EventArgs e) {
