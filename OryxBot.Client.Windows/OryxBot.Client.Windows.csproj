@@ -51,6 +51,9 @@
       <Compile Update="SelectCityForm.cs">
         <SubType>Form</SubType>
       </Compile>
+      <Compile Update="ConfigureRecordingForm.cs">
+        <SubType>Form</SubType>
+      </Compile>
     </ItemGroup>
 
     <ItemGroup>

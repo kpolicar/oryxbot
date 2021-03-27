@@ -79,7 +79,7 @@ namespace OryxBot.Client.Windows.Bot
         internal class ProgressQuest : InteractionStep
         {
             protected override Position _interactablePosition =>
-                Npc.FactionDiplomat.Position
+                Npc.FactionEmissary.Position
                     .Select(diplomatData => diplomatData.Value)
                     .OrderBy(diplomatPosition => LocalCharacter.Instance.DistanceFrom(diplomatPosition))
                     .First();

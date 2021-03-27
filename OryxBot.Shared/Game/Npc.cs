@@ -18,7 +18,7 @@ namespace OryxBot.Shared.Game
             };
         }
 
-        public static class FactionDiplomat
+        public static class FactionEmissary
         {
             public static Dictionary<Region, Position> Position = new() {
                 { Region.SnapshaftTrough, new Position(-9.25f, 45.68f) }, // Lymhurst trade mission
