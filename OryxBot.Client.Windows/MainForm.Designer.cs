@@ -40,7 +40,6 @@ namespace OryxBot.Client.Windows
         public ToolStripLabel ToolStipUsernameLabel { private set; get; }
         public ToolStripMenuItem ToolStipToggleBotTradeMissionRunButton { private set; get; }
         public ToolStripMenuItem ToolStripCloseButton { private set; get; }
-        public ToolStripComboBox ToolStripCitySelector { private set; get; }
         public OpenFileDialog TradeMissionRunRouteFile { private set; get; }
         public ContextMenuStrip ContextMenuStrip { private set; get; }
         public NotifyIcon TrayIcon { private set; get; }
@@ -91,26 +90,6 @@ namespace OryxBot.Client.Windows
             };
             ToolStripCloseButton.Click += OnExitClicked;
             //
-            // toolStripCitySelector
-            //
-            ToolStripCitySelector = new ToolStripComboBox() {
-                Name = "toolStripCitySelector",
-                FlatStyle = FlatStyle.Flat,
-                IntegralHeight = false,
-                AutoSize = true,
-                DropDownStyle = ComboBoxStyle.DropDownList,
-                Items = {
-                    "Lymhurst",
-                    "Caerleon",
-                    "Thetford",
-                    "Fort Sterling",
-                    "Bridgewatch",
-                    "Martlock",
-                },
-                SelectedIndex = 0,
-            };
-            ToolStripCitySelector.SelectedIndexChanged += (_, _) => ContextMenuStrip.Focus();
-            //
             // contextMenuStrip
             //
             ContextMenuStrip = new ContextMenuStrip() {
@@ -118,7 +97,6 @@ namespace OryxBot.Client.Windows
                 Items = {
                     ToolStipUsernameLabel,
                     new ToolStripSeparator(),
-                    ToolStripCitySelector,
                     ToolStripEnableCustomRoutesButton,
                     ToolStipToggleBotTradeMissionRecordButton,
                     ToolStipToggleBotTradeMissionRunButton,

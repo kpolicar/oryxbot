@@ -94,8 +94,6 @@ namespace OryxBot.Client.Windows
                     AuthorizedToggleTradeMissionRun();
                 app.ToolStripEnableCustomRoutesButton.Click += (_, _) =>
                     AuthorizedToggleCustomTradeMissionMode();
-                app.ToolStripCitySelector.SelectedIndexChanged += (_, _) =>
-                    ChangeTradeMissionRouteCity((string) app.ToolStripCitySelector.SelectedItem);
                 
                 bot.Started += (sender, e) => {
                     if (e.Job is TradeMissionRecord)
@@ -177,20 +175,6 @@ namespace OryxBot.Client.Windows
                 
                 if (auth.User?.is_subscribed ?? false)
                     routeProvider.ToggleCustomMode();
-            }
-            
-            private void ChangeTradeMissionRouteCity(string city) {
-                var bot = Services.GetService<BotManagerContract>();
-                var active = city switch {
-                    "Caerleon" => City.Caerleon,
-                    "Thetford" => City.Thetford,
-                    "Fort Sterling" => City.FortSterling,
-                    "Lymhurst" => City.Lymhurst,
-                    "Bridgewatch" => City.Bridgewatch,
-                    "Martlock" => City.Martlock,
-                    _ => throw new ArgumentOutOfRangeException(nameof(city), city, null)
-                };
-                bot.SetActiveCity(active);
             }
         }
     }
