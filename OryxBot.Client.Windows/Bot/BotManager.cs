@@ -12,6 +12,7 @@ namespace OryxBot.Client.Windows.Bot
 {
     public class BotManager : BotManagerContract, HasDependencies
     {
+        public event EventHandler<BotEventArgs>? Starting;
         public event EventHandler<BotEventArgs>? Started;
         public event EventHandler<BotEventArgs>? Stopped;
         public event EventHandler<BotEventArgs>? JobChanged;
@@ -50,6 +51,9 @@ namespace OryxBot.Client.Windows.Bot
                     typeof(TradeMissionRun), 
                     () => new TradeMissionRun(ActiveCity,route, routeBack));
             }
+            
+            if (!Bot!.Running)
+                Starting?.Invoke(this, new BotEventArgs(Bot!));
             Bot!.ToggleStart();
         }
 
@@ -63,6 +67,9 @@ namespace OryxBot.Client.Windows.Bot
             EnforceBotServiceType(
                 typeof(TradeMissionRecord), 
                 () => new TradeMissionRecord());
+            
+            if (!Bot!.Running)
+                Starting?.Invoke(this, new BotEventArgs(Bot!));
             Bot!.ToggleStart();
         }
         

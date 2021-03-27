@@ -16,7 +16,7 @@ namespace OryxBot.Client.Windows.Bot
         
         internal class RunToBank : RunRouteStep
         {
-            protected override LinkedList<TradeMissionRecord.RecordableStep> Route =>
+            protected override Route Route =>
                 routeProvider.RouteFromQuestToBank()!;
         }
 
@@ -39,7 +39,7 @@ namespace OryxBot.Client.Windows.Bot
 
         internal class RunToQuest : RunRouteStep
         {
-            protected override LinkedList<TradeMissionRecord.RecordableStep> Route =>
+            protected override Route Route =>
                 routeProvider.RouteFromBankToQuest()!;
         }
         
@@ -70,9 +70,9 @@ namespace OryxBot.Client.Windows.Bot
         
         internal class RunRouteToDestination : RunRouteStep
         {
-            protected override LinkedList<TradeMissionRecord.RecordableStep> Route { get; }
+            protected override Route Route { get; }
 
-            public RunRouteToDestination(LinkedList<TradeMissionRecord.RecordableStep> route) =>
+            public RunRouteToDestination(Route route) =>
                 Route = route;
         }
         
@@ -92,9 +92,9 @@ namespace OryxBot.Client.Windows.Bot
         
         internal class RunRouteBack : RunRouteStep
         {
-            protected override LinkedList<TradeMissionRecord.RecordableStep> Route { get; }
+            protected override Route Route { get; }
 
-            public RunRouteBack(LinkedList<TradeMissionRecord.RecordableStep> route) =>
+            public RunRouteBack(Route route) =>
                 Route = route;
         }
         

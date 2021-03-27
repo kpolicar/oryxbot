@@ -55,7 +55,7 @@ namespace OryxBot.Client.Windows.Bot
             private bool preparing = true;
             private bool clusterChanged = false;
             
-            protected abstract LinkedList<TradeMissionRecord.RecordableStep> Route { get; }
+            protected abstract Route Route { get; }
             private ITwoWayEnumerator<TradeMissionRecord.RecordableStep>? Step;
             private bool _characterHasDied;
 

@@ -25,8 +25,8 @@ namespace OryxBot.Client.Windows.Bot
         private TradeMissionStep _step;
         
         private static TradeMissionRouteProvider routeProvider = null!;
-        private readonly LinkedList<TradeMissionRecord.RecordableStep> Route;
-        private readonly LinkedList<TradeMissionRecord.RecordableStep> RouteBack;
+        public readonly Route Route;
+        public readonly Route RouteBack;
         private static InputActionFactory actions = null!;
         
         private Thread? runningThread;

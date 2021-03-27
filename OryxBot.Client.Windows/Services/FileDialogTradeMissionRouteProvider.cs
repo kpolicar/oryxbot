@@ -108,7 +108,7 @@ namespace OryxBot.Client.Windows.Services
             while (!parser.EndOfData) {
                 var fields = parser.ReadFields();
                 
-                if (parser.LineNumber == 0 && fields[0] == "metadata") {
+                if (fields[0] == "metadata") {
                     metadata = fields
                         .Skip(1)
                         .ToDictionary(
@@ -135,6 +135,8 @@ namespace OryxBot.Client.Windows.Services
                 }
             }
 
+            if (metadata.ContainsKey("name"))
+                steps.Name = metadata["name"];
             if (metadata.ContainsKey("origin"))
                 steps.Origin = Regions.Region(metadata["origin"]);
             if (metadata.ContainsKey("destination"))

@@ -59,8 +59,8 @@ namespace OryxBot.Client.Windows
             if (Visible)
                 LoggingIn?.Invoke(this, EventArgs.Empty);
             #if DEBUG
-            // if (Visible)
-            //     button1_Click(this, EventArgs.Empty);
+            if (Visible)
+                button1_Click(this, EventArgs.Empty);
             #endif
         }
 

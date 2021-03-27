@@ -39,5 +39,23 @@ namespace OryxBot.Shared.Game
             
             _ => throw new ArgumentOutOfRangeException(nameof(code), code, null)
         };
+        
+        public static string Name(Region region) => region switch {
+            Game.Region.Caerleon => "Caerleon",
+            Game.Region.Thetford => "Thetford",
+            Game.Region.FortSterling => "FortSterling",
+            Game.Region.Lymhurst => "Lymhurst",
+            Game.Region.Bridgewatch => "Bridgewatch",
+            Game.Region.Martlock => "Martlock",
+                        
+            Game.Region.SnapshaftTrough => "Snapshaft Trough",
+            Game.Region.DeadveinGully => "Deadvein Gully",
+            Game.Region.CairnFidair => "Cairn Fidair",
+            Game.Region.BlackthorneQuarry => "Blackthorne Quarry",
+            Game.Region.Aspenwood => "Aspenwood",
+            Game.Region.NightcreakMarsh => "Nightcreak Marsh",
+            
+            _ => throw new ArgumentOutOfRangeException(nameof(region), region, null)
+        };
     }
 }

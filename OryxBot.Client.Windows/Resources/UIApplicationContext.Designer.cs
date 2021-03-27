@@ -98,6 +98,25 @@ namespace OryxBot.Client.Windows.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to :name
+        ///You have selected to run a trade mission route from :origin to :destination..
+        /// </summary>
+        internal static string InfoMessage_Starting_Route {
+            get {
+                return ResourceManager.GetString("InfoMessage.Starting_Route", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Route Started.
+        /// </summary>
+        internal static string InfoMessage_Starting_Route_Title {
+            get {
+                return ResourceManager.GetString("InfoMessage.Starting_Route_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to OryxBot.
         /// </summary>
         internal static string Text {

@@ -4,6 +4,7 @@ namespace OryxBot.Shared.Contracts
 {
     public interface BotJob
     {
+        bool Running { get; }
         event EventHandler? Started;
         event EventHandler? Stopped;
         

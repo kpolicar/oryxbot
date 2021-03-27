@@ -108,6 +108,14 @@ namespace OryxBot.Client.Windows
                     else if (e.Job is TradeMissionRun)
                         app.OnBotTradeMissionRunStopped(sender, e);
                 };
+
+                if (bot is BotManager botManager) {
+                    botManager.Starting += (_, e) => {
+                        if (e.Job is TradeMissionRun run) {
+                            app.OnBotTradeMissionRunStarting(run);
+                        }
+                    };
+                }
                 tradeMissionRouteProvider.BindToApp(app);
                 
                 var api = Services.GetService<AuthManager>();
