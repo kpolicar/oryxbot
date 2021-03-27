@@ -31,8 +31,8 @@ namespace OryxBot.Client.Windows
                 .Replace(":name", e.user.name);
         }
         
-        private void OnRouteProviderModeChanged(object? sender, EventArgs e) {
-            ToolStripEnableCustomRoutesButton.Text = routeProvider.CustomRoutes
+        private void OnRouteManagerModeChanged(object? sender, EventArgs e) {
+            ToolStripEnableCustomRoutesButton.Text = _routeManager.CustomRoutes
                 ? Resources.UIApplicationContext.ToolStripEnableCustomRoutesButton_Text_Custom
                 : Resources.UIApplicationContext.ToolStripEnableCustomRoutesButton_Text;
         }

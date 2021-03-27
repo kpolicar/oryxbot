@@ -14,6 +14,7 @@ using OryxBot.Client.Windows.Contracts;
 using OryxBot.Client.Windows.Events;
 using OryxBot.Client.Windows.Native;
 using OryxBot.Client.Windows.Services;
+using OryxBot.Shared;
 using OryxBot.Shared.Contracts;
 using OryxBot.Shared.Design;
 using OryxBot.Shared.Game;
@@ -40,7 +41,7 @@ namespace OryxBot.Client.Windows
                 {typeof(AlbionDataProvider), new NetworkAlbionDataProvider()},
                 {typeof(Logger), new FileLogger()},
                 {typeof(BotManagerContract), new Bot.BotManager()},
-                {typeof(TradeMissionRouteProvider), new FileDialogTradeMissionRouteProvider()},
+                {typeof(TradeMissionRouteManager), new FileDialogTradeMissionRouteManager()},
             };
 
             
@@ -87,7 +88,7 @@ namespace OryxBot.Client.Windows
             public void OnLoadForm(object? sender, EventArgs e) {
                 app = (sender as MainForm)!;
                 var bot = Services.GetService<BotManagerContract>();
-                var tradeMissionRouteProvider = (FileDialogTradeMissionRouteProvider) Services.GetService<TradeMissionRouteProvider>();
+                var tradeMissionRouteManager = (FileDialogTradeMissionRouteManager) Services.GetService<TradeMissionRouteManager>();
                 
                 app.ToolStipToggleBotTradeMissionRecordButton.Click += (_, _) =>
                     AuthorizedToggleTradeMissionRecord();
@@ -109,7 +110,7 @@ namespace OryxBot.Client.Windows
                         app.OnBotTradeMissionRunStopped(sender, e);
                 };
                 
-                tradeMissionRouteProvider.BindToApp(app);
+                tradeMissionRouteManager.BindToApp(app);
                 
                 var api = Services.GetService<AuthManager>();
                 api.AuthChanged += app.OnAuthChanged;
@@ -160,6 +161,18 @@ namespace OryxBot.Client.Windows
                 var bot = Services.GetService<BotManagerContract>();
                 var auth = Services.GetService<AuthManager>();
                 
+                if (!bot.IsRunning) {
+                    var configuration = app.ShowConfigureRecordingForm();
+                    if (!configuration.HasValue)
+                        return;
+                    
+                    bot.SetRecordingConfiguration(new RecordingConfiguration(
+                        configuration.Value.origin,
+                        configuration.Value.destination,
+                        configuration.Value.name
+                        ));
+                }
+                
                 if (auth.User?.is_subscribed ?? false)
                     bot.ToggleTradeMissionRecord();
                 
@@ -167,7 +180,7 @@ namespace OryxBot.Client.Windows
             private void AuthorizedToggleTradeMissionRun() {
                 var bot = Services.GetService<BotManagerContract>();
                 var auth = Services.GetService<AuthManager>();
-                var routeProvider = Services.GetService<TradeMissionRouteProvider>();
+                var routeProvider = Services.GetService<TradeMissionRouteManager>();
 
                 if (!(auth.User?.is_subscribed ?? false))
                     return;
@@ -176,13 +189,13 @@ namespace OryxBot.Client.Windows
                     var selectedCity = app.ShowSelectCityForm();
                     if (!selectedCity.HasValue)
                         return;
-                    bot.SetActiveCity(selectedCity.Value);
+                    routeProvider.SetDefaultRouteCity(selectedCity.Value);
                 }
                 
                 bot.ToggleTradeMissionRun();
             }
             private void AuthorizedToggleCustomTradeMissionMode() {
-                var routeProvider = Services.GetService<TradeMissionRouteProvider>();
+                var routeProvider = Services.GetService<TradeMissionRouteManager>();
                 var auth = Services.GetService<AuthManager>();
                 
                 if (auth.User?.is_subscribed ?? false)

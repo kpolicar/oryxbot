@@ -80,6 +80,7 @@ namespace OryxBot.Client.Windows
             this.confirmButton.TabIndex = 5;
             this.confirmButton.Text = "Confirm";
             this.confirmButton.UseVisualStyleBackColor = false;
+            this.confirmButton.Click += new System.EventHandler(this.confirmButton_Click);
             // 
             // cancelButton
             // 
@@ -91,6 +92,7 @@ namespace OryxBot.Client.Windows
             this.cancelButton.TabIndex = 4;
             this.cancelButton.Text = "Cancel";
             this.cancelButton.UseVisualStyleBackColor = false;
+            this.cancelButton.Click += new System.EventHandler(this.cancelButton_Click);
             // 
             // formLayoutPanel
             // 

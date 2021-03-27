@@ -1,6 +1,7 @@
 using System;
 using System.Diagnostics;
 using OryxBot.Client.Windows.Bot.Contracts;
+using OryxBot.Shared;
 using OryxBot.Shared.Contracts;
 using OryxBot.Shared.Design;
 using OryxBot.Shared.Events;
@@ -19,37 +20,37 @@ namespace OryxBot.Client.Windows.Bot
         public event EventHandler<BotEventArgs>? TradeMissionRun;
         public event EventHandler<BotEventArgs>? TradeMissionRecord;
         private ServiceContainer serviceContainer = null!;
-        private TradeMissionRouteProvider routeProvider = null!;
+        private TradeMissionRouteManager _routeManager = null!;
         public BotJob? Bot;
-        
+
         public bool IsRunning { get; private set; }
-        public City ActiveCity { get; private set; } = City.Lymhurst;
+        public RecordingConfiguration RecordingConfig { get; private set; }
         
 
         public void BindDependencies(ServiceContainer serviceContainer) {
             this.serviceContainer = serviceContainer;
-            routeProvider = serviceContainer.GetService<TradeMissionRouteProvider>();
-            routeProvider.ModeChanged += (_, _) => Bot = null;
+            _routeManager = serviceContainer.GetService<TradeMissionRouteManager>();
+            _routeManager.ModeChanged += (_, _) => Bot = null;
         }
 
         public void Stop() =>
             Bot?.Stop();
 
-        public void SetActiveCity(City city) =>
-            ActiveCity = city;
+        public void SetRecordingConfiguration(RecordingConfiguration config) =>
+            RecordingConfig = config;
 
         public void ToggleTradeMissionRun() {
             if (!(Bot is TradeMissionRun)) {
-                var route = routeProvider.Route();
-                if (route == null) // Todo: Error
+                var route = _routeManager.Route();
+                if (route == null)
                     return;
-                var routeBack = routeProvider.RouteBack();
-                if (routeBack == null) // Todo: Error
+                var routeBack = _routeManager.RouteBack();
+                if (routeBack == null)
                     return;
 
                 EnforceBotServiceType(
                     typeof(TradeMissionRun), 
-                    () => new TradeMissionRun(ActiveCity,route, routeBack));
+                    () => new TradeMissionRun((City) route.Origin!, route, routeBack));
             }
             
             if (!Bot!.Running)

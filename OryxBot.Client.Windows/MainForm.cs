@@ -19,6 +19,7 @@ using OryxBot.Shared.Design;
 using OryxBot.Shared.Events;
 using OryxBot.Shared.Game;
 using static OryxBot.Client.Windows.Native.User32;
+using Region = OryxBot.Shared.Game.Region;
 using User = OryxBot.Shared.User;
 
 namespace OryxBot.Client.Windows
@@ -27,9 +28,10 @@ namespace OryxBot.Client.Windows
     {
         private ApiClient api;
         private AuthManager auth;
-        private TradeMissionRouteProvider routeProvider;
+        private TradeMissionRouteManager _routeManager;
         public static event EventHandler? LoggingIn;
         private SelectCityForm selectCityForm;
+        private ConfigureRecordingForm configureRecordingForm;
 
         public MainForm() {
             InitializeComponent();
@@ -50,9 +52,10 @@ namespace OryxBot.Client.Windows
             rememberPasswordCheckbox.Checked = ConfigurationManager.AppSettings.Get("password")?.Length > 0;
             auth = Program.Services.GetService<AuthManager>();
             api = Program.Services.GetService<ApiClient>();
-            routeProvider = Program.Services.GetService<TradeMissionRouteProvider>();
-            routeProvider.ModeChanged += OnRouteProviderModeChanged;
+            _routeManager = Program.Services.GetService<TradeMissionRouteManager>();
+            _routeManager.ModeChanged += OnRouteManagerModeChanged;
             selectCityForm = new SelectCityForm();
+            configureRecordingForm = new ConfigureRecordingForm();
         }
 
         private void OnVisibleChanged(object? sender, EventArgs e) {
@@ -69,6 +72,20 @@ namespace OryxBot.Client.Windows
             var taskbarIcon = (Icon) resources.GetObject("$this.IconTaskbar")!;
             SendMessage(Handle, WM_SETICON, ICON_SMALL, titlebarIcon.Handle);
             SendMessage(Handle, WM_SETICON, ICON_BIG, taskbarIcon.Handle);
+        }
+
+        public (City origin, Region destination, string name)? ShowConfigureRecordingForm() {
+            if (configureRecordingForm.Visible)
+                return null;
+            
+            var result = configureRecordingForm.ShowDialog(this);
+            return result == DialogResult.OK
+                ? (
+                    configureRecordingForm.SelectedOrigin,
+                    configureRecordingForm.SelectedDestination,
+                    configureRecordingForm.SelectedName
+                    )
+                : null;
         }
 
         public City? ShowSelectCityForm() {

@@ -9,12 +9,12 @@ namespace OryxBot.Shared.Contracts
         event EventHandler<BotEventArgs>? Started;
         event EventHandler<BotEventArgs>? Stopped;
         bool IsRunning { get; }
-        City ActiveCity { get; }
-        
+        RecordingConfiguration RecordingConfig { get; }
+
         void ToggleTradeMissionRun();
         void ToggleTradeMissionRecord();
         void ToggleTradeMissionPause();
         void Stop();
-        void SetActiveCity(City city);
+        void SetRecordingConfiguration(RecordingConfiguration configuration);
     }
 }

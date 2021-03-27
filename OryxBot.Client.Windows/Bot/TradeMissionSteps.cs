@@ -17,7 +17,7 @@ namespace OryxBot.Client.Windows.Bot
         internal class RunToBank : RunRouteStep
         {
             protected override Route Route =>
-                routeProvider.RouteFromQuestToBank()!;
+                _routeManager.RouteFromQuestToBank()!;
         }
 
         internal class BankItems : InteractionStep
@@ -40,7 +40,7 @@ namespace OryxBot.Client.Windows.Bot
         internal class RunToQuest : RunRouteStep
         {
             protected override Route Route =>
-                routeProvider.RouteFromBankToQuest()!;
+                _routeManager.RouteFromBankToQuest()!;
         }
         
         internal class TakeQuest : InteractionStep

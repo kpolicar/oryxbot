@@ -195,5 +195,14 @@ namespace OryxBot.Client.Windows.Resources {
                 return ResourceManager.GetString("TradeMissionRunRouteFile.Title", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Save Route.
+        /// </summary>
+        internal static string TradeMissionSaveRouteFile_Title {
+            get {
+                return ResourceManager.GetString("TradeMissionSaveRouteFile.Title", resourceCulture);
+            }
+        }
     }
 }

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
@@ -10,13 +11,18 @@ namespace OryxBot.Client.Windows
 {
     public partial class SelectCityForm : Form
     {
-        public City SelectedCity => Cities.City((string) citySelectorComboBox.SelectedItem);
+        private readonly Dictionary<string, City> _citiesOptions = Enum.GetValues<City>()
+            .ToDictionary(Cities.Name, city => city);
+        
+        public City SelectedCity => (City) citySelectorComboBox.SelectedValue;
         
         
         public SelectCityForm() {
             InitializeComponent();
             InitializeIcons();
-            citySelectorComboBox.DataSource = Enum.GetValues<City>().Select(Cities.Name).ToArray();
+            citySelectorComboBox.DataSource = new BindingSource(_citiesOptions, null);
+            citySelectorComboBox.DisplayMember = "Key";
+            citySelectorComboBox.ValueMember = "Value";
         }
         
         private void InitializeIcons() {

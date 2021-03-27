@@ -41,6 +41,7 @@ namespace OryxBot.Client.Windows
         public ToolStripMenuItem ToolStipToggleBotTradeMissionRunButton { private set; get; }
         public ToolStripMenuItem ToolStripCloseButton { private set; get; }
         public OpenFileDialog TradeMissionRunRouteFile { private set; get; }
+        public SaveFileDialog TradeMissionSaveRouteFile { private set; get; }
         public ContextMenuStrip ContextMenuStrip { private set; get; }
         public NotifyIcon TrayIcon { private set; get; }
 
@@ -80,6 +81,15 @@ namespace OryxBot.Client.Windows
             TradeMissionRunRouteFile = new OpenFileDialog {
                 Title = Resources.UIApplicationContext.TradeMissionRunRouteFile_Title,
                 Filter = "Route Files (*.csv)|*.csv",
+            };
+            //
+            // TradeMissionSaveRouteFile
+            //
+            TradeMissionSaveRouteFile = new SaveFileDialog {
+                Title = Resources.UIApplicationContext.TradeMissionSaveRouteFile_Title,
+                Filter = "Route Files (*.csv)|*.csv",
+                AddExtension = true,
+                DefaultExt = ".csv",
             };
             //
             // toolStripCloseButton

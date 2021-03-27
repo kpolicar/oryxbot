@@ -24,7 +24,7 @@ namespace OryxBot.Client.Windows.Bot
 
         private TradeMissionStep _step;
         
-        private static TradeMissionRouteProvider routeProvider = null!;
+        private static TradeMissionRouteManager _routeManager = null!;
         public readonly Route Route;
         public readonly Route RouteBack;
         private static InputActionFactory actions = null!;
@@ -42,7 +42,7 @@ namespace OryxBot.Client.Windows.Bot
         => (City, Route, RouteBack) = (city, route, routeBack);
         
         public void BindDependencies(ServiceContainer serviceContainer) {
-            routeProvider = serviceContainer.GetService<TradeMissionRouteProvider>();
+            _routeManager = serviceContainer.GetService<TradeMissionRouteManager>();
             actions = (serviceContainer.GetService<ActionFactory>() as InputActionFactory)!;
         }
 
@@ -68,7 +68,7 @@ namespace OryxBot.Client.Windows.Bot
         }
 
         private void ResetRun() {
-            _step = new RunToBank();
+            _step = new RunRouteToDestination(Route);
             Reset?.Invoke(this, EventArgs.Empty);
         }
 

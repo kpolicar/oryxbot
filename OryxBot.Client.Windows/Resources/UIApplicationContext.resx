@@ -38,6 +38,9 @@
     <data name="ToolStipToggleBotTradeMissionRunButton.TextStart" xml:space="preserve">
         <value>Begin Trade Mission (F2)</value>
     </data>
+    <data name="TradeMissionSaveRouteFile.Title" xml:space="preserve">
+        <value>Save Route</value>
+    </data>
     <data name="TradeMissionRunRouteFile.Title" xml:space="preserve">
         <value>Select Route File</value>
     </data>

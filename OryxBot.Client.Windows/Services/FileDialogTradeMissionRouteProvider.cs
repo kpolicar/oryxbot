@@ -16,12 +16,14 @@ using BotManager = OryxBot.Shared.Contracts.BotManager;
 
 namespace OryxBot.Client.Windows.Services
 {
-    public class FileDialogTradeMissionRouteProvider : TradeMissionRouteProvider, HasDependencies
+    public class FileDialogTradeMissionRouteManager : TradeMissionRouteManager, HasDependencies
     {
         private MainForm app = null!;
         private BotManager bot = null!;
         
         private bool _customRoutes;
+        private City? _defaultCity;
+
         public bool CustomRoutes {
             private set {
                 _customRoutes = value;
@@ -60,6 +62,27 @@ namespace OryxBot.Client.Windows.Services
         public void ToggleCustomMode() =>
             CustomRoutes = !CustomRoutes;
 
+        public StreamWriter SaveRouteStream() {
+            var result = app.TradeMissionSaveRouteFile.ShowDialog(app);
+            if (result != DialogResult.OK) {
+                var confirmation = MessageBox.Show(
+                    "If you do not save the route, it will be discarded!"+
+                    "Are you sure you want to delete the recorded route?",
+                    "Are you sure?",
+                    MessageBoxButtons.YesNo,
+                    MessageBoxIcon.Warning);
+                if (confirmation != DialogResult.Yes) {
+                    return SaveRouteStream();
+                }
+                return StreamWriter.Null;
+            }
+
+            return new StreamWriter(app.TradeMissionSaveRouteFile.OpenFile());
+        }
+
+        public void SetDefaultRouteCity(City city) =>
+            _defaultCity = city;
+
         public Route? DefaultRoute() =>
             RouteFromResource("OryxBot.Client.Windows.Bot.Resources.route_{city}_trademission.csv");
 
@@ -74,7 +97,7 @@ namespace OryxBot.Client.Windows.Services
 
         protected Route? RouteFromResource(string resource) {
             try {
-                resource = resource.Replace("{city}", CityResourcePrefix);
+                resource = resource.Replace("{city}", DefaultRouteCityResourcePrefix());
                 using var resourceStream =
                     Assembly.GetAssembly(GetType())!.GetManifestResourceStream(resource)!;
 
@@ -86,7 +109,7 @@ namespace OryxBot.Client.Windows.Services
             }
         }
 
-        public string CityResourcePrefix => bot.ActiveCity switch {
+        private string DefaultRouteCityResourcePrefix() => _defaultCity switch {
             City.Caerleon => "caerleon",
             City.Thetford => "thetford",
             City.FortSterling => "fortsterling",
