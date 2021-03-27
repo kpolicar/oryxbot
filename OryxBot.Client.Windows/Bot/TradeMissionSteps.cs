@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using OryxBot.Client.Windows.Bot.Exceptions;
 using OryxBot.Client.Windows.Bot.Game;
@@ -77,7 +78,11 @@ namespace OryxBot.Client.Windows.Bot
         
         internal class ProgressQuest : InteractionStep
         {
-            protected override Position _interactablePosition => new(69.94549f, -240.07866f);
+            protected override Position _interactablePosition =>
+                Npc.FactionDiplomat.Position
+                    .Select(diplomatData => diplomatData.Value)
+                    .OrderBy(diplomatPosition => LocalCharacter.Instance.DistanceFrom(diplomatPosition))
+                    .First();
             
             protected override bool DoInteractions() {
                 actions.NpcQuestProgress();
@@ -99,7 +104,11 @@ namespace OryxBot.Client.Windows.Bot
         
         internal class FinishQuest : InteractionStep
         {
-            protected override Position _interactablePosition => new(-75.5f, 0);
+            private City City;
+            public FinishQuest(City city) =>
+                City = city;
+            
+            protected override Position _interactablePosition => Npc.FactionLeader.Position[City];
             
             protected override bool DoInteractions() {
                 actions.NpcQuestProgress();

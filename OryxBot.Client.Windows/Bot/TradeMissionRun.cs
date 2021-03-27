@@ -107,7 +107,7 @@ namespace OryxBot.Client.Windows.Bot
                 TakeQuest => new RunRouteToDestination(Route),
                 RunRouteToDestination => new ProgressQuest(),
                 ProgressQuest => new RunRouteBack(RouteBack),
-                RunRouteBack => new FinishQuest(),
+                RunRouteBack => new FinishQuest(City),
                 FinishQuest => new RunToBank(),
                 _ => throw new ArgumentOutOfRangeException(nameof(_step))
             };
