@@ -15,6 +15,7 @@ namespace OryxBot.Client.Windows.Bot
         private AlbionDataProvider dataProvider = null!;
         private Shared.Contracts.BotManager manager = null!;
         private TradeMissionRouteManager routeManager = null!;
+        public override bool IsPaused => false;
 
 
         public void BindDependencies(ServiceContainer serviceContainer) {

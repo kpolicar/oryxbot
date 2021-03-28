@@ -24,6 +24,7 @@ namespace OryxBot.Client.Windows.Bot
         public BotJob? Bot;
 
         public bool IsRunning { get; private set; }
+        public bool IsPaused { get; private set; }
         public RecordingConfiguration RecordingConfig { get; private set; }
         
 
@@ -40,7 +41,7 @@ namespace OryxBot.Client.Windows.Bot
             RecordingConfig = config;
 
         public void ToggleTradeMissionRun() {
-            if (!(Bot is TradeMissionRun)) {
+            if (!(Bot is TradeMissionRun) || !Bot.Running) {
                 var route = _routeManager.Route();
                 if (route == null)
                     return;
@@ -75,22 +76,20 @@ namespace OryxBot.Client.Windows.Bot
         }
         
         private void EnforceBotServiceType(Type botServiceType, Func<BotJob> constructorCallback) {
-            if (Bot == null || Bot.GetType() != botServiceType) {
-                Bot?.Stop();
-                Bot = constructorCallback();
-                if (Bot is HasDependencies dependant)
-                    dependant.BindDependencies(serviceContainer);
-                Bot.Started += (_, _) => IsRunning = (Bot as Job)!.Running;
-                Bot.Stopped += (_, _) => IsRunning = (Bot as Job)!.Running;
-                Bot.Started += (_, _) => Started?.Invoke(this, new BotEventArgs(Bot));
-                Bot.Stopped += (_, _) => Stopped?.Invoke(this, new BotEventArgs(Bot));
-                
-                JobChanged?.Invoke(this, new BotEventArgs(Bot));
-                if (Bot is TradeMissionRun)
-                    TradeMissionRun?.Invoke(this, new BotEventArgs(Bot));
-                else if (Bot is TradeMissionRecord)
-                    TradeMissionRecord?.Invoke(this, new BotEventArgs(Bot));
-            }
+            Bot?.Stop();
+            Bot = constructorCallback();
+            if (Bot is HasDependencies dependant)
+                dependant.BindDependencies(serviceContainer);
+            Bot.Started += (_, _) => (IsRunning, IsPaused) = ((Bot as Job)!.Running, (Bot as Job)!.IsPaused);
+            Bot.Stopped += (_, _) => (IsRunning, IsPaused) = ((Bot as Job)!.Running, (Bot as Job)!.IsPaused);
+            Bot.Started += (_, _) => Started?.Invoke(this, new BotEventArgs(Bot));
+            Bot.Stopped += (_, _) => Stopped?.Invoke(this, new BotEventArgs(Bot));
+            
+            JobChanged?.Invoke(this, new BotEventArgs(Bot));
+            if (Bot is TradeMissionRun)
+                TradeMissionRun?.Invoke(this, new BotEventArgs(Bot));
+            else if (Bot is TradeMissionRecord)
+                TradeMissionRecord?.Invoke(this, new BotEventArgs(Bot));
         }
     }
 }

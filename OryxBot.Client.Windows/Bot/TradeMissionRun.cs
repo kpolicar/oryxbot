@@ -30,7 +30,9 @@ namespace OryxBot.Client.Windows.Bot
         private static InputActionFactory actions = null!;
         
         private Thread? runningThread;
-        private bool _paused;
+
+        public bool _isPaused;
+        public override bool IsPaused => _isPaused;
         private City City;
         private City TradeCity;
         
@@ -49,7 +51,7 @@ namespace OryxBot.Client.Windows.Bot
 
         public override void Start() {
             base.Start();
-            if (!_paused)
+            if (!IsPaused)
                 ResetRun();
 
             runningThread = new Thread(EntryPoint);
@@ -57,14 +59,14 @@ namespace OryxBot.Client.Windows.Bot
         }
 
         public override void Stop() {
+            _isPaused = false;
             base.Stop();
-            _paused = false;
         }
 
         public void Pause() {
             if (Running) {
-                Stop();
-                _paused = true;
+                _isPaused = true;
+                base.Stop();
             }
         }
 

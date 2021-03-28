@@ -9,6 +9,7 @@ namespace OryxBot.Client.Windows.Bot
         public event EventHandler? Stopped;
 
         public bool Running { get; private set; } = false;
+        public abstract bool IsPaused { get; }
 
 
         protected EventHandler RuntimeEventListener(EventHandler callback) =>

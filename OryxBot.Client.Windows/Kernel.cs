@@ -186,7 +186,7 @@ namespace OryxBot.Client.Windows
                 if (!(auth.User?.is_subscribed ?? false))
                     return;
 
-                if (!bot.IsRunning && !routeProvider.CustomRoutes) {
+                if (!bot.IsRunning && !routeProvider.CustomRoutes && !bot.IsPaused) {
                     var selectedCity = app.ShowSelectCityForm();
                     if (!selectedCity.HasValue)
                         return;
