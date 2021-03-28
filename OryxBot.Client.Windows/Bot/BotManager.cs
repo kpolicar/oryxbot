@@ -45,6 +45,7 @@ namespace OryxBot.Client.Windows.Bot
                 var route = _routeManager.Route();
                 if (route == null)
                     return;
+                _routeManager.SetDefaultRouteCity((City)route.Origin!.Value);
                 var routeBack = _routeManager.RouteBack();
                 if (routeBack == null)
                     return;
