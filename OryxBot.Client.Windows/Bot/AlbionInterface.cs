@@ -1,4 +1,5 @@
 using OryxBot.Shared.Design;
+using OryxBot.Shared.Game;
 using static OryxBot.Shared.Design.ResponsivePoint;
 
 namespace OryxBot.Client.Windows.Bot
@@ -29,12 +30,37 @@ namespace OryxBot.Client.Windows.Bot
         public static ResponsivePoint QuestNpcTradeMissionsTab =
             new(610, 720, 3840, 1600, AnchorStyle.Left);
         
-        public static ResponsivePoint QuestNpcTradeMissionsContractTab =
+        public static ResponsivePoint QuestNpcTradeMissionsFirstContractTab =
             new(210, 575, 3840, 1600, AnchorStyle.Left);
         
-        public static ResponsivePoint QuestNpcSelectTradeMissionContract =
-            new(300, 630, 3840, 1600, AnchorStyle.Left);
+        public static ResponsivePoint QuestNpcSelectFirstTradeMissionContract =
+            new(99,517, 3840, 1600, AnchorStyle.Left);
         
+        public static ResponsivePoint QuestNpcSelectTradeMissionContractOffset =
+            new(0,55, 3840, 1600, AnchorStyle.Left);
+
+        public static ResponsivePoint QuestNpcOpenTradeMissionContract(City origin, City destination) =>
+            CalculateOffsetedPointForTradeMissionContact(QuestNpcSelectFirstTradeMissionContract, origin, destination);
+
+        public static ResponsivePoint QuestNpcSelectTradeMissionContract(City origin, City destination) =>
+            CalculateOffsetedPointForTradeMissionContact(QuestNpcTradeMissionsFirstContractTab, origin, destination);
+
+        private static ResponsivePoint CalculateOffsetedPointForTradeMissionContact(
+            ResponsivePoint point,
+            City origin,
+            City destination)
+        {
+            var offset = QuestNpcSelectTradeMissionContractOffset;
+            var multiplier = Cities.FactionLeaderInCityOrderOfMissionForCity(origin, destination);
+            
+            return new (
+                point.OriginalX + offset.OriginalX * multiplier,
+                point.OriginalY + offset.OriginalY * multiplier,
+                offset.OriginalScreenWidth,
+                offset.OriginalScreenHeight,
+                offset.Anchor);
+        }
+
         public static ResponsivePoint QuestNpcAcceptTradeMissionContract =
             new(1080, 820, 1920, 1080, AnchorStyle.Center);
         

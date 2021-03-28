@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Inkybot.Api;
@@ -118,7 +119,7 @@ namespace OryxBot.Client.Windows
                 
                 var hotkey = Services.GetService<Hotkey>();
                 hotkey.Insert += (_, _) => AuthorizedShowContextMenuStrip(app);
-                hotkey.F3 += (_, _) =>AuthorizedShowContextMenuStrip(app);
+                hotkey.F3 += (_, _) => AuthorizedShowContextMenuStrip(app);
             }
 
             private void AuthorizedShowContextMenuStrip(MainForm app) {

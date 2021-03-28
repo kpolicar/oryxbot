@@ -1,9 +1,11 @@
 using System;
+using System.Drawing;
 using System.Numerics;
 using System.Threading;
 using OryxBot.Client.Windows.Bot.Game;
 using OryxBot.Shared.Contracts;
 using OryxBot.Shared.Design;
+using OryxBot.Shared.Game;
 using BotManagerContract=OryxBot.Shared.Contracts.BotManager;
 
 
@@ -129,14 +131,15 @@ namespace OryxBot.Client.Windows.Bot.Services
             input.Click(AlbionInterface.QuestNpcTradeMissionsTab);
         }
 
-        public void NpcQuestOpenTradeMissionsContractTab() {
+        public void NpcQuestOpenTradeMissionsContractTab(City city, City destination) {
             EnforceBotIsRunning();
-            input.Click(AlbionInterface.QuestNpcTradeMissionsContractTab);
+            input.Click(AlbionInterface.QuestNpcOpenTradeMissionContract(city, destination));
         }
 
-        public void NpcQuestSelectTradeMissionsContract() {
+        public void NpcQuestSelectTradeMissionsContract(City city, City destination) {
             EnforceBotIsRunning();
-            input.Click(AlbionInterface.QuestNpcSelectTradeMissionContract);
+
+            input.Click(AlbionInterface.QuestNpcSelectTradeMissionContract(city, destination));
         }
 
         public void NpcQuestAcceptTradeMissionsContract() {
@@ -166,8 +169,8 @@ namespace OryxBot.Client.Windows.Bot.Services
         }
 
         private void EnforceBotIsRunning() {
-            if (!bot.IsRunning)
-                throw new OperationCanceledException();
+            // if (!bot.IsRunning)
+            //     throw new OperationCanceledException();
         }
 
         public void Respawn() {

@@ -1,3 +1,4 @@
+using System.Drawing;
 using System.Numerics;
 using OryxBot.Shared.Design;
 
@@ -7,6 +8,7 @@ namespace OryxBot.Shared.Contracts
     {
         void MoveCursorRelativeToCenter(Vector2 direction);
         void Click();
+        void Click(Point point);
         void Click(ResponsivePoint point);
         void ShiftClick(ResponsivePoint point);
         void RightMouseDown();

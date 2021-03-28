@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using OryxBot.Shared.Design;
+using static OryxBot.Shared.Game.City;
+using static OryxBot.Shared.Game.Region;
 
 namespace OryxBot.Shared.Game
 {
@@ -8,7 +10,7 @@ namespace OryxBot.Shared.Game
     {
         public static class FactionLeader
         {
-            public static Dictionary<City, Position> Position = new() {
+            public static readonly Dictionary<City, Position> Position = new() {
                 { City.Caerleon, new Position(-24.4f, -46.5f) },
                 { City.Thetford, new Position(34f, -1f) },
                 { City.FortSterling, new Position(-14.25f, -33.77f) },
@@ -20,13 +22,22 @@ namespace OryxBot.Shared.Game
 
         public static class FactionEmissary
         {
-            public static Dictionary<Region, Position> Position = new() {
-                { Region.SnapshaftTrough, new Position(-9.25f, 45.68f) }, // Lymhurst trade mission
-                { Region.DeadveinGully, new Position(49.17f, -138.86f) }, // Bridgewatch trade mission
-                { Region.CairnFidair, new Position(-110.5f, 60.35f) }, // Thetford trade mission
-                { Region.BlackthorneQuarry, new Position(338.62f, 260.92f) }, // Caerleon trade mission
-                { Region.Aspenwood, new Position(-280.89f, 370.87f) }, // Fort sterling trade mission
-                { Region.NightcreakMarsh, new Position( -81.14f, -199.17f) }, // Martlock trade mission
+            public static readonly Dictionary<Region, Position> Position = new() {
+                { SnapshaftTrough, new Position(-9.25f, 45.68f) }, // Lymhurst->Bridgewatch trade mission
+                { DeadveinGully, new Position(49.17f, -138.86f) }, // Bridgewatch->Caerleon trade mission
+                { CairnFidair, new Position(-110.5f, 60.35f) }, // Thetford->FortSterling trade mission
+                { BlackthorneQuarry, new Position(338.62f, 260.92f) }, // Caerleon->Martlock trade mission
+                { Aspenwood, new Position(-280.89f, 370.87f) }, // FortSterling->Lymhurst sterling trade mission
+                { NightcreakMarsh, new Position( -81.14f, -199.17f) }, // Martlock->Thetford trade mission
+            };
+
+            public static readonly Dictionary<Region, City> Allegiance = new() {
+                {SnapshaftTrough, City.Bridgewatch},
+                {DeadveinGully, City.Caerleon},
+                {CairnFidair, City.FortSterling},
+                {BlackthorneQuarry, City.Martlock},
+                {Aspenwood, City.Lymhurst},
+                {NightcreakMarsh, City.Thetford},
             };
         }
     }

@@ -17,11 +17,11 @@ namespace OryxBot.Shared.Design
         
         private readonly double _ratioX;
         private readonly double _ratioY;
-        private readonly int _x;
-        private readonly int _y;
-        private readonly int _screenWidth;
-        private readonly int _screenHeight;
-        private readonly double _screenRatio => 1d*_screenWidth/_screenHeight;
+        public readonly int OriginalX;
+        public readonly int OriginalY;
+        public readonly int OriginalScreenWidth;
+        public readonly int OriginalScreenHeight;
+        private readonly double _screenRatio => 1d*OriginalScreenWidth/OriginalScreenHeight;
 
         public static event EventHandler? ResolutionChanged;
         public static (int width, int height) CurrentResolution {
@@ -46,18 +46,18 @@ namespace OryxBot.Shared.Design
         private double _currentScreenRatio => 1d*CurrentScreenWidth/CurrentScreenHeight;
         private readonly int _currentScreenXOffset => (int) ((_screenRatio / _currentScreenRatio) * (_ratioX * CurrentScreenWidth));
 
-        private readonly AnchorStyle _anchorStyle;
+        public readonly AnchorStyle Anchor;
 
-        public int X => _anchorStyle switch {
+        public int X => Anchor switch {
             AnchorStyle.Left => _currentScreenXOffset,
             AnchorStyle.Right => CurrentScreenWidth - _currentScreenXOffset,
             AnchorStyle.Center => CurrentScreenWidth/2 - _currentScreenXOffset,
-            _ => throw new ArgumentOutOfRangeException(nameof(_anchorStyle), _anchorStyle, null)
+            _ => throw new ArgumentOutOfRangeException(nameof(Anchor), Anchor, null)
         };
         public int Y => (int) (_ratioY * CurrentScreenHeight);
 
         public ResponsivePoint(int x, int y, int screenWidth, int screenHeight, AnchorStyle anchorStyle) =>
-            (_x, _y, _screenWidth, _screenHeight, _anchorStyle, _ratioX, _ratioY) =
+            (OriginalX, OriginalY, OriginalScreenWidth, OriginalScreenHeight, Anchor, _ratioX, _ratioY) =
             (x, y, screenWidth, screenHeight, anchorStyle, CalculateRatioX(x, screenWidth, anchorStyle), 1d*y/screenHeight);
 
         

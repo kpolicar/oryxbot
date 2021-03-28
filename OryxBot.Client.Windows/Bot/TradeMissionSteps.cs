@@ -46,17 +46,18 @@ namespace OryxBot.Client.Windows.Bot
         internal class TakeQuest : InteractionStep
         {
             private City City;
-            public TakeQuest(City city) =>
-                City = city;
+            private City Destination;
+            public TakeQuest(City origin, City destination) =>
+                (City, Destination) = (origin, destination);
 
             protected override Position _interactablePosition => Npc.FactionLeader.Position[City];
             
             protected override bool DoInteractions() {
                 actions.NpcQuestOpenTradeMissionsTab();
                 Thread.Sleep(Delay);
-                actions.NpcQuestOpenTradeMissionsContractTab();
+                actions.NpcQuestOpenTradeMissionsContractTab(City, Destination);
                 Thread.Sleep(Delay);
-                actions.NpcQuestSelectTradeMissionsContract();
+                actions.NpcQuestSelectTradeMissionsContract(City, Destination);
                 Thread.Sleep(Delay);
                 actions.NpcQuestAcceptTradeMissionsContract();
                 

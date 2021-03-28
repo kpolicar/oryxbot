@@ -32,14 +32,15 @@ namespace OryxBot.Client.Windows.Bot
         private Thread? runningThread;
         private bool _paused;
         private City City;
+        private City TradeCity;
         
 
 
         public TradeMissionRun(
-            City city,
             Route route,
             Route routeBack)
-        => (City, Route, RouteBack) = (city, route, routeBack);
+        => (City, TradeCity, Route, RouteBack) =
+            ((City)route.Origin!, Npc.FactionEmissary.Allegiance[route.Destination!.Value], route, routeBack);
         
         public void BindDependencies(ServiceContainer serviceContainer) {
             _routeManager = serviceContainer.GetService<TradeMissionRouteManager>();
@@ -99,7 +100,7 @@ namespace OryxBot.Client.Windows.Bot
             _step = _step switch {
                 RunToBank => new BankItems(),
                 BankItems => new RunToQuest(),
-                RunToQuest => new TakeQuest(City),
+                RunToQuest => new TakeQuest(City, TradeCity),
                 TakeQuest => new RunRouteToDestination(Route),
                 RunRouteToDestination => new ProgressQuest(),
                 ProgressQuest => new RunRouteBack(RouteBack),

@@ -50,7 +50,7 @@ namespace OryxBot.Client.Windows.Bot
 
                 EnforceBotServiceType(
                     typeof(TradeMissionRun), 
-                    () => new TradeMissionRun((City) route.Origin!, route, routeBack));
+                    () => new TradeMissionRun(route, routeBack));
             }
             
             if (!Bot!.Running)

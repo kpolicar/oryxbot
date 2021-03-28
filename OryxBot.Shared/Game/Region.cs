@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using static OryxBot.Shared.Game.Region;
 
 namespace OryxBot.Shared.Game
 {
@@ -25,36 +26,36 @@ namespace OryxBot.Shared.Game
     {
         static Regions() {
             CodeRegionMap = new Dictionary<string, Region>() {
-                {"caerleon", Game.Region.Caerleon},
-                {"thetford", Game.Region.Thetford},
-                {"fort-sterling", Game.Region.FortSterling},
-                {"lymhurst", Game.Region.Lymhurst},
-                {"bridgewatch", Game.Region.Bridgewatch},
-                {"martlock", Game.Region.Martlock},
+                {"caerleon", Caerleon},
+                {"thetford", Thetford},
+                {"fort-sterling", FortSterling},
+                {"lymhurst", Lymhurst},
+                {"bridgewatch", Bridgewatch},
+                {"martlock", Martlock},
 
-                {"snapshaft-trough", Game.Region.SnapshaftTrough},
-                {"deadvein-gully", Game.Region.DeadveinGully},
-                {"cairn-fidair", Game.Region.CairnFidair},
-                {"blackthorne-quarry", Game.Region.BlackthorneQuarry},
-                {"aspenwood", Game.Region.Aspenwood},
-                {"nightcreak-marsh", Game.Region.NightcreakMarsh},
+                {"snapshaft-trough", SnapshaftTrough},
+                {"deadvein-gully", DeadveinGully},
+                {"cairn-fidair", CairnFidair},
+                {"blackthorne-quarry", BlackthorneQuarry},
+                {"aspenwood", Aspenwood},
+                {"nightcreak-marsh", NightcreakMarsh},
             };
             RegionCodeMap = CodeRegionMap.ToDictionary(
                 keyValue => keyValue.Value,
                 keyValue => keyValue.Key);
             RegionNameMap = new Dictionary<Region,string>() {
-                {Game.Region.Caerleon, "Caerleon"},
-                {Game.Region.Thetford, "Thetford"},
-                {Game.Region.FortSterling, "FortSterling"},
-                {Game.Region.Lymhurst, "Lymhurst"},
-                {Game.Region.Bridgewatch, "Bridgewatch"},
-                {Game.Region.Martlock, "Martlock"},
-                {Game.Region.SnapshaftTrough, "Snapshaft Trough"},
-                {Game.Region.DeadveinGully, "Deadvein Gully"},
-                {Game.Region.CairnFidair, "Cairn Fidair"},
-                {Game.Region.BlackthorneQuarry, "Blackthorne Quarry"},
-                {Game.Region.Aspenwood, "Aspenwood"},
-                {Game.Region.NightcreakMarsh, "Nightcreak Marsh"},
+                {Caerleon, "Caerleon"},
+                {Thetford, "Thetford"},
+                {FortSterling, "FortSterling"},
+                {Lymhurst, "Lymhurst"},
+                {Bridgewatch, "Bridgewatch"},
+                {Martlock, "Martlock"},
+                {SnapshaftTrough, "Snapshaft Trough"},
+                {DeadveinGully, "Deadvein Gully"},
+                {CairnFidair, "Cairn Fidair"},
+                {BlackthorneQuarry, "Blackthorne Quarry"},
+                {Aspenwood, "Aspenwood"},
+                {NightcreakMarsh, "Nightcreak Marsh"},
             };
         }
 

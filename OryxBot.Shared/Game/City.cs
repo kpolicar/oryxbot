@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using static OryxBot.Shared.Game.City;
 
 namespace OryxBot.Shared.Game
 {
@@ -18,23 +19,23 @@ namespace OryxBot.Shared.Game
     {
         static Cities() {
             CodeCityMap = new Dictionary<string, City> {
-                {"caerleon", Game.City.Caerleon},
-                {"thetford", Game.City.Thetford},
-                {"fort-sterling", Game.City.FortSterling},
-                {"lymhurst", Game.City.Lymhurst},
-                {"bridgewatch", Game.City.Bridgewatch},
-                {"martlock", Game.City.Martlock},
+                {"caerleon", Caerleon},
+                {"thetford", Thetford},
+                {"fort-sterling", FortSterling},
+                {"lymhurst", Lymhurst},
+                {"bridgewatch", Bridgewatch},
+                {"martlock", Martlock},
             };
             CityCodeMap = CodeCityMap.ToDictionary(
                 keyValue => keyValue.Value,
                 keyValue => keyValue.Key);
             CityNameMap = new Dictionary<City, string> {
-                {Game.City.Caerleon, "Caerleon"},
-                {Game.City.Thetford, "Thetford"},
-                {Game.City.FortSterling, "Fort Sterling"},
-                {Game.City.Lymhurst, "Lymhurst"},
-                {Game.City.Bridgewatch, "Bridgewatch"},
-                {Game.City.Martlock, "Martlock"},
+                {Caerleon, "Caerleon"},
+                {Thetford, "Thetford"},
+                {FortSterling, "Fort Sterling"},
+                {Lymhurst, "Lymhurst"},
+                {Bridgewatch, "Bridgewatch"},
+                {Martlock, "Martlock"},
             };
         }
         
@@ -45,5 +46,17 @@ namespace OryxBot.Shared.Game
         public static string Name(City city) => CityNameMap[city];
         public static string Code(City city) => CityCodeMap[city];
         public static City City(string code) => CodeCityMap[code];
+        
+        public readonly static Dictionary<City, City[]> FactionLeaderCityMissionOrdering = new() {
+            {Caerleon, new[] {Thetford, Lymhurst, FortSterling, Martlock, Bridgewatch}},
+            {Bridgewatch, new[] {Caerleon, Lymhurst, Martlock, FortSterling, Thetford}},
+            {FortSterling, new[] {Caerleon,Thetford,Lymhurst,Bridgewatch,Martlock}},
+            {Lymhurst, new[] {Caerleon,Bridgewatch,FortSterling,Thetford,Martlock}},
+            {Martlock, new[] {Caerleon,Bridgewatch,Thetford,FortSterling,Lymhurst}},
+            {Thetford, new[] {Caerleon,Martlock,FortSterling,Lymhurst,Bridgewatch}},
+        };
+
+        public static int FactionLeaderInCityOrderOfMissionForCity(City origin, City destination) =>
+            Array.IndexOf(FactionLeaderCityMissionOrdering[origin], destination);
     }
 }
