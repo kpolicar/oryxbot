@@ -6,6 +6,7 @@ using OryxBot.Client.Windows.Bot.Contracts;
 using OryxBot.Client.Windows.Bot.Events;
 using OryxBot.Client.Windows.Bot.Exceptions;
 using OryxBot.Client.Windows.Bot.Services;
+using OryxBot.Shared;
 using OryxBot.Shared.Contracts;
 using OryxBot.Shared.Design;
 using OryxBot.Shared.Extensions;
@@ -35,14 +36,13 @@ namespace OryxBot.Client.Windows.Bot
         public override bool IsPaused => _isPaused;
         private City City;
         private City TradeCity;
+        private RunConfiguration.HeartsType _heartsType;
         
 
 
-        public TradeMissionRun(
-            Route route,
-            Route routeBack)
-        => (City, TradeCity, Route, RouteBack) =
-            ((City)route.Origin!, Npc.FactionEmissary.Allegiance[route.Destination!.Value], route, routeBack);
+        public TradeMissionRun(Route route, Route routeBack, RunConfiguration.HeartsType heartsType)
+        => (City, TradeCity, Route, RouteBack, _heartsType) =
+            ((City)route.Origin!, Npc.FactionEmissary.Allegiance[route.Destination!.Value], route, routeBack, heartsType);
         
         public void BindDependencies(ServiceContainer serviceContainer) {
             _routeManager = serviceContainer.GetService<TradeMissionRouteManager>();

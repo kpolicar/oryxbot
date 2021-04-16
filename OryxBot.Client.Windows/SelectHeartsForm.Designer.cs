@@ -3,7 +3,7 @@ using System.ComponentModel;
 
 namespace OryxBot.Client.Windows
 {
-    partial class SelectCityForm
+    partial class SelectHeartsForm
     {
         /// <summary>
         /// Required designer variable.
@@ -31,7 +31,7 @@ namespace OryxBot.Client.Windows
         private void InitializeComponent() {
             this.labelPanel = new System.Windows.Forms.Panel();
             this.mainLabel = new System.Windows.Forms.Label();
-            this.citySelectorComboBox = new System.Windows.Forms.ComboBox();
+            this.heartSelectorComboBox = new System.Windows.Forms.ComboBox();
             this.cancelButton = new System.Windows.Forms.Button();
             this.confirmButton = new System.Windows.Forms.Button();
             this.formPanel = new System.Windows.Forms.FlowLayoutPanel();
@@ -59,18 +59,18 @@ namespace OryxBot.Client.Windows
             this.mainLabel.Name = "mainLabel";
             this.mainLabel.Size = new System.Drawing.Size(338, 16);
             this.mainLabel.TabIndex = 0;
-            this.mainLabel.Text = "What city are you starting in?";
+            this.mainLabel.Text = "How many hearts would you like to transport?";
             this.mainLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
-            // citySelectorComboBox
+            // heartSelectorComboBox
             // 
-            this.citySelectorComboBox.Dock = System.Windows.Forms.DockStyle.Left;
-            this.citySelectorComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.citySelectorComboBox.FormattingEnabled = true;
-            this.citySelectorComboBox.Location = new System.Drawing.Point(14, 3);
-            this.citySelectorComboBox.Name = "citySelectorComboBox";
-            this.citySelectorComboBox.Size = new System.Drawing.Size(120, 24);
-            this.citySelectorComboBox.TabIndex = 1;
+            this.heartSelectorComboBox.Dock = System.Windows.Forms.DockStyle.Left;
+            this.heartSelectorComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.heartSelectorComboBox.FormattingEnabled = true;
+            this.heartSelectorComboBox.Location = new System.Drawing.Point(14, 3);
+            this.heartSelectorComboBox.Name = "heartSelectorComboBox";
+            this.heartSelectorComboBox.Size = new System.Drawing.Size(120, 24);
+            this.heartSelectorComboBox.TabIndex = 1;
             // 
             // cancelButton
             // 
@@ -100,7 +100,7 @@ namespace OryxBot.Client.Windows
             // 
             this.formPanel.AutoSize = true;
             this.formPanel.Controls.Add(this.formActionPanel);
-            this.formPanel.Controls.Add(this.citySelectorComboBox);
+            this.formPanel.Controls.Add(this.heartSelectorComboBox);
             this.formPanel.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.formPanel.FlowDirection = System.Windows.Forms.FlowDirection.RightToLeft;
             this.formPanel.Location = new System.Drawing.Point(0, 79);
@@ -150,7 +150,7 @@ namespace OryxBot.Client.Windows
 
         private System.Windows.Forms.Button cancelButton;
         private System.Windows.Forms.Button confirmButton;
-        private System.Windows.Forms.ComboBox citySelectorComboBox;
+        private System.Windows.Forms.ComboBox heartSelectorComboBox;
 
         private System.Windows.Forms.Label mainLabel;
 

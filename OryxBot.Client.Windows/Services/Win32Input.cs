@@ -32,7 +32,11 @@ namespace OryxBot.Client.Windows.Services
 
         public void MoveCursorRelativeToCenter(Vector2 direction) {
             var center = ResolveScreenCenter();
-            var (pixelX, pixelY) = ((int) (direction.X * 150), -(int) (direction.Y * 150));
+            var offsetFromCenter = ResponsivePoint.CurrentScreenHeight / 10;
+            
+            var (pixelX, pixelY) =(
+                (int) (direction.X * offsetFromCenter),
+                -(int) (direction.Y * offsetFromCenter));
 
             var (targetX, targetY) = (center.X + pixelX, center.Y + pixelY);
             var newCursorPosition = new Point(targetX, targetY);

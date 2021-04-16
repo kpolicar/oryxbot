@@ -173,8 +173,8 @@ namespace OryxBot.Client.Windows.Bot.Services
         }
 
         private void EnforceBotIsRunning() {
-            // if (!bot.IsRunning)
-            //     throw new OperationCanceledException();
+            if (!bot.IsRunning)
+                throw new OperationCanceledException();
         }
 
         public void Respawn() {

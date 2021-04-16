@@ -26,6 +26,7 @@ namespace OryxBot.Client.Windows.Bot
         public bool IsRunning { get; private set; }
         public bool IsPaused { get; private set; }
         public RecordingConfiguration RecordingConfig { get; private set; }
+        public RunConfiguration RunConfig { get; private set; }
         
 
         public void BindDependencies(ServiceContainer serviceContainer) {
@@ -40,6 +41,9 @@ namespace OryxBot.Client.Windows.Bot
         public void SetRecordingConfiguration(RecordingConfiguration config) =>
             RecordingConfig = config;
 
+        public void SetRunConfiguration(RunConfiguration config) =>
+            RunConfig = config;
+
         public void ToggleTradeMissionRun() {
             if (!(Bot is TradeMissionRun) || !Bot.Running) {
                 var route = _routeManager.Route();
@@ -52,7 +56,7 @@ namespace OryxBot.Client.Windows.Bot
 
                 EnforceBotServiceType(
                     typeof(TradeMissionRun), 
-                    () => new TradeMissionRun(route, routeBack));
+                    () => new TradeMissionRun(route, routeBack, RunConfig.Hearts));
             }
             
             if (!Bot!.Running)

@@ -54,6 +54,9 @@
       <Compile Update="ConfigureRecordingForm.cs">
         <SubType>Form</SubType>
       </Compile>
+      <Compile Update="SelectHeartsForm.cs">
+        <SubType>Form</SubType>
+      </Compile>
     </ItemGroup>
 
     <ItemGroup>

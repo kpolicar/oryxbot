@@ -192,6 +192,14 @@ namespace OryxBot.Client.Windows
                         return;
                     routeProvider.SetDefaultRouteCity(selectedCity.Value);
                 }
+
+                if (!bot.IsRunning && !bot.IsPaused) {
+                    var selectedHearts = app.ShowHeartsForm();
+                    if (!selectedHearts.HasValue)
+                        return;
+                    bot.SetRunConfiguration(new RunConfiguration(
+                        selectedHearts.Value));
+                }
                 
                 bot.ToggleTradeMissionRun();
             }

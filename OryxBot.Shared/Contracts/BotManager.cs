@@ -11,11 +11,13 @@ namespace OryxBot.Shared.Contracts
         bool IsRunning { get; }
         bool IsPaused { get; }
         RecordingConfiguration RecordingConfig { get; }
+        RunConfiguration RunConfig { get; }
 
         void ToggleTradeMissionRun();
         void ToggleTradeMissionRecord();
         void ToggleTradeMissionPause();
         void Stop();
         void SetRecordingConfiguration(RecordingConfiguration configuration);
+        void SetRunConfiguration(RunConfiguration configuration);
     }
 }

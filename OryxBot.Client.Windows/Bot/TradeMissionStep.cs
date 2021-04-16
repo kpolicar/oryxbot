@@ -188,6 +188,7 @@ namespace OryxBot.Client.Windows.Bot
         {
             private const int DelayBetweenNpcInterfaceActions = 2000;
             private const float MaxDistance = 3f;
+            private bool attemptingInteraction;
             
             public int Delay => LocalCharacter.Instance.Interacting
                 ? DelayBetweenNpcInterfaceActions
@@ -203,7 +204,9 @@ namespace OryxBot.Client.Windows.Bot
                 if (!LocalCharacter.Instance.Interacting) {
                     AttemptInteraction();
                 } else {
-                    actions.StopAllActions();
+                    Thread.Sleep(DelayBetweenNpcInterfaceActions);
+                    if (!LocalCharacter.Instance.Interacting)
+                        return;
                     Finished = DoInteractions();
 
                     Thread.Sleep(500);
@@ -216,9 +219,16 @@ namespace OryxBot.Client.Windows.Bot
 
             private void AttemptInteraction() {
                 if (CharacterIsNearInteractable) {
+                    if (!attemptingInteraction) {
+                        actions.StopAllActions();
+                        Thread.Sleep(500);
+                    }
+
                     actions.InteractWith(_interactablePosition);
+                    attemptingInteraction = true;
                 } else {
                     actions.MoveTowards(_interactablePosition);
+                    attemptingInteraction = false;
                 }
             }
         }

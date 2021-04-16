@@ -15,6 +15,7 @@ using OryxBot.Client.Windows.Contracts;
 using OryxBot.Client.Windows.Domain;
 using OryxBot.Client.Windows.Events;
 using OryxBot.Client.Windows.Exceptions;
+using OryxBot.Shared;
 using OryxBot.Shared.Design;
 using OryxBot.Shared.Events;
 using OryxBot.Shared.Game;
@@ -31,6 +32,7 @@ namespace OryxBot.Client.Windows
         private TradeMissionRouteManager _routeManager;
         public static event EventHandler? LoggingIn;
         private SelectCityForm selectCityForm;
+        private SelectHeartsForm selectHeartsForm;
         private ConfigureRecordingForm configureRecordingForm;
 
         public MainForm() {
@@ -55,6 +57,7 @@ namespace OryxBot.Client.Windows
             _routeManager = Program.Services.GetService<TradeMissionRouteManager>();
             _routeManager.ModeChanged += OnRouteManagerModeChanged;
             selectCityForm = new SelectCityForm();
+            selectHeartsForm = new SelectHeartsForm();
             configureRecordingForm = new ConfigureRecordingForm();
         }
 
@@ -95,6 +98,16 @@ namespace OryxBot.Client.Windows
             var result = selectCityForm.ShowDialog(this);
             return result == DialogResult.OK
                 ? selectCityForm.SelectedCity
+                : null;
+        }
+
+        public RunConfiguration.HeartsType? ShowHeartsForm() {
+            if (selectHeartsForm.Visible)
+                return null;
+            
+            var result = selectHeartsForm.ShowDialog(this);
+            return result == DialogResult.OK
+                ? selectHeartsForm.SelectedHeartsType
                 : null;
         }
 
