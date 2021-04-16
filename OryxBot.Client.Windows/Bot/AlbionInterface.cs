@@ -1,6 +1,8 @@
+using System;
 using OryxBot.Shared.Design;
 using OryxBot.Shared.Game;
 using static OryxBot.Shared.Design.ResponsivePoint;
+using static OryxBot.Shared.RunConfiguration;
 
 namespace OryxBot.Client.Windows.Bot
 {
@@ -33,6 +35,9 @@ namespace OryxBot.Client.Windows.Bot
         public static ResponsivePoint QuestNpcTradeMissionsFirstContractTab =
             new(210, 575, 3840, 1600, AnchorStyle.Left);
         
+        public static ResponsivePoint QuestNpcTradeMissionsContractTabOffset =
+            new(0, 132, 3840, 1600, AnchorStyle.Left);
+        
         public static ResponsivePoint QuestNpcSelectFirstTradeMissionContract =
             new(99,517, 3840, 1600, AnchorStyle.Left);
         
@@ -40,12 +45,31 @@ namespace OryxBot.Client.Windows.Bot
             new(0,55, 3840, 1600, AnchorStyle.Left);
 
         public static ResponsivePoint QuestNpcOpenTradeMissionContract(City origin, City destination) =>
-            CalculateOffsetedPointForTradeMissionContact(QuestNpcSelectFirstTradeMissionContract, origin, destination);
+            CalculateOffsetedPointForTradeMissionContract(QuestNpcSelectFirstTradeMissionContract, origin, destination);
 
-        public static ResponsivePoint QuestNpcSelectTradeMissionContract(City origin, City destination) =>
-            CalculateOffsetedPointForTradeMissionContact(QuestNpcTradeMissionsFirstContractTab, origin, destination);
+        public static ResponsivePoint QuestNpcSelectTradeMissionContract(City origin, City destination, ContractType contract) {
+           var point = CalculateOffsetedPointForTradeMissionContract(
+               QuestNpcTradeMissionsFirstContractTab,
+               origin,
+               destination);
+           
+           var offset = QuestNpcTradeMissionsContractTabOffset;
+           var multiplier = contract switch {
+               ContractType.Minor => 0,
+               ContractType.Medium => 1,
+               ContractType.Major => 2,
+               _ => throw new ArgumentOutOfRangeException(nameof(contract), contract, null)
+           };
+           
+           return new (
+               point.OriginalX + offset.OriginalX * multiplier,
+               point.OriginalY + offset.OriginalY * multiplier,
+               offset.OriginalScreenWidth,
+               offset.OriginalScreenHeight,
+               point.Anchor);
+        }
 
-        private static ResponsivePoint CalculateOffsetedPointForTradeMissionContact(
+        private static ResponsivePoint CalculateOffsetedPointForTradeMissionContract(
             ResponsivePoint point,
             City origin,
             City destination)
@@ -58,7 +82,7 @@ namespace OryxBot.Client.Windows.Bot
                 point.OriginalY + offset.OriginalY * multiplier,
                 offset.OriginalScreenWidth,
                 offset.OriginalScreenHeight,
-                offset.Anchor);
+                point.Anchor);
         }
 
         public static ResponsivePoint QuestNpcAcceptTradeMissionContract =

@@ -7,6 +7,7 @@ using OryxBot.Client.Windows.Bot.Game;
 using OryxBot.Shared.Design;
 using OryxBot.Shared.Extensions;
 using OryxBot.Shared.Game;
+using static OryxBot.Shared.RunConfiguration;
 
 namespace OryxBot.Client.Windows.Bot
 {
@@ -47,8 +48,10 @@ namespace OryxBot.Client.Windows.Bot
         {
             private City City;
             private City Destination;
-            public TakeQuest(City origin, City destination) =>
-                (City, Destination) = (origin, destination);
+            private ContractType Contract;
+            
+            public TakeQuest(City origin, City destination, ContractType contract) =>
+                (City, Destination, Contract) = (origin, destination, contract);
 
             protected override Position _interactablePosition => Npc.FactionLeader.Position[City];
             
@@ -57,7 +60,7 @@ namespace OryxBot.Client.Windows.Bot
                 Thread.Sleep(Delay);
                 actions.NpcQuestOpenTradeMissionsContractTab(City, Destination);
                 Thread.Sleep(Delay);
-                actions.NpcQuestSelectTradeMissionsContract(City, Destination);
+                actions.NpcQuestSelectTradeMissionsContract(City, Destination, Contract);
                 Thread.Sleep(Delay);
                 actions.NpcQuestAcceptTradeMissionsContract();
                 

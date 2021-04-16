@@ -1,5 +1,6 @@
 using OryxBot.Shared.Design;
 using OryxBot.Shared.Game;
+using static OryxBot.Shared.RunConfiguration;
 
 namespace OryxBot.Shared.Contracts
 {
@@ -10,7 +11,7 @@ namespace OryxBot.Shared.Contracts
         void UnbankTokenItem();
         void NpcQuestOpenTradeMissionsTab();
         void NpcQuestOpenTradeMissionsContractTab(City origin, City destination);
-        void NpcQuestSelectTradeMissionsContract(City origin, City destination);
+        void NpcQuestSelectTradeMissionsContract(City origin, City destination, ContractType contract=ContractType.Minor);
         void NpcQuestAcceptTradeMissionsContract();
         void NpcQuestProgress();
         void StopAllActions();

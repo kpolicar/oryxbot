@@ -36,13 +36,13 @@ namespace OryxBot.Client.Windows.Bot
         public override bool IsPaused => _isPaused;
         private City City;
         private City TradeCity;
-        private RunConfiguration.HeartsType _heartsType;
+        private RunConfiguration.ContractType Contract;
         
 
 
-        public TradeMissionRun(Route route, Route routeBack, RunConfiguration.HeartsType heartsType)
-        => (City, TradeCity, Route, RouteBack, _heartsType) =
-            ((City)route.Origin!, Npc.FactionEmissary.Allegiance[route.Destination!.Value], route, routeBack, heartsType);
+        public TradeMissionRun(Route route, Route routeBack, RunConfiguration.ContractType contract)
+        => (City, TradeCity, Route, RouteBack, Contract) =
+            ((City)route.Origin!, Npc.FactionEmissary.Allegiance[route.Destination!.Value], route, routeBack, contract);
         
         public void BindDependencies(ServiceContainer serviceContainer) {
             _routeManager = serviceContainer.GetService<TradeMissionRouteManager>();
@@ -102,7 +102,7 @@ namespace OryxBot.Client.Windows.Bot
             _step = _step switch {
                 RunToBank => new BankItems(),
                 BankItems => new RunToQuest(),
-                RunToQuest => new TakeQuest(City, TradeCity),
+                RunToQuest => new TakeQuest(City, TradeCity, Contract),
                 TakeQuest => new RunRouteToDestination(Route),
                 RunRouteToDestination => new ProgressQuest(),
                 ProgressQuest => new RunRouteBack(RouteBack),

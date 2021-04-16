@@ -12,10 +12,10 @@ namespace OryxBot.Client.Windows
 {
     public partial class SelectHeartsForm : Form
     {
-        private readonly Dictionary<string, RunConfiguration.HeartsType> _heartOptions = Enum.GetValues<RunConfiguration.HeartsType>()
+        private readonly Dictionary<string, RunConfiguration.ContractType> _heartOptions = Enum.GetValues<RunConfiguration.ContractType>()
             .ToDictionary(type => ((int)type).ToString(), type => type);
         
-        public RunConfiguration.HeartsType SelectedHeartsType => (RunConfiguration.HeartsType) heartSelectorComboBox.SelectedValue;
+        public RunConfiguration.ContractType SelectedContractType => (RunConfiguration.ContractType) heartSelectorComboBox.SelectedValue;
         
         
         public SelectHeartsForm() {

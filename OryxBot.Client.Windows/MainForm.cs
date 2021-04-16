@@ -101,13 +101,13 @@ namespace OryxBot.Client.Windows
                 : null;
         }
 
-        public RunConfiguration.HeartsType? ShowHeartsForm() {
+        public RunConfiguration.ContractType? ShowHeartsForm() {
             if (selectHeartsForm.Visible)
                 return null;
             
             var result = selectHeartsForm.ShowDialog(this);
             return result == DialogResult.OK
-                ? selectHeartsForm.SelectedHeartsType
+                ? selectHeartsForm.SelectedContractType
                 : null;
         }
 

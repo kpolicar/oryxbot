@@ -6,6 +6,7 @@ using OryxBot.Client.Windows.Bot.Game;
 using OryxBot.Shared.Contracts;
 using OryxBot.Shared.Design;
 using OryxBot.Shared.Game;
+using static OryxBot.Shared.RunConfiguration;
 using BotManagerContract=OryxBot.Shared.Contracts.BotManager;
 
 
@@ -140,10 +141,10 @@ namespace OryxBot.Client.Windows.Bot.Services
             input.Click(AlbionInterface.QuestNpcOpenTradeMissionContract(city, destination));
         }
 
-        public void NpcQuestSelectTradeMissionsContract(City city, City destination) {
+        public void NpcQuestSelectTradeMissionsContract(City city, City destination, ContractType contract=ContractType.Minor) {
             EnforceBotIsRunning();
 
-            input.Click(AlbionInterface.QuestNpcSelectTradeMissionContract(city, destination));
+            input.Click(AlbionInterface.QuestNpcSelectTradeMissionContract(city, destination, contract));
         }
 
         public void NpcQuestAcceptTradeMissionsContract() {

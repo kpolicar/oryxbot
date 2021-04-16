@@ -5,13 +5,13 @@ namespace OryxBot.Shared
 {
     public readonly struct RunConfiguration
     {
-        public enum HeartsType {
-            Small=3, Average=7, Large=15
+        public enum ContractType {
+            Minor=3, Medium=7, Major=15
         }
         
-        public readonly HeartsType Hearts { get; }
+        public readonly ContractType Contract { get; }
         
-        public RunConfiguration(HeartsType type) =>
-            (Hearts) = (type);
+        public RunConfiguration(ContractType type) =>
+            (Contract) = (type);
     }
 }
