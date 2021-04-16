@@ -8,7 +8,7 @@ namespace OryxBot.Shared.Contracts
     {
         void MoveTowards(Position target);
         void BankRewardItems();
-        void UnbankTokenItem();
+        void UnbankTokenItem(ContractType contract);
         void NpcQuestOpenTradeMissionsTab();
         void NpcQuestOpenTradeMissionsContractTab(City origin, City destination);
         void NpcQuestSelectTradeMissionsContract(City origin, City destination, ContractType contract=ContractType.Minor);

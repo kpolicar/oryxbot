@@ -103,20 +103,20 @@ namespace OryxBot.Client.Windows.Bot.Services
             input.ShiftClick(AlbionInterface.FirstItemInInventory);
         }
 
-        public void UnbankTokenItem() =>
-            UnbankTokenItem(1000);
+        public void UnbankTokenItem(ContractType contract) =>
+            UnbankTokenItem(contract, 300);
         
-        public void UnbankTokenItem(int delay) {
+        public void UnbankTokenItem(ContractType contract, int delay) {
             EnforceBotIsRunning();
             input.Click(AlbionInterface.FirstItemInBank);
-            
-            Thread.Sleep(delay);
-            EnforceBotIsRunning();
-            input.Click(AlbionInterface.IncreaseSplitQuantityButton);
-            
-            Thread.Sleep(delay);
-            EnforceBotIsRunning();
-            input.Click(AlbionInterface.IncreaseSplitQuantityButton);
+
+            var numOfSplits = (int) contract - 1;
+
+            for (int i = 0; i < numOfSplits; i++) {
+                Thread.Sleep(delay);
+                EnforceBotIsRunning();
+                input.Click(AlbionInterface.IncreaseSplitQuantityButton);
+            }
             
             Thread.Sleep(delay);
             EnforceBotIsRunning();

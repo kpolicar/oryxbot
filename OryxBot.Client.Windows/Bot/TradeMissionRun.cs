@@ -100,7 +100,7 @@ namespace OryxBot.Client.Windows.Bot
 
         private void ProgressToNextStep() {
             _step = _step switch {
-                RunToBank => new BankItems(),
+                RunToBank => new BankItems(Contract),
                 BankItems => new RunToQuest(),
                 RunToQuest => new TakeQuest(City, TradeCity, Contract),
                 TakeQuest => new RunRouteToDestination(Route),

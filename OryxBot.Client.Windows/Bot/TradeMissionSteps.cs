@@ -23,12 +23,17 @@ namespace OryxBot.Client.Windows.Bot
 
         internal class BankItems : InteractionStep
         {
+            private ContractType Contract;
+
+            public BankItems(ContractType contract) =>
+                Contract = contract;
+
             protected override Position _interactablePosition => new(0, 0);
             
             protected override bool DoInteractions() {
                 actions.BankRewardItems();
                 Thread.Sleep(Delay);
-                actions.UnbankTokenItem(Delay);
+                actions.UnbankTokenItem(Contract, Delay/3);
 
                 return true;
             }

@@ -23,7 +23,8 @@ namespace OryxBot.Shared.Game
         public static class FactionEmissary
         {
             public static readonly Dictionary<Region, Position> Position = new() {
-                { SnapshaftTrough, new Position(-9.25f, 45.68f) }, // Lymhurst->Bridgewatch trade mission
+                { SnapshaftTrough, new Position(70.5f, -240f) }, // Lymhurst->Bridgewatch trade mission
+                //{ SnapshaftTrough, new Position(-9.25f, 45.68f) }, // Lymhurst->Bridgewatch trade mission
                 { DeadveinGully, new Position(49.17f, -138.86f) }, // Bridgewatch->Caerleon trade mission
                 { CairnFidair, new Position(-110.5f, 60.35f) }, // Thetford->FortSterling trade mission
                 { BlackthorneQuarry, new Position(338.62f, 260.92f) }, // Caerleon->Martlock trade mission
