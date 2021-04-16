@@ -89,6 +89,10 @@ namespace OryxBot.Client.Windows.Bot.Services
             direction = Vector2.Transform(direction, Matrix3x2.CreateRotation(-(float)System.Math.PI/4));
             direction = Vector2.Normalize(direction);
 
+            if (rightMouseIsDown) {
+                rightMouseIsDown = false;
+                input.RightMouseUp();
+            }
             input.MoveCursorRelativeToCenter(direction);
             input.Click();
         }
