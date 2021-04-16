@@ -133,7 +133,7 @@ namespace OryxBot.Client.Windows
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "SelectCityForm";
-            this.Text = "Select a City";
+            this.Text = "Select Hearts";
             this.TopMost = true;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.labelPanel.ResumeLayout(false);
