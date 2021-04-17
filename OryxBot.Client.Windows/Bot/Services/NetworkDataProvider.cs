@@ -16,17 +16,7 @@ namespace OryxBot.Client.Windows.Bot.Services
 {
     public partial class NetworkAlbionDataProvider : AlbionDataProvider, IDisposable, HasDependencies
     {
-        static NetworkAlbionDataProvider() {
-            var successfulParse =
-                int.TryParse(ConfigurationManager.AppSettings.Get("queryNetworkInterval")!, out QueryNetworkInterval);
-            if (!successfulParse)
-                QueryNetworkInterval = DefaultQueryNetworkInterval;
-            
-            QueryNetworkInterval = System.Math.Min(QueryNetworkInterval, 1000);
-            QueryNetworkInterval = System.Math.Max(QueryNetworkInterval, -1);
-        }
-        private const int DefaultQueryNetworkInterval = 200;
-        internal static readonly int QueryNetworkInterval;
+        internal static readonly int QueryNetworkInterval = 5;
         
         
         private IPhotonReceiver _receiver = null!;

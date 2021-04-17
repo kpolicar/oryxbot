@@ -58,10 +58,12 @@ namespace OryxBot.Client.Windows.Bot
             protected abstract Route Route { get; }
             private ITwoWayEnumerator<TradeMissionRecord.RecordableStep>? Step;
             private bool _characterHasDied;
+            private bool hasMadeFirstMove = false;
 
             public RunRouteStep() {
                 LocalCharacter.Instance.ChangeCluster += (_, _) => clusterChanged = true;
                 LocalCharacter.Instance.Died += OnCharacterDied;
+                LocalCharacter.Instance.Move += (_, _) => hasMadeFirstMove = true;
             }
 
             private void OnCharacterDied(object? sender, EventArgs e) {
@@ -97,10 +99,12 @@ namespace OryxBot.Client.Windows.Bot
                 ProgressMoveStepsAndSkipIfAlreadyAhead();
                 
                 if (Step?.Current is TradeMissionRecord.MoveStep target) {
-                    actions.MoveTowards(target.Position);
+                    var tryToGetUnstuck = hasMadeFirstMove == true;
+                    actions.MoveTowards(target.Position, tryToGetUnstuck);
                 }
                 if (Step?.Current is TradeMissionRecord.ChangeClusterStep) {
                     Thread.Sleep(1000);
+                    hasMadeFirstMove = false;
                     actions.MoveInSameDirection();
                 }
             }

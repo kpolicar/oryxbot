@@ -23,6 +23,7 @@ namespace OryxBot.Client.Windows.Bot.Game
         public event EventHandler? Died;
         
         private MovementStateTracker stateTracker;
+        private MovementStatePredictor movementPredictor;
 
         public void SendDieEvent() {
             Died?.Invoke(this, EventArgs.Empty);
@@ -30,6 +31,7 @@ namespace OryxBot.Client.Windows.Bot.Game
 
         private LocalCharacter() {
             stateTracker = new MovementStateTracker(this);
+            movementPredictor = new MovementStatePredictor(this);
         }
 
         public double DistanceFrom(Position position) =>

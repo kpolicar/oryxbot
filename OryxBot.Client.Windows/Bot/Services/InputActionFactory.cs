@@ -19,7 +19,7 @@ namespace OryxBot.Client.Windows.Bot.Services
         private BotManager bot = null!;
         private BotJob job;
         private bool rightMouseIsDown = false;
-        private Position previousTarget;
+        private Vector2 previousDirection;
 
 
         public void BindDependencies(ServiceContainer serviceContainer) {
@@ -35,12 +35,12 @@ namespace OryxBot.Client.Windows.Bot.Services
         }
 
         public void MoveTowards(Position target) =>
-            MoveTowards(target, false);
+            MoveTowards(target, false, false);
 
         public void MoveInSameDirection() =>
-            MoveTowards(previousTarget);
+            MoveTowards(previousDirection);
         
-        public void MoveTowards(Position target, bool forceReclick = false) {
+        public void MoveTowards(Position target, bool tryGetUnstuck=false, bool forceReclick = false) {
             var fixingCourse = false;
             EnforceBotIsRunning();
             var origin = LocalCharacter.Instance.Position;
@@ -50,7 +50,7 @@ namespace OryxBot.Client.Windows.Bot.Services
             direction = Vector2.Transform(direction, Matrix3x2.CreateRotation(-(float)System.Math.PI/4));
             
             // Try to get unstuck
-            if (!LocalCharacter.Instance.Moving) {
+            if (!LocalCharacter.Instance.Moving && tryGetUnstuck) {
                 fixingCourse = true;
                 
                 direction = LocalCharacter.Instance.RecentlyChangedCluster
@@ -59,8 +59,15 @@ namespace OryxBot.Client.Windows.Bot.Services
             }
             
             direction = Vector2.Normalize(direction);
+            previousDirection = direction;
 
             
+            MoveTowards(direction);
+            if (fixingCourse)
+                Thread.Sleep(1000);
+        }
+
+        private void MoveTowards(Vector2 direction, bool forceReclick=false) {
             input.MoveCursorRelativeToCenter(direction);
             
             if (!rightMouseIsDown) {
@@ -77,10 +84,6 @@ namespace OryxBot.Client.Windows.Bot.Services
                 Thread.Sleep(50);
                 input.RightMouseDown(); 
             }
-            previousTarget = target;
-            
-            if (fixingCourse)
-                Thread.Sleep(1000);
         }
 
         public void InteractWith(Position target) {
