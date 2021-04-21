@@ -1,5 +1,7 @@
 using System;
+using System.Diagnostics;
 using System.Windows.Forms;
+using OryxBot.Albion.Protocol;
 using OryxBot.Client.Windows.Bot;
 using ServiceContainer = OryxBot.Shared.Design.ServiceContainer;
 

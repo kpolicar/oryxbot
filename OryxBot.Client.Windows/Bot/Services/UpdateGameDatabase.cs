@@ -15,8 +15,36 @@ namespace OryxBot.Client.Windows.Bot.Services
             builder.AddRequestHandler(new UpdateCharacterAddInteracting());
             builder.AddRequestHandler(new RaiseUnRegisterFromObjectEvent());
             builder.AddEventHandler(new CharacterDied());
+            //builder.AddHandler(new EventPacketLogger());
+            //builder.AddHandler(new RequestPacketLogger());
+            //builder.AddHandler(new ResponsePacketLogger());
         }
 
+        private class EventPacketLogger : PacketHandler<EventPacket>
+        {
+            protected override Task OnHandleAsync(EventPacket packet) {
+                if (packet.EventCode != 3 && packet.EventCode != 21)
+                    Debug.WriteLine("event code: "+(EventCodes)packet.EventCode);
+                return Task.CompletedTask;
+            }
+        }
+
+        private class RequestPacketLogger : PacketHandler<RequestPacket>
+        {
+            protected override Task OnHandleAsync(RequestPacket packet) {
+                Debug.WriteLine("request code: "+packet.OperationCode);
+                throw new NotImplementedException();
+            }
+        }
+
+        private class ResponsePacketLogger : PacketHandler<ResponsePacket>
+        {
+            protected override Task OnHandleAsync(ResponsePacket packet) {
+                Debug.WriteLine("response code: "+packet.OperationCode);
+                return Task.CompletedTask;
+            }
+        }
+        
         private class CharacterDied : EventPacketHandler<DiedEvent>
         {
             public CharacterDied() :

@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Globalization;
 using OryxBot.Shared.Design;
 using OryxBot.Shared.Events;
 
@@ -15,7 +16,7 @@ namespace OryxBot.Client.Windows.Bot
 
             public override string Name => SerializedName;
             protected override string CsvFormatBody =>
-                $"{Position.X},{Position.Y}";
+                $"{Position.X.ToString(CultureInfo.InvariantCulture.NumberFormat)},{Position.Y.ToString(CultureInfo.InvariantCulture.NumberFormat)}";
 
             public static LinkedListNode<RecordableStep> From(MoveEventArgs move) =>
                 new(new MoveStep(move.Position));
