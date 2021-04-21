@@ -71,7 +71,7 @@ namespace OryxBot.Client.Windows.Bot
         }
 
         private void ResetRun() {
-            _step = new RunRouteToDestination(Route);
+            _step = new RunToBank();
             Reset?.Invoke(this, EventArgs.Empty);
         }
 
