@@ -15,7 +15,9 @@ namespace OryxBot.Client.Windows.Bot
         private AlbionDataProvider dataProvider = null!;
         private Shared.Contracts.BotManager manager = null!;
         private TradeMissionRouteManager routeManager = null!;
+        private int justChangedCluster = 0;
         public override bool IsPaused => false;
+        public bool HasStartedQuest = false;
 
 
         public void BindDependencies(ServiceContainer serviceContainer) {
@@ -24,16 +26,34 @@ namespace OryxBot.Client.Windows.Bot
             routeManager = serviceContainer.GetService<TradeMissionRouteManager>();
             LocalCharacter.Instance.Move += RuntimeEventListener(OnCharacterMove);
             LocalCharacter.Instance.ChangeCluster += RuntimeEventListener(OnChangeCluster);
+            LocalCharacter.Instance.ProgressedQuest += RuntimeEventListener(OnProgressQuest);
+        }
+
+        private void OnProgressQuest(object? sender, EventArgs e) {
+            lock (state) {
+                if (HasStartedQuest)
+                    state.RecordedSteps.AddLast(new ProgressQuestStep());
+                HasStartedQuest = true;
+            }
         }
 
         private void OnCharacterMove(object? sender, EventArgs e) {
             lock (state) {
+                if (!HasStartedQuest)
+                    return;
+                if (justChangedCluster > 0) {
+                    justChangedCluster--;
+                    return;
+                }
                 state.RecordedSteps.AddLast(new MoveStep(LocalCharacter.Instance.Position));
             }
         }
 
         private void OnChangeCluster(object? sender, EventArgs e) {
             lock (state) {
+                if (!HasStartedQuest)
+                    return;
+                justChangedCluster = 5;
                 state.RecordedSteps.AddLast(new ChangeClusterStep(LocalCharacter.Instance.Cluster));
             }
         }
@@ -47,6 +67,7 @@ namespace OryxBot.Client.Windows.Bot
         private void Reset() {
             lock (state) {
                 state = new TradeMissionRecordState();
+                HasStartedQuest = false;
             }
         }
 

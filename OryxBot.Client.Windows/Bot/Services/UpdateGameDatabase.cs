@@ -13,7 +13,8 @@ namespace OryxBot.Client.Windows.Bot.Services
             builder.AddRequestHandler(new UpdateCharacterPosition());
             builder.AddRequestHandler(new UpdateCharacterCluster());
             builder.AddRequestHandler(new UpdateCharacterAddInteracting());
-            builder.AddRequestHandler(new RaiseUnRegisterFromObjectEvent());
+            builder.AddRequestHandler(new UpdateCharacterNotInteracting());
+            builder.AddRequestHandler(new RaiseCharacterProgressedQuest());
             builder.AddEventHandler(new CharacterDied());
             //builder.AddHandler(new EventPacketLogger());
             //builder.AddHandler(new RequestPacketLogger());
@@ -103,14 +104,26 @@ namespace OryxBot.Client.Windows.Bot.Services
             }
         }
 
-        private class RaiseUnRegisterFromObjectEvent : RequestPacketHandler<UnknownOperation>
+        private class UpdateCharacterNotInteracting : RequestPacketHandler<UnknownOperation>
         {
-            public RaiseUnRegisterFromObjectEvent() :
+            public UpdateCharacterNotInteracting() :
                 base((int) OperationCodes.UnRegisterFromObject) {
             }
 
             protected override Task OnActionAsync(UnknownOperation value) {
                 Game.LocalCharacter.Instance.Interacting = false;
+                return Task.CompletedTask;
+            }
+        }
+
+        private class RaiseCharacterProgressedQuest : RequestPacketHandler<UnknownOperation>
+        {
+            public RaiseCharacterProgressedQuest() :
+                base((int) OperationCodes.QuestGiverRequest) {
+            }
+
+            protected override Task OnActionAsync(UnknownOperation value) {
+                Game.LocalCharacter.Instance.ProgressQuest();
                 return Task.CompletedTask;
             }
         }

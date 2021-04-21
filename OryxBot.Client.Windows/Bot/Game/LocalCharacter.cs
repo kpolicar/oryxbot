@@ -21,6 +21,7 @@ namespace OryxBot.Client.Windows.Bot.Game
         public event EventHandler? Interaction;
         public event EventHandler? MovingChanged;
         public event EventHandler? Died;
+        public event EventHandler? ProgressedQuest;
         
         private MovementStateTracker stateTracker;
         private MovementStatePredictor movementPredictor;
@@ -85,5 +86,8 @@ namespace OryxBot.Client.Windows.Bot.Game
         public bool RecentlyChangedCluster {
             get; private set;
         }
+
+        public void ProgressQuest() =>
+            ProgressedQuest?.Invoke(this, EventArgs.Empty);
     }
 }

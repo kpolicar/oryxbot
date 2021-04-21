@@ -21,6 +21,13 @@ namespace OryxBot.Client.Windows.Bot
             public static LinkedListNode<RecordableStep> From(MoveEventArgs move) =>
                 new(new MoveStep(move.Position));
         }
+
+        public class ProgressQuestStep : RecordableStep
+        {
+            public const string SerializedName = "quest";
+            public override string Name => SerializedName;
+            protected override string CsvFormatBody => "";
+        }
         
         public class ChangeClusterStep : RecordableStep {
             public const string SerializedName = "cluster";
