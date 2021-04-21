@@ -50,13 +50,10 @@ namespace OryxBot.Client.Windows.Bot
                 if (route == null)
                     return;
                 _routeManager.SetDefaultRouteCity((City)route.Origin!.Value);
-                var routeBack = _routeManager.RouteBack();
-                if (routeBack == null)
-                    return;
 
                 EnforceBotServiceType(
                     typeof(TradeMissionRun), 
-                    () => new TradeMissionRun(route, routeBack, RunConfig.Contract));
+                    () => new TradeMissionRun(route, RunConfig.Contract));
             }
             
             if (!Bot!.Running)

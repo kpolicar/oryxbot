@@ -26,8 +26,7 @@ namespace OryxBot.Client.Windows.Bot
         private TradeMissionStep _step;
         
         private static TradeMissionRouteManager _routeManager = null!;
-        public readonly Route Route;
-        public readonly Route RouteBack;
+        public readonly TradeMissionRoute Route;
         private static InputActionFactory actions = null!;
         
         private Thread? runningThread;
@@ -40,9 +39,9 @@ namespace OryxBot.Client.Windows.Bot
         
 
 
-        public TradeMissionRun(Route route, Route routeBack, RunConfiguration.ContractType contract)
-        => (City, TradeCity, Route, RouteBack, Contract) =
-            ((City)route.Origin!, Npc.FactionEmissary.Allegiance[route.Destination!.Value], route, routeBack, contract);
+        public TradeMissionRun(TradeMissionRoute route, RunConfiguration.ContractType contract)
+        => (City, TradeCity, Route, Contract) =
+            ((City)route.Origin!, Npc.FactionEmissary.Allegiance[route.Destination!.Value], route, contract);
         
         public void BindDependencies(ServiceContainer serviceContainer) {
             _routeManager = serviceContainer.GetService<TradeMissionRouteManager>();
@@ -103,9 +102,9 @@ namespace OryxBot.Client.Windows.Bot
                 RunToBank => new BankItems(Contract),
                 BankItems => new RunToQuest(),
                 RunToQuest => new TakeQuest(City, TradeCity, Contract),
-                TakeQuest => new RunRouteToDestination(Route),
+                TakeQuest => new RunRouteToDestination(Route.RouteToNpc),
                 RunRouteToDestination => new ProgressQuest(),
-                ProgressQuest => new RunRouteBack(RouteBack),
+                ProgressQuest => new RunRouteBack(Route.RouteBack),
                 RunRouteBack => new FinishQuest(City),
                 FinishQuest => new RunToBank(),
                 _ => throw new ArgumentOutOfRangeException(nameof(_step))

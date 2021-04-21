@@ -70,27 +70,21 @@
       <EmbeddedResource Include="Bot\Resources\route_martlock_bank_to_quest.csv" />
       <EmbeddedResource Include="Bot\Resources\route_martlock_quest_to_bank.csv" />
       <EmbeddedResource Include="Bot\Resources\route_martlock_trademission.csv" />
-      <EmbeddedResource Include="Bot\Resources\route_martlock_trademission_back.csv" />
       <EmbeddedResource Include="Bot\Resources\route_thetford_bank_to_quest.csv" />
       <EmbeddedResource Include="Bot\Resources\route_thetford_quest_to_bank.csv" />
       <EmbeddedResource Include="Bot\Resources\route_thetford_trademission.csv" />
-      <EmbeddedResource Include="Bot\Resources\route_thetford_trademission_back.csv" />
       <EmbeddedResource Include="Bot\Resources\route_fortsterling_bank_to_quest.csv" />
       <EmbeddedResource Include="Bot\Resources\route_fortsterling_quest_to_bank.csv" />
       <EmbeddedResource Include="Bot\Resources\route_fortsterling_trademission.csv" />
-      <EmbeddedResource Include="Bot\Resources\route_fortsterling_trademission_back.csv" />
       <EmbeddedResource Include="Bot\Resources\route_bridgewatch_bank_to_quest.csv" />
       <EmbeddedResource Include="Bot\Resources\route_bridgewatch_quest_to_bank.csv" />
       <EmbeddedResource Include="Bot\Resources\route_bridgewatch_trademission.csv" />
-      <EmbeddedResource Include="Bot\Resources\route_bridgewatch_trademission_back.csv" />
       <EmbeddedResource Include="Bot\Resources\route_caerleon_bank_to_quest.csv" />
       <EmbeddedResource Include="Bot\Resources\route_caerleon_quest_to_bank.csv" />
       <EmbeddedResource Include="Bot\Resources\route_caerleon_trademission.csv" />
-      <EmbeddedResource Include="Bot\Resources\route_caerleon_trademission_back.csv" />
       <EmbeddedResource Include="Bot\Resources\route_lymhurst_bank_to_quest.csv" />
       <EmbeddedResource Include="Bot\Resources\route_lymhurst_quest_to_bank.csv" />
       <EmbeddedResource Include="Bot\Resources\route_lymhurst_trademission.csv" />
-      <EmbeddedResource Include="Bot\Resources\route_lymhurst_trademission_back.csv" />
     </ItemGroup>
 
     <ItemGroup>

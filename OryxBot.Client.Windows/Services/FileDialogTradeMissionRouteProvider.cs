@@ -37,15 +37,10 @@ namespace OryxBot.Client.Windows.Services
             bot = serviceContainer.GetService<BotManager>();
 
 
-        public Route? Route() =>
+        public TradeMissionRoute? Route() =>
             !CustomRoutes
                 ? DefaultRoute()
-                : RouteFromFileSelector();
-        
-        public Route? RouteBack() =>
-            !CustomRoutes
-                ? DefaultRouteBack()
-                : RouteFromFileSelector();
+                : RouteFromFileSelector() as TradeMissionRoute;
 
         private Route? RouteFromFileSelector() {
             var result = app.TradeMissionRunRouteFile.ShowDialog();
@@ -83,11 +78,8 @@ namespace OryxBot.Client.Windows.Services
         public void SetDefaultRouteCity(City city) =>
             _defaultCity = city;
 
-        public Route? DefaultRoute() =>
-            RouteFromResource("OryxBot.Client.Windows.Bot.Resources.route_{city}_trademission.csv");
-
-        public Route? DefaultRouteBack() =>
-            RouteFromResource("OryxBot.Client.Windows.Bot.Resources.route_{city}_trademission_back.csv");
+        public TradeMissionRoute? DefaultRoute() =>
+            RouteFromResource("OryxBot.Client.Windows.Bot.Resources.route_{city}_trademission.csv") as TradeMissionRoute;
 
         public Route? RouteFromBankToQuest() =>
             RouteFromResource("OryxBot.Client.Windows.Bot.Resources.route_{city}_bank_to_quest.csv");
@@ -119,7 +111,7 @@ namespace OryxBot.Client.Windows.Services
             _ => throw new ArgumentOutOfRangeException()
         };
 
-        protected Route? RouteFromStream(Stream stream) {
+        protected Route RouteFromStream(Stream stream) {
             using var parser = new TextFieldParser(stream) {
                 TextFieldType = FieldType.Delimited,
                 Delimiters = new []{ "," }
@@ -128,6 +120,9 @@ namespace OryxBot.Client.Windows.Services
             var metadata = new Dictionary<string, string>();
 
             var steps = new Route();
+            Route? stepsBeforeQuest = null;
+            
+            
             while (!parser.EndOfData) {
                 var fields = parser.ReadFields();
                 
@@ -137,6 +132,14 @@ namespace OryxBot.Client.Windows.Services
                         .ToDictionary(
                             s => s.Split(':')[0], 
                             s => s.Split(':')[1]);
+                    
+                    if (metadata.ContainsKey("name"))
+                        steps.Name = metadata["name"];
+                    if (metadata.ContainsKey("origin"))
+                        steps.Origin = Regions.Region(metadata["origin"]);
+                    if (metadata.ContainsKey("destination"))
+                        steps.Destination = Regions.Region(metadata["destination"]);
+                    
                     continue;
                 }
 
@@ -153,19 +156,17 @@ namespace OryxBot.Client.Windows.Services
                     var changeCluster = new ChangeClusterEventArgs(fields[1]);
                     steps.AddLast(TradeMissionRecord.ChangeClusterStep.From(changeCluster));
                     
+                } else if (step == "quest") {
+                    stepsBeforeQuest = steps;
+                    steps = new Route();
                 } else {
                     Debug.Fail("Something went wrong");
                 }
             }
-
-            if (metadata.ContainsKey("name"))
-                steps.Name = metadata["name"];
-            if (metadata.ContainsKey("origin"))
-                steps.Origin = Regions.Region(metadata["origin"]);
-            if (metadata.ContainsKey("destination"))
-                steps.Destination = Regions.Region(metadata["destination"]);
             
-            return steps;
+            return stepsBeforeQuest != null
+                ? new TradeMissionRoute(stepsBeforeQuest, steps)
+                : steps;
         }
 
         public void BindToApp(MainForm app) =>

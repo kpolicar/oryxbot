@@ -10,8 +10,7 @@ namespace OryxBot.Client.Windows.Bot.Contracts
     {
         public bool CustomRoutes { get; }
         event EventHandler? ModeChanged;
-        Route? Route();
-        Route? RouteBack();
+        TradeMissionRoute? Route();
         Route? RouteFromBankToQuest();
         Route? RouteFromQuestToBank();
         void ToggleCustomMode();
