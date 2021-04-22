@@ -42,13 +42,12 @@ namespace OryxBot.Client.Windows
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 
-            //var app = new MainForm();
-            //app.BindDependencies(Services);
-            //app.Load += _kernel.OnLoadForm;
+            var app = new MainForm();
+            app.BindDependencies(Services);
+            app.Load += _kernel.OnLoadForm;
             
-            //Application.ApplicationExit += (_, _) => _kernel.Dispose();
-            //Application.Run(app);
-            Application.Run(new BotStatusForm());
+            Application.ApplicationExit += (_, _) => _kernel.Dispose();
+            Application.Run(app);
         }
     }
 }

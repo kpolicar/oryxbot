@@ -4,8 +4,10 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
+using OryxBot.Client.Windows.Bot;
 using OryxBot.Shared.Game;
 using static OryxBot.Client.Windows.Native.User32;
+using BotManager = OryxBot.Shared.Contracts.BotManager;
 
 namespace OryxBot.Client.Windows
 {
@@ -24,7 +26,8 @@ namespace OryxBot.Client.Windows
             citySelectorComboBox.DisplayMember = "Key";
             citySelectorComboBox.ValueMember = "Value";
         }
-        
+
+
         private void InitializeIcons() {
             // var titlebarIcon = (Icon) resources.GetObject("$this.Icon")!;
             // var taskbarIcon = (Icon) resources.GetObject("$this.IconTaskbar")!;

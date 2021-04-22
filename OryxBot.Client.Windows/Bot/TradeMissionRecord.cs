@@ -4,6 +4,7 @@ using OryxBot.Client.Windows.Bot.Contracts;
 using OryxBot.Client.Windows.Bot.Game;
 using OryxBot.Shared.Contracts;
 using OryxBot.Shared.Design;
+using OryxBot.Shared.Events;
 using OryxBot.Shared.Game;
 using ServiceContainer = OryxBot.Shared.Design.ServiceContainer;
 
@@ -11,13 +12,26 @@ namespace OryxBot.Client.Windows.Bot
 {
     public partial class TradeMissionRecord : Job, HasDependencies
     {
-        private TradeMissionRecordState state = new();
+        public TradeMissionRecordState State {
+            private set;
+            get;
+        } = new();
         private AlbionDataProvider dataProvider = null!;
         private Shared.Contracts.BotManager manager = null!;
         private TradeMissionRouteManager routeManager = null!;
         private int justChangedCluster = 0;
         public override bool IsPaused => false;
-        public bool HasStartedQuest = false;
+        public bool HasStartedQuest => State.Status != BotStatus.RecordingWaitingToStartQuest;
+        public EventHandler<BotEventArgs>? StatusChanged;
+
+        public TradeMissionRecord() {
+            State.StatusChanged += (_, _) => StatusChanged?.Invoke(this, new BotEventArgs(this));
+        }
+
+        public override void Start() {
+            base.Start();
+            StatusChanged?.Invoke(this, new BotEventArgs(this));
+        }
 
 
         public void BindDependencies(ServiceContainer serviceContainer) {
@@ -30,31 +44,34 @@ namespace OryxBot.Client.Windows.Bot
         }
 
         private void OnProgressQuest(object? sender, EventArgs e) {
-            lock (state) {
-                if (HasStartedQuest)
-                    state.RecordedSteps.AddLast(new ProgressQuestStep());
-                HasStartedQuest = true;
+            lock (State) {
+                if (HasStartedQuest) {
+                    State.RecordedSteps.AddLast(new ProgressQuestStep());
+                    State.Status = BotStatus.RecordingRouteBack;
+                } else {
+                    State.Status = BotStatus.RecordingRoute;
+                }
             }
         }
 
         private void OnCharacterMove(object? sender, EventArgs e) {
-            lock (state) {
+            lock (State) {
                 if (!HasStartedQuest)
                     return;
                 if (justChangedCluster > 0) {
                     justChangedCluster--;
                     return;
                 }
-                state.RecordedSteps.AddLast(new MoveStep(LocalCharacter.Instance.Position));
+                State.RecordedSteps.AddLast(new MoveStep(LocalCharacter.Instance.Position));
             }
         }
 
         private void OnChangeCluster(object? sender, EventArgs e) {
-            lock (state) {
+            lock (State) {
                 if (!HasStartedQuest)
                     return;
                 justChangedCluster = 5;
-                state.RecordedSteps.AddLast(new ChangeClusterStep(LocalCharacter.Instance.Cluster));
+                State.RecordedSteps.AddLast(new ChangeClusterStep(LocalCharacter.Instance.Cluster));
             }
         }
 
@@ -65,17 +82,16 @@ namespace OryxBot.Client.Windows.Bot
         }
 
         private void Reset() {
-            lock (state) {
-                state = new TradeMissionRecordState();
-                HasStartedQuest = false;
+            lock (State) {
+                State = new TradeMissionRecordState();
             }
         }
 
         private void SaveRecordingToDisk() {
             var configuration = manager.RecordingConfig;
             
-            lock (state) {
-                if (state.RecordedSteps.Count <= 0)
+            lock (State) {
+                if (State.RecordedSteps.Count <= 0)
                     return;
             
                 Directory.CreateDirectory("recordings");
@@ -87,7 +103,7 @@ namespace OryxBot.Client.Windows.Bot
                     $"destination:{Regions.Code(configuration.Destination)},"+
                     $"name:{configuration.Name}");
 
-                foreach (var recordedPosition in state.RecordedSteps) {
+                foreach (var recordedPosition in State.RecordedSteps) {
                     fileStream.WriteLine(recordedPosition.CsvFormat);
                 }
             }

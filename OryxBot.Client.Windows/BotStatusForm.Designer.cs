@@ -31,12 +31,12 @@ namespace OryxBot.Client.Windows
         private void InitializeComponent() {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(BotStatusForm));
             this.formLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
-            this.destinationValueLabel = new System.Windows.Forms.Label();
+            this.botPositionValueLabel = new System.Windows.Forms.Label();
             this.panel5 = new System.Windows.Forms.Panel();
-            this.destinationLabel = new System.Windows.Forms.Label();
-            this.originValueLabel = new System.Windows.Forms.Label();
+            this.botPositionLabel = new System.Windows.Forms.Label();
+            this.botStatusValueLabel = new System.Windows.Forms.Label();
             this.panel4 = new System.Windows.Forms.Panel();
-            this.originLabel = new System.Windows.Forms.Label();
+            this.botStatusLabel = new System.Windows.Forms.Label();
             this.panel6 = new System.Windows.Forms.Panel();
             this.button1 = new System.Windows.Forms.Button();
             this.formLayoutPanel.SuspendLayout();
@@ -50,9 +50,9 @@ namespace OryxBot.Client.Windows
             this.formLayoutPanel.ColumnCount = 2;
             this.formLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.formLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.formLayoutPanel.Controls.Add(this.destinationValueLabel, 1, 1);
+            this.formLayoutPanel.Controls.Add(this.botPositionValueLabel, 1, 1);
             this.formLayoutPanel.Controls.Add(this.panel5, 0, 1);
-            this.formLayoutPanel.Controls.Add(this.originValueLabel, 1, 0);
+            this.formLayoutPanel.Controls.Add(this.botStatusValueLabel, 1, 0);
             this.formLayoutPanel.Controls.Add(this.panel4, 0, 0);
             this.formLayoutPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.formLayoutPanel.Location = new System.Drawing.Point(0, 21);
@@ -66,27 +66,26 @@ namespace OryxBot.Client.Windows
             this.formLayoutPanel.TabIndex = 6;
             this.formLayoutPanel.MouseDown += new System.Windows.Forms.MouseEventHandler(this.Form1_MouseDown);
             // 
-            // destinationValueLabel
+            // botPositionValueLabel
             // 
-            this.destinationValueLabel.BackColor = System.Drawing.Color.FromArgb(((int) (((byte) (37)))), ((int) (((byte) (40)))), ((int) (((byte) (45)))));
-            this.destinationValueLabel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.destinationValueLabel.Font = new System.Drawing.Font("Calibri", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte) (0)));
-            this.destinationValueLabel.ForeColor = System.Drawing.SystemColors.ControlDark;
-            this.destinationValueLabel.Location = new System.Drawing.Point(142, 26);
-            this.destinationValueLabel.Margin = new System.Windows.Forms.Padding(0);
-            this.destinationValueLabel.MaximumSize = new System.Drawing.Size(142, 0);
-            this.destinationValueLabel.Name = "destinationValueLabel";
-            this.destinationValueLabel.Padding = new System.Windows.Forms.Padding(4);
-            this.destinationValueLabel.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
-            this.destinationValueLabel.Size = new System.Drawing.Size(142, 27);
-            this.destinationValueLabel.TabIndex = 2;
-            this.destinationValueLabel.Text = "Unknown position";
-            this.destinationValueLabel.MouseDown += new System.Windows.Forms.MouseEventHandler(this.Form1_MouseDown);
+            this.botPositionValueLabel.BackColor = System.Drawing.Color.FromArgb(((int) (((byte) (37)))), ((int) (((byte) (40)))), ((int) (((byte) (45)))));
+            this.botPositionValueLabel.Dock = System.Windows.Forms.DockStyle.Right;
+            this.botPositionValueLabel.Font = new System.Drawing.Font("Calibri", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte) (0)));
+            this.botPositionValueLabel.ForeColor = System.Drawing.SystemColors.ControlDark;
+            this.botPositionValueLabel.Location = new System.Drawing.Point(142, 26);
+            this.botPositionValueLabel.Margin = new System.Windows.Forms.Padding(0);
+            this.botPositionValueLabel.MaximumSize = new System.Drawing.Size(142, 0);
+            this.botPositionValueLabel.Name = "botPositionValueLabel";
+            this.botPositionValueLabel.Padding = new System.Windows.Forms.Padding(4);
+            this.botPositionValueLabel.Size = new System.Drawing.Size(142, 27);
+            this.botPositionValueLabel.TabIndex = 2;
+            this.botPositionValueLabel.Text = "Unknown position";
+            this.botPositionValueLabel.MouseDown += new System.Windows.Forms.MouseEventHandler(this.Form1_MouseDown);
             // 
             // panel5
             // 
             this.panel5.BackColor = System.Drawing.Color.FromArgb(((int) (((byte) (37)))), ((int) (((byte) (40)))), ((int) (((byte) (45)))));
-            this.panel5.Controls.Add(this.destinationLabel);
+            this.panel5.Controls.Add(this.botPositionLabel);
             this.panel5.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel5.Location = new System.Drawing.Point(0, 26);
             this.panel5.Margin = new System.Windows.Forms.Padding(0);
@@ -95,44 +94,43 @@ namespace OryxBot.Client.Windows
             this.panel5.TabIndex = 3;
             this.panel5.MouseDown += new System.Windows.Forms.MouseEventHandler(this.Form1_MouseDown);
             // 
-            // destinationLabel
+            // botPositionLabel
             // 
-            this.destinationLabel.BackColor = System.Drawing.Color.FromArgb(((int) (((byte) (37)))), ((int) (((byte) (40)))), ((int) (((byte) (45)))));
-            this.destinationLabel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.destinationLabel.Font = new System.Drawing.Font("Calibri", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte) (0)));
-            this.destinationLabel.ForeColor = System.Drawing.SystemColors.Control;
-            this.destinationLabel.Location = new System.Drawing.Point(0, 0);
-            this.destinationLabel.Margin = new System.Windows.Forms.Padding(0);
-            this.destinationLabel.MaximumSize = new System.Drawing.Size(142, 0);
-            this.destinationLabel.Name = "destinationLabel";
-            this.destinationLabel.Padding = new System.Windows.Forms.Padding(4);
-            this.destinationLabel.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
-            this.destinationLabel.Size = new System.Drawing.Size(142, 27);
-            this.destinationLabel.TabIndex = 2;
-            this.destinationLabel.Text = "Position";
-            this.destinationLabel.MouseDown += new System.Windows.Forms.MouseEventHandler(this.Form1_MouseDown);
+            this.botPositionLabel.BackColor = System.Drawing.Color.FromArgb(((int) (((byte) (37)))), ((int) (((byte) (40)))), ((int) (((byte) (45)))));
+            this.botPositionLabel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.botPositionLabel.Font = new System.Drawing.Font("Calibri", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte) (0)));
+            this.botPositionLabel.ForeColor = System.Drawing.SystemColors.Control;
+            this.botPositionLabel.Location = new System.Drawing.Point(0, 0);
+            this.botPositionLabel.Margin = new System.Windows.Forms.Padding(0);
+            this.botPositionLabel.MaximumSize = new System.Drawing.Size(142, 0);
+            this.botPositionLabel.Name = "botPositionLabel";
+            this.botPositionLabel.Padding = new System.Windows.Forms.Padding(4);
+            this.botPositionLabel.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
+            this.botPositionLabel.Size = new System.Drawing.Size(142, 27);
+            this.botPositionLabel.TabIndex = 2;
+            this.botPositionLabel.Text = "Position";
+            this.botPositionLabel.MouseDown += new System.Windows.Forms.MouseEventHandler(this.Form1_MouseDown);
             // 
-            // originValueLabel
+            // botStatusValueLabel
             // 
-            this.originValueLabel.BackColor = System.Drawing.Color.FromArgb(((int) (((byte) (37)))), ((int) (((byte) (40)))), ((int) (((byte) (45)))));
-            this.originValueLabel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.originValueLabel.Font = new System.Drawing.Font("Calibri", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte) (0)));
-            this.originValueLabel.ForeColor = System.Drawing.SystemColors.ControlDark;
-            this.originValueLabel.Location = new System.Drawing.Point(142, 0);
-            this.originValueLabel.Margin = new System.Windows.Forms.Padding(0);
-            this.originValueLabel.MaximumSize = new System.Drawing.Size(142, 0);
-            this.originValueLabel.Name = "originValueLabel";
-            this.originValueLabel.Padding = new System.Windows.Forms.Padding(4);
-            this.originValueLabel.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
-            this.originValueLabel.Size = new System.Drawing.Size(142, 26);
-            this.originValueLabel.TabIndex = 1;
-            this.originValueLabel.Text = "Unknown status";
-            this.originValueLabel.MouseDown += new System.Windows.Forms.MouseEventHandler(this.Form1_MouseDown);
+            this.botStatusValueLabel.BackColor = System.Drawing.Color.FromArgb(((int) (((byte) (37)))), ((int) (((byte) (40)))), ((int) (((byte) (45)))));
+            this.botStatusValueLabel.Dock = System.Windows.Forms.DockStyle.Right;
+            this.botStatusValueLabel.Font = new System.Drawing.Font("Calibri", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte) (0)));
+            this.botStatusValueLabel.ForeColor = System.Drawing.SystemColors.ControlDark;
+            this.botStatusValueLabel.Location = new System.Drawing.Point(142, 0);
+            this.botStatusValueLabel.Margin = new System.Windows.Forms.Padding(0);
+            this.botStatusValueLabel.MaximumSize = new System.Drawing.Size(142, 0);
+            this.botStatusValueLabel.Name = "botStatusValueLabel";
+            this.botStatusValueLabel.Padding = new System.Windows.Forms.Padding(4);
+            this.botStatusValueLabel.Size = new System.Drawing.Size(142, 26);
+            this.botStatusValueLabel.TabIndex = 1;
+            this.botStatusValueLabel.Text = "Unknown status";
+            this.botStatusValueLabel.MouseDown += new System.Windows.Forms.MouseEventHandler(this.Form1_MouseDown);
             // 
             // panel4
             // 
             this.panel4.BackColor = System.Drawing.Color.FromArgb(((int) (((byte) (37)))), ((int) (((byte) (40)))), ((int) (((byte) (45)))));
-            this.panel4.Controls.Add(this.originLabel);
+            this.panel4.Controls.Add(this.botStatusLabel);
             this.panel4.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel4.Location = new System.Drawing.Point(0, 0);
             this.panel4.Margin = new System.Windows.Forms.Padding(0);
@@ -141,22 +139,22 @@ namespace OryxBot.Client.Windows
             this.panel4.TabIndex = 0;
             this.panel4.MouseDown += new System.Windows.Forms.MouseEventHandler(this.Form1_MouseDown);
             // 
-            // originLabel
+            // botStatusLabel
             // 
-            this.originLabel.BackColor = System.Drawing.Color.FromArgb(((int) (((byte) (37)))), ((int) (((byte) (40)))), ((int) (((byte) (45)))));
-            this.originLabel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.originLabel.Font = new System.Drawing.Font("Calibri", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte) (0)));
-            this.originLabel.ForeColor = System.Drawing.SystemColors.Control;
-            this.originLabel.Location = new System.Drawing.Point(0, 0);
-            this.originLabel.Margin = new System.Windows.Forms.Padding(0);
-            this.originLabel.MaximumSize = new System.Drawing.Size(142, 0);
-            this.originLabel.Name = "originLabel";
-            this.originLabel.Padding = new System.Windows.Forms.Padding(4);
-            this.originLabel.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
-            this.originLabel.Size = new System.Drawing.Size(142, 26);
-            this.originLabel.TabIndex = 1;
-            this.originLabel.Text = "Status";
-            this.originLabel.MouseDown += new System.Windows.Forms.MouseEventHandler(this.Form1_MouseDown);
+            this.botStatusLabel.BackColor = System.Drawing.Color.FromArgb(((int) (((byte) (37)))), ((int) (((byte) (40)))), ((int) (((byte) (45)))));
+            this.botStatusLabel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.botStatusLabel.Font = new System.Drawing.Font("Calibri", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte) (0)));
+            this.botStatusLabel.ForeColor = System.Drawing.SystemColors.Control;
+            this.botStatusLabel.Location = new System.Drawing.Point(0, 0);
+            this.botStatusLabel.Margin = new System.Windows.Forms.Padding(0);
+            this.botStatusLabel.MaximumSize = new System.Drawing.Size(142, 0);
+            this.botStatusLabel.Name = "botStatusLabel";
+            this.botStatusLabel.Padding = new System.Windows.Forms.Padding(4);
+            this.botStatusLabel.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
+            this.botStatusLabel.Size = new System.Drawing.Size(142, 26);
+            this.botStatusLabel.TabIndex = 1;
+            this.botStatusLabel.Text = "Status";
+            this.botStatusLabel.MouseDown += new System.Windows.Forms.MouseEventHandler(this.Form1_MouseDown);
             // 
             // panel6
             // 
@@ -206,6 +204,7 @@ namespace OryxBot.Client.Windows
             this.Name = "BotStatusForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
             this.Text = "Oryxbot - Status";
+            this.ShowInTaskbar = false;
             this.TopMost = true;
             this.TransparencyKey = System.Drawing.Color.FromArgb(((int) (((byte) (37)))), ((int) (((byte) (40)))), ((int) (((byte) (45)))));
             this.MouseDown += new System.Windows.Forms.MouseEventHandler(this.Form1_MouseDown);
@@ -218,10 +217,10 @@ namespace OryxBot.Client.Windows
 
         private System.Windows.Forms.Button button1;
 
-        private System.Windows.Forms.Label originLabel;
-        private System.Windows.Forms.Label originValueLabel;
-        private System.Windows.Forms.Label destinationLabel;
-        private System.Windows.Forms.Label destinationValueLabel;
+        private System.Windows.Forms.Label botStatusLabel;
+        private System.Windows.Forms.Label botStatusValueLabel;
+        private System.Windows.Forms.Label botPositionLabel;
+        private System.Windows.Forms.Label botPositionValueLabel;
         private System.Windows.Forms.Panel panel4;
         private System.Windows.Forms.Panel panel5;
         private System.Windows.Forms.Panel panel6;

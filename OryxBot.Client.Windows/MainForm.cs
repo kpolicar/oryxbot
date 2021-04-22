@@ -34,6 +34,7 @@ namespace OryxBot.Client.Windows
         private SelectCityForm selectCityForm;
         private SelectHeartsForm selectHeartsForm;
         private ConfigureRecordingForm configureRecordingForm;
+        private BotStatusForm botStatusForm;
 
         public MainForm() {
             InitializeComponent();
@@ -59,6 +60,7 @@ namespace OryxBot.Client.Windows
             selectCityForm = new SelectCityForm();
             selectHeartsForm = new SelectHeartsForm();
             configureRecordingForm = new ConfigureRecordingForm();
+            botStatusForm = new BotStatusForm();
         }
 
         private void OnVisibleChanged(object? sender, EventArgs e) {

@@ -10,13 +10,17 @@ namespace OryxBot.Client.Windows
 {
     public partial class MainForm
     {
-        public void OnBotTradeMissionRecordingStarted(object? sender, EventArgs e) =>
+        public void OnBotTradeMissionRecordingStarted(object? sender, EventArgs e) {
             ToolStipToggleBotTradeMissionRecordButton.Text =
                 Resources.UIApplicationContext.ToolStipToggleBotTradeMissionRecordButton_TextStop;
+            botStatusForm.Show();
+        }
 
-        public void OnBotTradeMissionRecordingStopped(object? sender, EventArgs e) =>
+        public void OnBotTradeMissionRecordingStopped(object? sender, EventArgs e) {
             ToolStipToggleBotTradeMissionRecordButton.Text =
                 Resources.UIApplicationContext.ToolStipToggleBotTradeMissionRecordButton_TextStart;
+            botStatusForm.Hide();
+        }
         
         public void OnBotTradeMissionRunStarted(object? sender, EventArgs e) =>
             ToolStipToggleBotTradeMissionRunButton.Text =
