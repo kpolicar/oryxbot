@@ -45,7 +45,7 @@ namespace OryxBot.Client.Windows.Bot
             RunConfig = config;
 
         public void ToggleTradeMissionRun() {
-            if (!(Bot is TradeMissionRun) || !Bot.Running) {
+            if (!(Bot is TradeMissionRun) || (!Bot.Running && !Bot.IsPaused)) {
                 var route = _routeManager.Route();
                 if (route == null)
                     return;
