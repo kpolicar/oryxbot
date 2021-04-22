@@ -20,6 +20,9 @@ namespace OryxBot.Shared.Game
         BlackthorneQuarry,
         Aspenwood,
         NightcreakMarsh,
+        SleetwaterBasin,
+        LongtimberGlen,
+        MalagCrevasse,
     }
     
     public static class Regions
@@ -39,6 +42,9 @@ namespace OryxBot.Shared.Game
                 {"blackthorne-quarry", BlackthorneQuarry},
                 {"aspenwood", Aspenwood},
                 {"nightcreak-marsh", NightcreakMarsh},
+                {"sleetwater-basin", SleetwaterBasin},
+                {"longtimber-glen", LongtimberGlen},
+                {"malag-crevasse", MalagCrevasse},
             };
             RegionCodeMap = CodeRegionMap.ToDictionary(
                 keyValue => keyValue.Value,
@@ -56,6 +62,9 @@ namespace OryxBot.Shared.Game
                 {BlackthorneQuarry, "Blackthorne Quarry"},
                 {Aspenwood, "Aspenwood"},
                 {NightcreakMarsh, "Nightcreak Marsh"},
+                {SleetwaterBasin, "Sleetwater Basin"},
+                {LongtimberGlen, "Longtimber Glen"},
+                {MalagCrevasse, "Malag Crevasse"},
             };
         }
 

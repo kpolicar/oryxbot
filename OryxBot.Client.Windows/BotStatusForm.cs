@@ -32,6 +32,8 @@ namespace OryxBot.Client.Windows
         }
 
         private void OnCharacterMove(object? sender, EventArgs e) {
+            if (!Visible)
+                return;
             var position = LocalCharacter.Instance.Position;
             BeginInvoke(new Action(() => {
                 botPositionValueLabel.Text =
@@ -41,6 +43,8 @@ namespace OryxBot.Client.Windows
         }
 
         private void OnBotStatusChanged(object? sender, BotEventArgs e) {
+            if (!Visible)
+                return;
             Invoke(new Action(() => {
                 var record = (e.Job as TradeMissionRecord)!;
                 botStatusValueLabel.Text = record.State.Status switch {

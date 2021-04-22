@@ -30,6 +30,9 @@ namespace OryxBot.Shared.Game
                 { BlackthorneQuarry, new Position(338.62f, 260.92f) }, // Caerleon->Martlock trade mission
                 { Aspenwood, new Position(-280.89f, 370.87f) }, // FortSterling->Lymhurst sterling trade mission
                 { NightcreakMarsh, new Position( -81.14f, -199.17f) }, // Martlock->Thetford trade mission
+                { SleetwaterBasin, new Position( 289.2f, 341f) }, // FortSterling->Thetford trade mission
+                { LongtimberGlen, new Position( -80.9f, 210.6f) }, // FortSterling->Caerleon trade mission
+                { MalagCrevasse, new Position( 189.1f, -279.4f) }, // FortSterling->Caerleon trade mission
             };
 
             public static readonly Dictionary<Region, City> Allegiance = new() {
@@ -39,6 +42,9 @@ namespace OryxBot.Shared.Game
                 {BlackthorneQuarry, City.Martlock},
                 {Aspenwood, City.Lymhurst},
                 {NightcreakMarsh, City.Thetford},
+                {SleetwaterBasin, City.Thetford},
+                {LongtimberGlen, City.Caerleon},
+                {MalagCrevasse, City.Caerleon},
             };
         }
     }
