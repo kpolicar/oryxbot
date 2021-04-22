@@ -26,6 +26,7 @@ namespace OryxBot.Client.Windows.Bot
         {
             public const string SerializedName = "quest";
             public override string Name => SerializedName;
+            public override string CsvFormat => Name;
             protected override string CsvFormatBody => "";
         }
         
@@ -53,7 +54,7 @@ namespace OryxBot.Client.Windows.Bot
                 get;
             }
 
-            public string CsvFormat => $"{Name},{CsvFormatBody}";
+            public virtual string CsvFormat => $"{Name},{CsvFormatBody}";
             protected abstract string CsvFormatBody {
                 get;
             }

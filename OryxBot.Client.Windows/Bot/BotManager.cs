@@ -68,9 +68,11 @@ namespace OryxBot.Client.Windows.Bot
         }
 
         public void ToggleTradeMissionRecord() {
-            EnforceBotServiceType(
-                typeof(TradeMissionRecord), 
-                () => new TradeMissionRecord());
+            if (!(Bot is TradeMissionRecord) || !Bot.Running) {
+                EnforceBotServiceType(
+                    typeof(TradeMissionRecord), 
+                    () => new TradeMissionRecord());
+            }
             
             if (!Bot!.Running)
                 Starting?.Invoke(this, new BotEventArgs(Bot!));

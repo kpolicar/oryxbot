@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using System.IO;
 using OryxBot.Client.Windows.Bot.Contracts;
 using OryxBot.Client.Windows.Bot.Game;
@@ -21,7 +22,8 @@ namespace OryxBot.Client.Windows.Bot
         private TradeMissionRouteManager routeManager = null!;
         private int justChangedCluster = 0;
         public override bool IsPaused => false;
-        public bool HasStartedQuest => State.Status != BotStatus.RecordingWaitingToStartQuest;
+        public bool HasStartedQuest => State.Status == BotStatus.RecordingRoute;
+        public bool HasProgressedQuest => State.Status == BotStatus.RecordingRouteBack;
         public EventHandler<BotEventArgs>? StatusChanged;
 
         public TradeMissionRecord() {
@@ -44,10 +46,13 @@ namespace OryxBot.Client.Windows.Bot
         }
 
         private void OnProgressQuest(object? sender, EventArgs e) {
+            Debug.WriteLine("progressed!");
             lock (State) {
                 if (HasStartedQuest) {
                     State.RecordedSteps.AddLast(new ProgressQuestStep());
                     State.Status = BotStatus.RecordingRouteBack;
+                } else if (HasProgressedQuest) {
+                    Stop();
                 } else {
                     State.Status = BotStatus.RecordingRoute;
                 }
@@ -76,6 +81,8 @@ namespace OryxBot.Client.Windows.Bot
         }
 
         public override void Stop() {
+            if (!Running)
+                return;
             base.Stop();
             SaveRecordingToDisk();
             Reset();

@@ -24,7 +24,7 @@ namespace OryxBot.Client.Windows.Bot.Game
             private const float MinDistanceConsideredAsMove = 0.2f;
             private int StandStillDuration =>
                 System.Math.Max(NetworkAlbionDataProvider.QueryNetworkInterval * 4, 1300);
-            private int RecentlyChangeClusterDuration => AverageClusterChangeDuration*3;
+            private int RecentlyChangeClusterDuration => AverageClusterChangeDuration*2;
             private readonly LocalCharacter _character;
             private Stopwatch sw = new();
             private Stopwatch sw_cluster = new();
