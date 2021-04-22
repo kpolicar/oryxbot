@@ -52,7 +52,7 @@ namespace OryxBot.Shared.Game
             RegionNameMap = new Dictionary<Region,string>() {
                 {Caerleon, "Caerleon"},
                 {Thetford, "Thetford"},
-                {FortSterling, "FortSterling"},
+                {FortSterling, "Fort Sterling"},
                 {Lymhurst, "Lymhurst"},
                 {Bridgewatch, "Bridgewatch"},
                 {Martlock, "Martlock"},
