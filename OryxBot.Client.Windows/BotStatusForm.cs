@@ -19,6 +19,17 @@ namespace OryxBot.Client.Windows
 {
     public partial class BotStatusForm : Form
     {
+        protected override CreateParams CreateParams
+        {
+            get
+            {
+                var Params = base.CreateParams;
+                Params.ExStyle |= 0x80; //WS_EX_TOOLWINDOW
+
+                return Params;
+            }
+        }
+        
         public BotStatusForm() {
             InitializeComponent();
             Location = new Point( 
