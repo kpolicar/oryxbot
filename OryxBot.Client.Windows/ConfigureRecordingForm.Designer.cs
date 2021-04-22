@@ -29,6 +29,7 @@ namespace OryxBot.Client.Windows
         /// the contents of this method with the code editor.
         /// </summary>
         private void InitializeComponent() {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ConfigureRecordingForm));
             this.originComboBox = new System.Windows.Forms.ComboBox();
             this.actionsPanel = new System.Windows.Forms.FlowLayoutPanel();
             this.confirmButton = new System.Windows.Forms.Button();
@@ -53,9 +54,10 @@ namespace OryxBot.Client.Windows
             // 
             this.originComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.originComboBox.FormattingEnabled = true;
-            this.originComboBox.Location = new System.Drawing.Point(192, 3);
+            this.originComboBox.Location = new System.Drawing.Point(144, 2);
+            this.originComboBox.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.originComboBox.Name = "originComboBox";
-            this.originComboBox.Size = new System.Drawing.Size(178, 24);
+            this.originComboBox.Size = new System.Drawing.Size(134, 21);
             this.originComboBox.TabIndex = 2;
             // 
             // actionsPanel
@@ -65,18 +67,20 @@ namespace OryxBot.Client.Windows
             this.actionsPanel.Controls.Add(this.cancelButton);
             this.actionsPanel.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.actionsPanel.FlowDirection = System.Windows.Forms.FlowDirection.RightToLeft;
-            this.actionsPanel.Location = new System.Drawing.Point(0, 129);
+            this.actionsPanel.Location = new System.Drawing.Point(0, 105);
+            this.actionsPanel.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.actionsPanel.Name = "actionsPanel";
-            this.actionsPanel.Size = new System.Drawing.Size(378, 30);
+            this.actionsPanel.Size = new System.Drawing.Size(284, 24);
             this.actionsPanel.TabIndex = 1;
             // 
             // confirmButton
             // 
             this.confirmButton.BackColor = System.Drawing.Color.FromArgb(((int) (((byte) (200)))), ((int) (((byte) (189)))), ((int) (((byte) (156)))));
             this.confirmButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.confirmButton.Location = new System.Drawing.Point(241, 3);
+            this.confirmButton.Location = new System.Drawing.Point(182, 2);
+            this.confirmButton.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.confirmButton.Name = "confirmButton";
-            this.confirmButton.Size = new System.Drawing.Size(134, 24);
+            this.confirmButton.Size = new System.Drawing.Size(100, 20);
             this.confirmButton.TabIndex = 5;
             this.confirmButton.Text = "Confirm";
             this.confirmButton.UseVisualStyleBackColor = false;
@@ -86,9 +90,10 @@ namespace OryxBot.Client.Windows
             // 
             this.cancelButton.BackColor = System.Drawing.Color.FromArgb(((int) (((byte) (224)))), ((int) (((byte) (224)))), ((int) (((byte) (224)))));
             this.cancelButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.cancelButton.Location = new System.Drawing.Point(165, 3);
+            this.cancelButton.Location = new System.Drawing.Point(126, 2);
+            this.cancelButton.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.cancelButton.Name = "cancelButton";
-            this.cancelButton.Size = new System.Drawing.Size(70, 24);
+            this.cancelButton.Size = new System.Drawing.Size(52, 20);
             this.cancelButton.TabIndex = 4;
             this.cancelButton.Text = "Cancel";
             this.cancelButton.UseVisualStyleBackColor = false;
@@ -107,19 +112,21 @@ namespace OryxBot.Client.Windows
             this.formLayoutPanel.Controls.Add(this.panel4, 0, 0);
             this.formLayoutPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.formLayoutPanel.Location = new System.Drawing.Point(0, 0);
+            this.formLayoutPanel.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.formLayoutPanel.Name = "formLayoutPanel";
             this.formLayoutPanel.RowCount = 3;
             this.formLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.formLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.formLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.formLayoutPanel.Size = new System.Drawing.Size(378, 129);
+            this.formLayoutPanel.Size = new System.Drawing.Size(284, 105);
             this.formLayoutPanel.TabIndex = 6;
             // 
             // nameTextBox
             // 
-            this.nameTextBox.Location = new System.Drawing.Point(192, 89);
+            this.nameTextBox.Location = new System.Drawing.Point(144, 72);
+            this.nameTextBox.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.nameTextBox.Name = "nameTextBox";
-            this.nameTextBox.Size = new System.Drawing.Size(178, 22);
+            this.nameTextBox.Size = new System.Drawing.Size(134, 20);
             this.nameTextBox.TabIndex = 6;
             this.nameTextBox.Text = "Custom Route";
             // 
@@ -128,10 +135,10 @@ namespace OryxBot.Client.Windows
             this.panel6.BackColor = System.Drawing.Color.FromArgb(((int) (((byte) (200)))), ((int) (((byte) (189)))), ((int) (((byte) (156)))));
             this.panel6.Controls.Add(this.nameLabel);
             this.panel6.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel6.Location = new System.Drawing.Point(0, 86);
+            this.panel6.Location = new System.Drawing.Point(0, 70);
             this.panel6.Margin = new System.Windows.Forms.Padding(0);
             this.panel6.Name = "panel6";
-            this.panel6.Size = new System.Drawing.Size(189, 43);
+            this.panel6.Size = new System.Drawing.Size(142, 35);
             this.panel6.TabIndex = 5;
             // 
             // nameLabel
@@ -139,10 +146,10 @@ namespace OryxBot.Client.Windows
             this.nameLabel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.nameLabel.Location = new System.Drawing.Point(0, 0);
             this.nameLabel.Margin = new System.Windows.Forms.Padding(0);
-            this.nameLabel.MaximumSize = new System.Drawing.Size(190, 0);
+            this.nameLabel.MaximumSize = new System.Drawing.Size(142, 0);
             this.nameLabel.Name = "nameLabel";
-            this.nameLabel.Padding = new System.Windows.Forms.Padding(5);
-            this.nameLabel.Size = new System.Drawing.Size(189, 43);
+            this.nameLabel.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.nameLabel.Size = new System.Drawing.Size(142, 35);
             this.nameLabel.TabIndex = 2;
             this.nameLabel.Text = "How would you like to name your route?";
             // 
@@ -150,9 +157,10 @@ namespace OryxBot.Client.Windows
             // 
             this.destinationComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.destinationComboBox.FormattingEnabled = true;
-            this.destinationComboBox.Location = new System.Drawing.Point(192, 46);
+            this.destinationComboBox.Location = new System.Drawing.Point(144, 37);
+            this.destinationComboBox.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.destinationComboBox.Name = "destinationComboBox";
-            this.destinationComboBox.Size = new System.Drawing.Size(178, 24);
+            this.destinationComboBox.Size = new System.Drawing.Size(134, 21);
             this.destinationComboBox.TabIndex = 4;
             // 
             // panel5
@@ -160,10 +168,10 @@ namespace OryxBot.Client.Windows
             this.panel5.BackColor = System.Drawing.Color.FromArgb(((int) (((byte) (200)))), ((int) (((byte) (189)))), ((int) (((byte) (156)))));
             this.panel5.Controls.Add(this.destinationLabel);
             this.panel5.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel5.Location = new System.Drawing.Point(0, 43);
+            this.panel5.Location = new System.Drawing.Point(0, 35);
             this.panel5.Margin = new System.Windows.Forms.Padding(0);
             this.panel5.Name = "panel5";
-            this.panel5.Size = new System.Drawing.Size(189, 43);
+            this.panel5.Size = new System.Drawing.Size(142, 35);
             this.panel5.TabIndex = 3;
             // 
             // destinationLabel
@@ -171,10 +179,10 @@ namespace OryxBot.Client.Windows
             this.destinationLabel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.destinationLabel.Location = new System.Drawing.Point(0, 0);
             this.destinationLabel.Margin = new System.Windows.Forms.Padding(0);
-            this.destinationLabel.MaximumSize = new System.Drawing.Size(190, 0);
+            this.destinationLabel.MaximumSize = new System.Drawing.Size(142, 0);
             this.destinationLabel.Name = "destinationLabel";
-            this.destinationLabel.Padding = new System.Windows.Forms.Padding(5);
-            this.destinationLabel.Size = new System.Drawing.Size(189, 43);
+            this.destinationLabel.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.destinationLabel.Size = new System.Drawing.Size(142, 35);
             this.destinationLabel.TabIndex = 2;
             this.destinationLabel.Text = "What is your destination?";
             // 
@@ -186,7 +194,7 @@ namespace OryxBot.Client.Windows
             this.panel4.Location = new System.Drawing.Point(0, 0);
             this.panel4.Margin = new System.Windows.Forms.Padding(0);
             this.panel4.Name = "panel4";
-            this.panel4.Size = new System.Drawing.Size(189, 43);
+            this.panel4.Size = new System.Drawing.Size(142, 35);
             this.panel4.TabIndex = 0;
             // 
             // originLabel
@@ -194,27 +202,29 @@ namespace OryxBot.Client.Windows
             this.originLabel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.originLabel.Location = new System.Drawing.Point(0, 0);
             this.originLabel.Margin = new System.Windows.Forms.Padding(0);
-            this.originLabel.MaximumSize = new System.Drawing.Size(190, 0);
+            this.originLabel.MaximumSize = new System.Drawing.Size(142, 0);
             this.originLabel.Name = "originLabel";
-            this.originLabel.Padding = new System.Windows.Forms.Padding(5);
-            this.originLabel.Size = new System.Drawing.Size(189, 43);
+            this.originLabel.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.originLabel.Size = new System.Drawing.Size(142, 35);
             this.originLabel.TabIndex = 1;
             this.originLabel.Text = "What city are you starting in?";
             // 
             // ConfigureRecordingForm
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int) (((byte) (37)))), ((int) (((byte) (40)))), ((int) (((byte) (45)))));
-            this.ClientSize = new System.Drawing.Size(378, 159);
+            this.ClientSize = new System.Drawing.Size(284, 129);
             this.Controls.Add(this.formLayoutPanel);
             this.Controls.Add(this.actionsPanel);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
+            this.Icon = ((System.Drawing.Icon) (resources.GetObject("$this.Icon")));
+            this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "ConfigureRecordingForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "Create Custom Route";
+            this.Text = "OryxBot - Create Custom Route";
             this.TopMost = true;
             this.actionsPanel.ResumeLayout(false);
             this.formLayoutPanel.ResumeLayout(false);

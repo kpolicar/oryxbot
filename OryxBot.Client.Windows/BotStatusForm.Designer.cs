@@ -208,7 +208,7 @@ namespace OryxBot.Client.Windows
             this.Name = "BotStatusForm";
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
-            this.Text = "Oryxbot - Status";
+            this.Text = "OryxBot - Status";
             this.TopMost = true;
             this.TransparencyKey = System.Drawing.Color.FromArgb(((int) (((byte) (37)))), ((int) (((byte) (40)))), ((int) (((byte) (45)))));
             this.MouseDown += new System.Windows.Forms.MouseEventHandler(this.Form1_MouseDown);
