@@ -26,9 +26,9 @@ namespace OryxBot.Client.Windows
         #endif
         
         public static byte[] AppKey => System.Convert.FromBase64String(_appKey);
-        public const string VersionNumber = "4";
-        public const string Version = "v0.4 Beta";
-        public const string VersionEndpoint = "v0.4beta";
+        public const string VersionNumber = "5";
+        public const string Version = "v0.5 Beta";
+        public const string VersionEndpoint = "v0.5beta";
         
         public static readonly Kernel _kernel = new();
         public static ServiceContainer Services => _kernel.Services;
