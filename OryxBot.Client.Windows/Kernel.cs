@@ -206,8 +206,8 @@ namespace OryxBot.Client.Windows
             private void AuthorizedToggleCustomTradeMissionMode() {
                 var routeProvider = Services.GetService<TradeMissionRouteManager>();
                 var auth = Services.GetService<AuthManager>();
-                
-                if (auth.User?.is_subscribed ?? false)
+
+                if ((auth.User?.is_subscribed ?? false) && (!auth.User?.on_free_trial ?? false))
                     routeProvider.ToggleCustomMode();
             }
         }
