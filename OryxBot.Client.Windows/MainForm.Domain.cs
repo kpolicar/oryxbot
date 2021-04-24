@@ -40,5 +40,9 @@ namespace OryxBot.Client.Windows
                 ? Resources.UIApplicationContext.ToolStripEnableCustomRoutesButton_Text_Custom
                 : Resources.UIApplicationContext.ToolStripEnableCustomRoutesButton_Text;
         }
+
+        private void OnUserFetched(object? sender, FetchedUserEventArgs e) {
+            ToolStripEnableCustomRoutesButton.Enabled = e.user.can_use_custom_routes;
+        }
     }
 }

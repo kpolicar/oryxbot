@@ -9,6 +9,7 @@ namespace OryxBot.Client.Windows
             TrayIcon.Visible = false;
             ToolStipToggleBotTradeMissionRecordButton.Enabled = false;
             ToolStipToggleBotTradeMissionRunButton.Enabled = false;
+            ToolStripEnableCustomRoutesButton.Enabled = false;
             ToolStipUsernameLabel.Text = Resources.UIApplicationContext.ToolStipUsernameLabel_Text;
         }
 
@@ -16,6 +17,8 @@ namespace OryxBot.Client.Windows
             TrayIcon.Visible = true;
             ToolStipToggleBotTradeMissionRecordButton.Enabled = true;
             ToolStipToggleBotTradeMissionRunButton.Enabled = true;
+            if (auth.User != null)
+                ToolStripEnableCustomRoutesButton.Enabled = auth.User.can_use_custom_routes;
         }
 
         private void OnExitClicked(object? sender, EventArgs e) =>

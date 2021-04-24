@@ -61,6 +61,7 @@ namespace OryxBot.Client.Windows
             selectHeartsForm = new SelectHeartsForm();
             configureRecordingForm = new ConfigureRecordingForm();
             botStatusForm = new BotStatusForm();
+            api.UserFetched += OnUserFetched;
         }
 
         private void OnVisibleChanged(object? sender, EventArgs e) {
