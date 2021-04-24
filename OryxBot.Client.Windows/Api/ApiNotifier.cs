@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using OryxBot.Client.Windows.Api;
 using OryxBot.Client.Windows.Bot;
+using OryxBot.Client.Windows.Contracts;
 using OryxBot.Shared.Contracts;
 using OryxBot.Shared.Design;
 using OryxBot.Shared.Events;
@@ -17,13 +18,13 @@ namespace Inkybot.Api
     public class ApiNotifier : HasDependencies
     {
         private ApiClient api = null!;
+        private AuthManager auth = null!;
 
         public void BindDependencies(ServiceContainer serviceContainer) {
             api = serviceContainer.GetService<ApiClient>();
+            auth = serviceContainer.GetService<AuthManager>();
             var bot = (serviceContainer.GetService<BotManagerContract>() as BotManager)!;
             
-            bot.TradeMissionRun += (_, e) =>
-                (e.Job as TradeMissionRun)!.RunComplete += OnTradeMissionRunComplete;
             bot.TradeMissionRun += (_, e) =>
                 (e.Job as TradeMissionRun)!.RunComplete += OnTradeMissionRunComplete;
             bot.Starting += OnBotStarting;
@@ -45,8 +46,13 @@ namespace Inkybot.Api
                 .ConfigureAwait(false);
         }
 
-        private void OnTradeMissionRunComplete(object? sender, EventArgs e) =>
+        private void OnTradeMissionRunComplete(object? sender, EventArgs e) {
+            var bot = (sender as TradeMissionRun)!;
+            if (auth.User?.on_free_trial ?? false) {
+                bot.Stop();
+            }
             Task.Run(api.NotifyRunComplete)
                 .ConfigureAwait(false);
+        }
     }
 }

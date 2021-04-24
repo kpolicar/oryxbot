@@ -61,7 +61,7 @@ namespace OryxBot.Client.Windows.Bot
 
         private void OnCharacterMove(object? sender, EventArgs e) {
             lock (State) {
-                if (!HasStartedQuest)
+                if (!HasStartedQuest && !HasProgressedQuest)
                     return;
                 if (justChangedCluster > 0) {
                     justChangedCluster--;
@@ -73,7 +73,7 @@ namespace OryxBot.Client.Windows.Bot
 
         private void OnChangeCluster(object? sender, EventArgs e) {
             lock (State) {
-                if (!HasStartedQuest)
+                if (!HasStartedQuest && !HasProgressedQuest)
                     return;
                 justChangedCluster = 5;
                 State.RecordedSteps.AddLast(new ChangeClusterStep(LocalCharacter.Instance.Cluster));
@@ -108,7 +108,7 @@ namespace OryxBot.Client.Windows.Bot
                     "metadata,"+
                     $"origin:{Cities.Code(configuration.Origin)},"+
                     $"destination:{Regions.Code(configuration.Destination)},"+
-                    $"name:{configuration.Name}");
+                    $"name:{configuration.Name.Replace(",", ";")}");
 
                 foreach (var recordedPosition in State.RecordedSteps) {
                     fileStream.WriteLine(recordedPosition.CsvFormat);
