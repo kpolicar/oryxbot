@@ -32,7 +32,6 @@ namespace OryxBot.Client.Windows.Bot
         public void BindDependencies(ServiceContainer serviceContainer) {
             this.serviceContainer = serviceContainer;
             _routeManager = serviceContainer.GetService<TradeMissionRouteManager>();
-            _routeManager.ModeChanged += (_, _) => Bot = null;
         }
 
         public void Stop() =>

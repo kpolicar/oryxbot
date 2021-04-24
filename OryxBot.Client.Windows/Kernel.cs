@@ -174,7 +174,7 @@ namespace OryxBot.Client.Windows
                         ));
                 }
                 
-                if (auth.User?.is_subscribed ?? false)
+                if ((auth.User?.can_use_custom_routes ?? false) || bot.IsRunning)
                     bot.ToggleTradeMissionRecord();
                 
             }
@@ -183,7 +183,7 @@ namespace OryxBot.Client.Windows
                 var auth = Services.GetService<AuthManager>();
                 var routeProvider = Services.GetService<TradeMissionRouteManager>();
 
-                if (!(auth.User?.is_subscribed ?? false))
+                if ((!auth.User?.is_subscribed ?? true) && !bot.IsRunning)
                     return;
 
                 if (!bot.IsRunning && !routeProvider.CustomRoutes && !bot.IsPaused) {

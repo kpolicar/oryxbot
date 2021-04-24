@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using System.Windows.Forms;
 using OryxBot.Client.Windows.Bot;
 using OryxBot.Shared;
@@ -35,7 +36,7 @@ namespace OryxBot.Client.Windows
             ToolStripEnableCustomRoutesButton.ToolTipText = user.can_use_custom_routes
                 ? ""
                 : tooltipUnauthorizedTrial;
-            if (_routeManager.CustomRoutes)
+            if (_routeManager.CustomRoutes && !user.can_use_custom_routes)
                 _routeManager.ToggleCustomMode();
         }
 
