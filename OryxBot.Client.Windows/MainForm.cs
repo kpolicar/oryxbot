@@ -16,12 +16,15 @@ using OryxBot.Client.Windows.Domain;
 using OryxBot.Client.Windows.Events;
 using OryxBot.Client.Windows.Exceptions;
 using OryxBot.Shared;
+using OryxBot.Shared.Contracts;
 using OryxBot.Shared.Design;
 using OryxBot.Shared.Events;
 using OryxBot.Shared.Game;
 using static OryxBot.Client.Windows.Native.User32;
+using BotManager = OryxBot.Client.Windows.Bot.BotManager;
 using Region = OryxBot.Shared.Game.Region;
 using User = OryxBot.Shared.User;
+using BotManagerContract = OryxBot.Shared.Contracts.BotManager;
 
 namespace OryxBot.Client.Windows
 {
@@ -35,6 +38,8 @@ namespace OryxBot.Client.Windows
         private SelectHeartsForm selectHeartsForm;
         private ConfigureRecordingForm configureRecordingForm;
         private BotStatusForm botStatusForm;
+        private BotManager botManager;
+        private BotJob Bot;
 
         public MainForm() {
             InitializeComponent();
@@ -56,12 +61,14 @@ namespace OryxBot.Client.Windows
             auth = Program.Services.GetService<AuthManager>();
             api = Program.Services.GetService<ApiClient>();
             _routeManager = Program.Services.GetService<TradeMissionRouteManager>();
+            botManager = (BotManager) Program.Services.GetService<BotManagerContract>();
             _routeManager.ModeChanged += OnRouteManagerModeChanged;
             selectCityForm = new SelectCityForm();
             selectHeartsForm = new SelectHeartsForm();
             configureRecordingForm = new ConfigureRecordingForm();
             botStatusForm = new BotStatusForm();
             api.UserFetched += OnUserFetched;
+            botManager.JobChanged += (_, e) => Bot = e.Job;
         }
 
         private void OnVisibleChanged(object? sender, EventArgs e) {

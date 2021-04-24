@@ -21,6 +21,8 @@ namespace OryxBot.Client.Windows
             ToolStipToggleBotTradeMissionRecordButton.Text =
                 Resources.UIApplicationContext.ToolStipToggleBotTradeMissionRecordButton_TextStart;
             botStatusForm.Hide();
+            if (auth.User != null)
+                UpdateControlsForUser(auth.User);
         }
         
         public void OnBotTradeMissionRunStarted(object? sender, EventArgs e) =>
@@ -43,14 +45,7 @@ namespace OryxBot.Client.Windows
         }
 
         private void OnUserFetched(object? sender, FetchedUserEventArgs e) {
-            UpdateEnableCustomRoutesButtonForUser(e.user);
-        }
-
-        private void UpdateEnableCustomRoutesButtonForUser(User user) {
-            ToolStripEnableCustomRoutesButton.Enabled = user.can_use_custom_routes;
-            ToolStripEnableCustomRoutesButton.ToolTipText = user.can_use_custom_routes
-                ? ""
-                : "This feature is limited to subscribed users!";
+            UpdateControlsForUser(e.user);
         }
     }
 }

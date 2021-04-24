@@ -1,5 +1,7 @@
 using System;
 using System.Windows.Forms;
+using OryxBot.Client.Windows.Bot;
+using OryxBot.Shared;
 
 namespace OryxBot.Client.Windows
 {
@@ -15,11 +17,26 @@ namespace OryxBot.Client.Windows
 
         private void UpdateControlsForAuthenticated() {
             TrayIcon.Visible = true;
-            ToolStipToggleBotTradeMissionRecordButton.Enabled = true;
             ToolStipToggleBotTradeMissionRunButton.Enabled = true;
-            if (auth.User != null) {
-                UpdateEnableCustomRoutesButtonForUser(auth.User);
-            }
+            if (auth.User != null)
+                UpdateControlsForUser(auth.User);
+        }
+
+        private void UpdateControlsForUser(User user) {
+            var tooltipUnauthorizedTrial = "This feature is limited to subscribed users.";
+            
+            ToolStipToggleBotTradeMissionRecordButton.Enabled =
+                user.can_use_custom_routes || ((Bot as TradeMissionRecord)?.Running ?? false);
+            ToolStipToggleBotTradeMissionRecordButton.ToolTipText =
+                user.can_use_custom_routes || ((Bot as TradeMissionRecord)?.Running ?? false)
+                    ? ""
+                    : tooltipUnauthorizedTrial;
+            ToolStripEnableCustomRoutesButton.Enabled = user.can_use_custom_routes;
+            ToolStripEnableCustomRoutesButton.ToolTipText = user.can_use_custom_routes
+                ? ""
+                : tooltipUnauthorizedTrial;
+            if (_routeManager.CustomRoutes)
+                _routeManager.ToggleCustomMode();
         }
 
         private void OnExitClicked(object? sender, EventArgs e) =>

@@ -84,10 +84,14 @@ namespace OryxBot.Client.Windows.Bot
             Bot = constructorCallback();
             if (Bot is HasDependencies dependant)
                 dependant.BindDependencies(serviceContainer);
-            Bot.Started += (_, _) => (IsRunning, IsPaused) = ((Bot as Job)!.Running, (Bot as Job)!.IsPaused);
-            Bot.Stopped += (_, _) => (IsRunning, IsPaused) = ((Bot as Job)!.Running, (Bot as Job)!.IsPaused);
-            Bot.Started += (_, _) => Started?.Invoke(this, new BotEventArgs(Bot));
-            Bot.Stopped += (_, _) => Stopped?.Invoke(this, new BotEventArgs(Bot));
+            Bot.Started += (_, _) => {
+                (IsRunning, IsPaused) = ((Bot as Job)!.Running, (Bot as Job)!.IsPaused);
+                Started?.Invoke(this, new BotEventArgs(Bot));
+            };
+            Bot.Stopped += (_, _) => {
+                (IsRunning, IsPaused) = ((Bot as Job)!.Running, (Bot as Job)!.IsPaused);
+                Stopped?.Invoke(this, new BotEventArgs(Bot));
+            };
             
             JobChanged?.Invoke(this, new BotEventArgs(Bot));
             if (Bot is TradeMissionRun)
