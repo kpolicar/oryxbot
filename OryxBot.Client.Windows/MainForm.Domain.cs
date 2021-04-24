@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Windows.Forms;
 using OryxBot.Client.Windows.Bot;
 using OryxBot.Client.Windows.Bot.Contracts;
+using OryxBot.Shared;
 using OryxBot.Shared.Events;
 using OryxBot.Shared.Game;
 
@@ -42,7 +43,14 @@ namespace OryxBot.Client.Windows
         }
 
         private void OnUserFetched(object? sender, FetchedUserEventArgs e) {
-            ToolStripEnableCustomRoutesButton.Enabled = e.user.can_use_custom_routes;
+            UpdateEnableCustomRoutesButtonForUser(e.user);
+        }
+
+        private void UpdateEnableCustomRoutesButtonForUser(User user) {
+            ToolStripEnableCustomRoutesButton.Enabled = user.can_use_custom_routes;
+            ToolStripEnableCustomRoutesButton.ToolTipText = user.can_use_custom_routes
+                ? ""
+                : "This feature is limited to subscribed users!";
         }
     }
 }

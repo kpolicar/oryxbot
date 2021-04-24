@@ -17,8 +17,9 @@ namespace OryxBot.Client.Windows
             TrayIcon.Visible = true;
             ToolStipToggleBotTradeMissionRecordButton.Enabled = true;
             ToolStipToggleBotTradeMissionRunButton.Enabled = true;
-            if (auth.User != null)
-                ToolStripEnableCustomRoutesButton.Enabled = auth.User.can_use_custom_routes;
+            if (auth.User != null) {
+                UpdateEnableCustomRoutesButtonForUser(auth.User);
+            }
         }
 
         private void OnExitClicked(object? sender, EventArgs e) =>

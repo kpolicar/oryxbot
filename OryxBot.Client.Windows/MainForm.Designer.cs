@@ -114,7 +114,7 @@ namespace OryxBot.Client.Windows
                     new ToolStripSeparator(),
                     ToolStripCloseButton
                 },
-                ShowItemToolTips = false,
+                ShowItemToolTips = true,
             };
             //
             // trayIcon
