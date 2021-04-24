@@ -78,6 +78,7 @@ namespace OryxBot.Client.Windows.Bot
                 if (clusterChanged) {
                     OnChangeCluster();
                     clusterChanged = false;
+                    hasMadeFirstMove = false;
                     return;
                 }
                 
@@ -103,8 +104,6 @@ namespace OryxBot.Client.Windows.Bot
                     actions.MoveTowards(target.Position, tryToGetUnstuck);
                 }
                 if (Step?.Current is TradeMissionRecord.ChangeClusterStep) {
-                    Thread.Sleep(1000);
-                    hasMadeFirstMove = false;
                     actions.MoveInSameDirection();
                 }
             }

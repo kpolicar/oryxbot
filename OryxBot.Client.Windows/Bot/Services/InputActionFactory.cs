@@ -39,8 +39,8 @@ namespace OryxBot.Client.Windows.Bot.Services
 
         public void MoveInSameDirection() =>
             MoveTowards(previousDirection);
-        
-        public void MoveTowards(Position target, bool tryGetUnstuck=false, bool forceReclick = false) {
+
+        public void MoveTowards(Position target, bool tryGetUnstuck, bool forceReclick = false) {
             var fixingCourse = false;
             EnforceBotIsRunning();
             var origin = LocalCharacter.Instance.Position;
