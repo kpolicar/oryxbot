@@ -55,7 +55,7 @@ namespace OryxBot.Client.Windows.Bot.Services
                 
                 direction = LocalCharacter.Instance.RecentlyChangedCluster
                     ? Vector2.Transform(direction, Matrix3x2.CreateRotation(-(float) System.Math.PI / 3f))
-                    : Vector2.Transform(direction, Matrix3x2.CreateRotation(-5f*(float) System.Math.PI / 3f));
+                    : Vector2.Transform(direction, Matrix3x2.CreateRotation(-5f*(float) System.Math.PI / 6f));
             }
             
             direction = Vector2.Normalize(direction);
