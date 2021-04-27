@@ -161,12 +161,12 @@ namespace OryxBot.Client.Windows.Bot
                 }
 
                 MoveToNextRouteStep();
-
+                
+                Thread.Sleep(AverageClusterChangeDuration);
+                
                 // Update his current position so as not to accidentally go through portal again
                 if (Step?.Current is TradeMissionRecord.MoveStep nextMove)
                     LocalCharacter.Instance.Position = nextMove.Position;
-                
-                Thread.Sleep(AverageClusterChangeDuration);
             }
             
             private bool MoveToNextRouteStep() {
