@@ -40,6 +40,16 @@ namespace OryxBot.Client.Windows.Bot.Services
         public void MoveInSameDirection() =>
             MoveTowards(previousDirection);
 
+        public void MoveAwayFrom(Position target) {
+            var origin = LocalCharacter.Instance.Position;
+            var direction = new Vector2(target.X - origin.X, target.Y - origin.Y);
+            direction = Vector2.Transform(direction, Matrix3x2.CreateRotation((float) System.Math.PI));
+            direction = Vector2.Normalize(direction);
+            previousDirection = direction;
+            
+            MoveTowards(direction);
+        }
+
         public void MoveTowards(Position target, bool tryGetUnstuck, bool forceReclick = false) {
             var fixingCourse = false;
             EnforceBotIsRunning();
@@ -64,7 +74,7 @@ namespace OryxBot.Client.Windows.Bot.Services
             
             MoveTowards(direction);
             if (fixingCourse)
-                Thread.Sleep(1000);
+                Thread.Sleep(1500);
         }
 
         private void MoveTowards(Vector2 direction, bool forceReclick=false) {

@@ -195,7 +195,7 @@ namespace OryxBot.Client.Windows.Bot
             
             public int Delay => LocalCharacter.Instance.Interacting
                 ? DelayBetweenNpcInterfaceActions
-                : 10;
+                : attemptingInteraction ? 1500 : 10;
 
             protected abstract Position _interactablePosition { get; }
             public bool CharacterIsNearInteractable =>
@@ -221,17 +221,26 @@ namespace OryxBot.Client.Windows.Bot
             protected abstract bool DoInteractions();
 
             private void AttemptInteraction() {
-                if (CharacterIsNearInteractable) {
+                if (attemptingInteraction && !LocalCharacter.Instance.Interacting)
+                    Thread.Sleep(1500);
+                
+                if (attemptingInteraction && !LocalCharacter.Instance.Interacting &&  !LocalCharacter.Instance.Moving) {
+                    attemptingInteraction = false;
+                    actions.MoveAwayFrom(_interactablePosition);
+                    Console.WriteLine("moving away from!");
+                    Thread.Sleep(1000);
+                    
+                } else if (CharacterIsNearInteractable) {
                     if (!attemptingInteraction) {
                         actions.StopAllActions();
                         Thread.Sleep(500);
                     }
 
-                    actions.InteractWith(_interactablePosition);
                     attemptingInteraction = true;
+                    actions.InteractWith(_interactablePosition);
                 } else {
-                    actions.MoveTowards(_interactablePosition);
                     attemptingInteraction = false;
+                    actions.MoveTowards(_interactablePosition);
                 }
             }
         }

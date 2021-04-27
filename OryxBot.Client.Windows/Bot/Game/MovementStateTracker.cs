@@ -51,6 +51,7 @@ namespace OryxBot.Client.Windows.Bot.Game
 
             private void OnCharacterChangeCluster(object? sender, EventArgs e) {
                 _character.RecentlyChangedCluster = true;
+                Debug.WriteLine("recently changed cluster: true");
                 
                 sw_cluster.Restart();
                 if (clusterChangeTimeoutTask.IsCompleted)
@@ -69,6 +70,7 @@ namespace OryxBot.Client.Windows.Bot.Game
                     await Task.Delay(1000);
                 }
                 _character.RecentlyChangedCluster = false;
+                Debug.WriteLine("recently changed cluster: false");
             }
         }
     }
