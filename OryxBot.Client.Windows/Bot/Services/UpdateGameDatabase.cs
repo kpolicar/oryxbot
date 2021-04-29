@@ -9,9 +9,11 @@ namespace OryxBot.Client.Windows.Bot.Services
 {
     public partial class NetworkAlbionDataProvider
     {
+        public int IgnoreMovePackets = 0;
+        
         private void BindEventRaiseHandlers(ReceiverBuilder builder) {
-            builder.AddRequestHandler(new UpdateCharacterPosition());
-            builder.AddRequestHandler(new UpdateCharacterCluster());
+            builder.AddRequestHandler(new UpdateCharacterPosition(this));
+            builder.AddRequestHandler(new UpdateCharacterCluster(this));
             builder.AddRequestHandler(new UpdateCharacterAddInteracting());
             builder.AddRequestHandler(new UpdateCharacterNotInteracting());
             builder.AddRequestHandler(new RaiseCharacterProgressedQuest());
@@ -70,11 +72,21 @@ namespace OryxBot.Client.Windows.Bot.Services
         
         private class UpdateCharacterPosition : RequestPacketHandler<MoveOperation>
         {
-            public UpdateCharacterPosition() :
+            private NetworkAlbionDataProvider DataProvider;
+
+            public UpdateCharacterPosition(NetworkAlbionDataProvider dataProvider) :
                 base((int) OperationCodes.Move) {
+                DataProvider = dataProvider;
             }
 
             protected override Task OnActionAsync(MoveOperation value) {
+                if (DataProvider.IgnoreMovePackets > 0
+                    && Game.LocalCharacter.Instance.MillisecondsSinceClusterChange < 1000)
+                {
+                    DataProvider.IgnoreMovePackets--;
+                    return Task.CompletedTask;
+                }
+
                 Game.LocalCharacter.Instance.Position = new Position(value.Position[0], value.Position[1]);
                 return Task.CompletedTask;
             }
@@ -82,12 +94,16 @@ namespace OryxBot.Client.Windows.Bot.Services
 
         private class UpdateCharacterCluster : RequestPacketHandler<ChangeClusterOperation>
         {
-            public UpdateCharacterCluster() :
+            private NetworkAlbionDataProvider DataProvider;
+            
+            public UpdateCharacterCluster(NetworkAlbionDataProvider dataProvider) :
                 base((int) OperationCodes.ChangeCluster) {
+                DataProvider = dataProvider;
             }
 
             protected override Task OnActionAsync(ChangeClusterOperation value) {
                 Game.LocalCharacter.Instance.Cluster = value.Location;
+                DataProvider.IgnoreMovePackets = 5;
                 return Task.CompletedTask;
             }
         }

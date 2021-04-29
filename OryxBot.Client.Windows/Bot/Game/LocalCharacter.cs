@@ -23,6 +23,7 @@ namespace OryxBot.Client.Windows.Bot.Game
         public event EventHandler? MovingChanged;
         public event EventHandler? Died;
         public event EventHandler? ProgressedQuest;
+        public event EventHandler? StateChanged;
         
         private MovementStateTracker stateTracker;
         private MovementStatePredictor movementPredictor;
@@ -34,6 +35,9 @@ namespace OryxBot.Client.Windows.Bot.Game
         private LocalCharacter() {
             stateTracker = new MovementStateTracker(this);
             movementPredictor = new MovementStatePredictor(this);
+            Interaction += (_, _) => RefreshState();
+            MovingChanged += (_, _) => RefreshState();
+            ChangeCluster += (_, _) => RefreshState(CharacterState.ChangingCluster);
         }
 
         public double DistanceFrom(Position position) =>
@@ -90,5 +94,39 @@ namespace OryxBot.Client.Windows.Bot.Game
 
         public void ProgressQuest() =>
             ProgressedQuest?.Invoke(this, EventArgs.Empty);
+
+
+        private void RefreshState(CharacterState? state=null) {
+            if (state != null) {
+                State = state.Value;
+                return;
+            }
+            
+            if (Interacting) {
+                State = CharacterState.Interacting;
+            } else if (Moving) {
+                State = CharacterState.Running;
+            } else if (!Moving) {
+                State = CharacterState.Idle;
+            }
+        }
+
+        private CharacterState _state;
+        public CharacterState State {
+            get => _state;
+            internal set {
+                var old = _state;
+                _state = value;
+                if (!value.Equals(old))
+                    StateChanged?.Invoke(this, EventArgs.Empty);
+            }
+        }
+        public enum CharacterState
+        {
+            Idle,
+            Running,
+            Interacting,
+            ChangingCluster,
+        }
     }
 }

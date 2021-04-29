@@ -9,6 +9,8 @@ namespace OryxBot.Client.Windows.Bot.Game
 {
     public partial class LocalCharacter
     {
+        public long MillisecondsSinceClusterChange => stateTracker.ClusterChangeWatch.ElapsedMilliseconds;
+        
         private class MovementStateTracker
         {
             static MovementStateTracker() {
@@ -27,7 +29,7 @@ namespace OryxBot.Client.Windows.Bot.Game
             private int RecentlyChangeClusterDuration => AverageClusterChangeDuration*2;
             private readonly LocalCharacter _character;
             private Stopwatch sw = new();
-            private Stopwatch sw_cluster = new();
+            public Stopwatch ClusterChangeWatch { get; } = new();
             private Task movementTimeoutTask = Task.CompletedTask;
             private Task clusterChangeTimeoutTask = Task.CompletedTask;
             private Position? _previousPosition;
@@ -53,7 +55,7 @@ namespace OryxBot.Client.Windows.Bot.Game
                 _character.RecentlyChangedCluster = true;
                 Debug.WriteLine("recently changed cluster: true");
                 
-                sw_cluster.Restart();
+                ClusterChangeWatch.Restart();
                 if (clusterChangeTimeoutTask.IsCompleted)
                     clusterChangeTimeoutTask = Task.Run(OnClusterTimeoutTaskTick);
             }
@@ -66,7 +68,7 @@ namespace OryxBot.Client.Windows.Bot.Game
             }
 
             private async Task OnClusterTimeoutTaskTick() {
-                while (sw_cluster.ElapsedMilliseconds < RecentlyChangeClusterDuration) {
+                while (ClusterChangeWatch.ElapsedMilliseconds < RecentlyChangeClusterDuration) {
                     await Task.Delay(1000);
                 }
                 _character.RecentlyChangedCluster = false;

@@ -47,7 +47,7 @@ namespace OryxBot.Client.Windows
                 return;
             var position = LocalCharacter.Instance.Position;
             var speed = LocalCharacter.Instance.Speed;
-            Invoke(new Action(() => {
+            BeginInvoke(new Action(() => {
                 botPositionValueLabel.Text =
                     position.X.ToString("0.0") + ", "+
                     position.Y.ToString("0.0");
@@ -58,7 +58,7 @@ namespace OryxBot.Client.Windows
         private void OnBotStatusChanged(object? sender, BotEventArgs e) {
             if (!Visible)
                 return;
-            Invoke(new Action(() => {
+            BeginInvoke(new Action(() => {
                 var record = (e.Job as TradeMissionRecord)!;
                 botStatusValueLabel.Text = record.State.Status switch {
                     BotStatus.RecordingWaitingToStartQuest => "Waiting to Start Quest",

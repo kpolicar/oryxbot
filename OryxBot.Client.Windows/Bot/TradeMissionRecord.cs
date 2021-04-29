@@ -20,7 +20,6 @@ namespace OryxBot.Client.Windows.Bot
         private AlbionDataProvider dataProvider = null!;
         private Shared.Contracts.BotManager manager = null!;
         private TradeMissionRouteManager routeManager = null!;
-        private int justChangedCluster = 0;
         public override bool IsPaused => false;
         public bool HasStartedQuest => State.Status == BotStatus.RecordingRoute;
         public bool HasProgressedQuest => State.Status == BotStatus.RecordingRouteBack;
@@ -63,10 +62,6 @@ namespace OryxBot.Client.Windows.Bot
             lock (State) {
                 if (!HasStartedQuest && !HasProgressedQuest)
                     return;
-                if (justChangedCluster > 0) {
-                    justChangedCluster--;
-                    return;
-                }
                 State.RecordedSteps.AddLast(new MoveStep(LocalCharacter.Instance.Position));
             }
         }
@@ -75,7 +70,6 @@ namespace OryxBot.Client.Windows.Bot
             lock (State) {
                 if (!HasStartedQuest && !HasProgressedQuest)
                     return;
-                justChangedCluster = 5;
                 State.RecordedSteps.AddLast(new ChangeClusterStep(LocalCharacter.Instance.Cluster));
             }
         }

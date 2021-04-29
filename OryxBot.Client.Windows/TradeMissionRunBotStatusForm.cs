@@ -40,6 +40,19 @@ namespace OryxBot.Client.Windows
             bot!.TradeMissionRun += (_, record) =>
                 (record.Job as TradeMissionRun)!.StatusChanged += OnBotStatusChanged;
             LocalCharacter.Instance.Move += OnCharacterMove;
+            LocalCharacter.Instance.StateChanged += OnCharacterStateChanged;
+        }
+
+        private void OnCharacterStateChanged(object? sender, EventArgs e) {
+            BeginInvoke(new Action(() => {
+                botCharacterStateValueLabel.Text = LocalCharacter.Instance.State switch {
+                    LocalCharacter.CharacterState.Idle => "Idle",
+                    LocalCharacter.CharacterState.Running => "Running",
+                    LocalCharacter.CharacterState.Interacting => "Interacting",
+                    LocalCharacter.CharacterState.ChangingCluster => "Changing Cluster",
+                    _ => "Unknown"
+                };
+            }));
         }
 
         private void OnCharacterMove(object? sender, EventArgs e) {
@@ -47,7 +60,7 @@ namespace OryxBot.Client.Windows
                 return;
             var position = LocalCharacter.Instance.Position;
             var speed = LocalCharacter.Instance.Speed;
-            Invoke(new Action(() => {
+            BeginInvoke(new Action(() => {
                 botPositionValueLabel.Text =
                     position.X.ToString("0.0") + ", "+
                     position.Y.ToString("0.0");
@@ -58,15 +71,15 @@ namespace OryxBot.Client.Windows
         private void OnBotStatusChanged(object? sender, BotEventArgs e) {
             if (!Visible)
                 return;
-            Invoke(new Action(() => {
+            BeginInvoke(new Action(() => {
                 var run = (e.Job as TradeMissionRun)!;
                 botStatusValueLabel.Text = run.Step switch {
                     TradeMissionRun.FinishQuest => "Finishing quest",
                     TradeMissionRun.BankItems => "Banking",
                     TradeMissionRun.ProgressQuest => "Progressing quest",
                     TradeMissionRun.TakeQuest => "Taking quest",
-                    TradeMissionRun.RunRouteBack => "Running route",
-                    TradeMissionRun.RunRouteToDestination => "Running route back",
+                    TradeMissionRun.RunRouteToDestination => "Running route",
+                    TradeMissionRun.RunRouteBack => "Running route back",
                     TradeMissionRun.RunToBank => "Running to bank",
                     TradeMissionRun.RunToQuest => "Running to quest",
                     _ => "Unknown"
