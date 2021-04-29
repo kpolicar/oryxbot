@@ -19,6 +19,9 @@ namespace OryxBot.Client.Windows.Bot
         {
             protected override Route Route =>
                 _routeManager.RouteFromQuestToBank()!;
+
+            public RunToBank(TradeMissionRun run) : base(run) {
+            }
         }
 
         internal class BankItems : InteractionStep
@@ -47,6 +50,9 @@ namespace OryxBot.Client.Windows.Bot
         {
             protected override Route Route =>
                 _routeManager.RouteFromBankToQuest()!;
+
+            public RunToQuest(TradeMissionRun run) : base(run) {
+            }
         }
         
         internal class TakeQuest : InteractionStep
@@ -81,7 +87,7 @@ namespace OryxBot.Client.Windows.Bot
         {
             protected override Route Route { get; }
 
-            public RunRouteToDestination(Route route) =>
+            public RunRouteToDestination(TradeMissionRun run, Route route) : base(run) =>
                 Route = route;
         }
         
@@ -103,7 +109,7 @@ namespace OryxBot.Client.Windows.Bot
         {
             protected override Route Route { get; }
 
-            public RunRouteBack(Route route) =>
+            public RunRouteBack(TradeMissionRun run, Route route) : base(run) =>
                 Route = route;
         }
         

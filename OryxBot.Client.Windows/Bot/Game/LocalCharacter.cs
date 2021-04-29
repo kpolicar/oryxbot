@@ -74,7 +74,8 @@ namespace OryxBot.Client.Windows.Bot.Game
                     Interaction?.Invoke(this, EventArgs.Empty);
             }
         }
-        
+
+        public long IdleDuration => stateTracker.IdleWatch.ElapsedMilliseconds;
         private bool _moving;
         public bool Moving {
             get {
@@ -106,7 +107,7 @@ namespace OryxBot.Client.Windows.Bot.Game
                 State = CharacterState.Interacting;
             } else if (Moving) {
                 State = CharacterState.Running;
-            } else if (!Moving) {
+            } else if (!Moving && State != CharacterState.ChangingCluster) {
                 State = CharacterState.Idle;
             }
         }

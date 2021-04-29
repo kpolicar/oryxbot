@@ -43,6 +43,7 @@ namespace OryxBot.Client.Windows.Bot.Services
         public void MoveAwayFrom(Position target) {
             var origin = LocalCharacter.Instance.Position;
             var direction = new Vector2(target.X - origin.X, target.Y - origin.Y);
+            direction = Vector2.Transform(direction, Matrix3x2.CreateRotation(-(float)System.Math.PI/4));
             direction = Vector2.Transform(direction, Matrix3x2.CreateRotation((float) System.Math.PI));
             direction = Vector2.Normalize(direction);
             previousDirection = direction;
@@ -60,7 +61,11 @@ namespace OryxBot.Client.Windows.Bot.Services
             direction = Vector2.Transform(direction, Matrix3x2.CreateRotation(-(float)System.Math.PI/4));
             
             // Try to get unstuck
-            if (!LocalCharacter.Instance.Moving && tryGetUnstuck) {
+            if (tryGetUnstuck && 
+                !LocalCharacter.Instance.Moving &&
+                LocalCharacter.Instance.IdleDuration > 500 &&
+                LocalCharacter.Instance.IdleDuration < 2500)
+            {
                 fixingCourse = true;
                 
                 direction = LocalCharacter.Instance.RecentlyChangedCluster
@@ -74,7 +79,7 @@ namespace OryxBot.Client.Windows.Bot.Services
             
             MoveTowards(direction);
             if (fixingCourse)
-                Thread.Sleep(1500);
+                Thread.Sleep(1000);
         }
 
         private void MoveTowards(Vector2 direction, bool forceReclick=false) {

@@ -24,12 +24,13 @@ namespace OryxBot.Client.Windows.Bot.Game
             private static readonly int AverageClusterChangeDuration;
             
             private const float MinDistanceConsideredAsMove = 0.2f;
-            private int StandStillDuration =>
+            private int IdleTimeout =>
                 System.Math.Max(NetworkAlbionDataProvider.QueryNetworkInterval * 4, 1300);
             private int RecentlyChangeClusterDuration => AverageClusterChangeDuration*2;
             private readonly LocalCharacter _character;
             private Stopwatch sw = new();
             public Stopwatch ClusterChangeWatch { get; } = new();
+            public Stopwatch IdleWatch { get; } = new();
             private Task movementTimeoutTask = Task.CompletedTask;
             private Task clusterChangeTimeoutTask = Task.CompletedTask;
             private Position? _previousPosition;
@@ -37,7 +38,16 @@ namespace OryxBot.Client.Windows.Bot.Game
             public MovementStateTracker(LocalCharacter character) {
                 _character = character;
                 _character.Move += OnCharacterMove;
+                _character.MovingChanged += OnMovingChanged;
                 _character.ChangeCluster += OnCharacterChangeCluster;
+            }
+
+            private void OnMovingChanged(object? sender, EventArgs e) {
+                if (_character.Moving) {
+                    IdleWatch.Reset();
+                } else {
+                    IdleWatch.Restart();
+                }
             }
 
             private void OnCharacterMove(object? sender, EventArgs e) {
@@ -61,7 +71,7 @@ namespace OryxBot.Client.Windows.Bot.Game
             }
 
             private async Task OnTimeoutTaskTick() {
-                while (sw.ElapsedMilliseconds < StandStillDuration) {
+                while (sw.ElapsedMilliseconds < IdleTimeout) {
                     await Task.Delay(10);
                 }
                 _character.Moving = false;

@@ -45,7 +45,6 @@ namespace OryxBot.Client.Windows.Bot
         private City TradeCity;
         private RunConfiguration.ContractType Contract;
         public EventHandler<BotEventArgs>? StatusChanged;
-        
 
 
         public TradeMissionRun(TradeMissionRoute route, RunConfiguration.ContractType contract)
@@ -80,7 +79,7 @@ namespace OryxBot.Client.Windows.Bot
         }
 
         private void ResetRun() {
-            Step = new RunToBank();
+            Step = new RunRouteToDestination(this, Route.RouteToNpc);
             Reset?.Invoke(this, EventArgs.Empty);
         }
 
@@ -93,7 +92,7 @@ namespace OryxBot.Client.Windows.Bot
                     Debug.WriteLine(">>>>>>>>>>>>>>>>>>> CHARACTER HAS DIED. RESPAWNING!!");
                     actions.Respawn();
                     Thread.Sleep(2000);
-                    Step = new RunToBank();
+                    Step = new RunToBank(this);
                 }
 
                 if (Step.Finished) {
@@ -110,13 +109,13 @@ namespace OryxBot.Client.Windows.Bot
         private void ProgressToNextStep() {
             Step = Step switch {
                 RunToBank => new BankItems(Contract),
-                BankItems => new RunToQuest(),
+                BankItems => new RunToQuest(this),
                 RunToQuest => new TakeQuest(City, TradeCity, Contract),
-                TakeQuest => new RunRouteToDestination(Route.RouteToNpc),
+                TakeQuest => new RunRouteToDestination(this, Route.RouteToNpc),
                 RunRouteToDestination => new ProgressQuest(),
-                ProgressQuest => new RunRouteBack(Route.RouteBack),
+                ProgressQuest => new RunRouteBack(this, Route.RouteBack),
                 RunRouteBack => new FinishQuest(City),
-                FinishQuest => new RunToBank(),
+                FinishQuest => new RunToBank(this),
                 _ => throw new ArgumentOutOfRangeException(nameof(Step))
             };
             Progress?.Invoke(this, new TradeMissionEvent(Step));

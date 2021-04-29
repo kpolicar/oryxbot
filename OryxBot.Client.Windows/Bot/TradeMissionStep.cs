@@ -60,10 +60,11 @@ namespace OryxBot.Client.Windows.Bot
             private bool _characterHasDied;
             private bool hasMadeFirstMove = false;
 
-            public RunRouteStep() {
+            public RunRouteStep(TradeMissionRun run) {
                 LocalCharacter.Instance.ChangeCluster += (_, _) => clusterChanged = true;
                 LocalCharacter.Instance.Died += OnCharacterDied;
                 LocalCharacter.Instance.Move += (_, _) => hasMadeFirstMove = true;
+                run.Started += (_, _) => hasMadeFirstMove = false;
             }
 
             private void OnCharacterDied(object? sender, EventArgs e) {
