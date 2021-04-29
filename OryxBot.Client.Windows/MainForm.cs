@@ -10,6 +10,7 @@ using Inkybot.Api;
 using Microsoft.VisualBasic.ApplicationServices;
 using OryxBot.Client.Windows;
 using OryxBot.Client.Windows.Api;
+using OryxBot.Client.Windows.Bot;
 using OryxBot.Client.Windows.Bot.Contracts;
 using OryxBot.Client.Windows.Contracts;
 using OryxBot.Client.Windows.Domain;
@@ -37,9 +38,15 @@ namespace OryxBot.Client.Windows
         private SelectCityForm selectCityForm;
         private SelectHeartsForm selectHeartsForm;
         private ConfigureRecordingForm configureRecordingForm;
-        public BotStatusForm BotStatusForm {
-            get;
-        }
+
+        private TradeMissionRunBotStatusForm RunBotStatusForm;
+        private TradeMissionRecordBotStatusForm RecordBotStatusForm;
+
+        public Form? BotStatusForm => Bot switch {
+            TradeMissionRun => RunBotStatusForm,
+            TradeMissionRecord => RecordBotStatusForm,
+            _ => null,
+        };
         private BotManager botManager;
         private BotJob Bot;
 
@@ -68,7 +75,8 @@ namespace OryxBot.Client.Windows
             selectCityForm = new SelectCityForm();
             selectHeartsForm = new SelectHeartsForm();
             configureRecordingForm = new ConfigureRecordingForm();
-            BotStatusForm = new BotStatusForm();
+            RecordBotStatusForm = new TradeMissionRecordBotStatusForm();
+            RunBotStatusForm = new TradeMissionRunBotStatusForm();
             api.UserFetched += OnUserFetched;
             botManager.JobChanged += (_, e) => Bot = e.Job;
         }

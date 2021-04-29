@@ -17,7 +17,7 @@ using Region = OryxBot.Shared.Game.Region;
 
 namespace OryxBot.Client.Windows
 {
-    public partial class BotStatusForm : Form
+    public partial class TradeMissionRunBotStatusForm : Form
     {
         protected override CreateParams CreateParams
         {
@@ -30,7 +30,7 @@ namespace OryxBot.Client.Windows
             }
         }
         
-        public BotStatusForm() {
+        public TradeMissionRunBotStatusForm() {
             InitializeComponent();
             Location = new Point( 
                 Screen.PrimaryScreen.Bounds.Right - Width,
