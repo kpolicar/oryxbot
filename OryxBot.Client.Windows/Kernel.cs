@@ -142,8 +142,8 @@ namespace OryxBot.Client.Windows
                 var confirmation = MessageBox.Show(
                     "Trade mission run has been completed successfully.\n"+
                     "Since your account is on free trial the bot has stopped!\n"+
-                    "Subscribe to run the bot uninterrupted.",
-                    "Free Trial",
+                    "Subscribe now to run the bot uninterrupted.",
+                    "OryxBot - Free Trial",
                     MessageBoxButtons.OKCancel,
                     MessageBoxIcon.Information);
                     

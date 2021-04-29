@@ -63,7 +63,7 @@ namespace OryxBot.Client.Windows.Services
                 var confirmation = MessageBox.Show(
                     "If you do not save the route, it will be discarded!"+
                     "Are you sure you want to delete the recorded route?",
-                    "Are you sure?",
+                    "OryxBot - Are you sure?",
                     MessageBoxButtons.YesNo,
                     MessageBoxIcon.Warning);
                 if (confirmation != DialogResult.Yes) {
