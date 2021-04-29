@@ -47,8 +47,7 @@ namespace OryxBot.Client.Windows
             app.Load += _kernel.OnLoadForm;
             
             Application.ApplicationExit += (_, _) => _kernel.Dispose();
-            Application.Run(new TradeMissionRunBotStatusForm());
-            //Application.Run(app);
+            Application.Run(app);
         }
     }
 }

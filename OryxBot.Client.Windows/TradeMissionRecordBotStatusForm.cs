@@ -46,10 +46,12 @@ namespace OryxBot.Client.Windows
             if (!Visible)
                 return;
             var position = LocalCharacter.Instance.Position;
-            BeginInvoke(new Action(() => {
+            var speed = LocalCharacter.Instance.Speed;
+            Invoke(new Action(() => {
                 botPositionValueLabel.Text =
                     position.X.ToString("0.0") + ", "+
                     position.Y.ToString("0.0");
+                botSpeedValueLabel.Text = speed.ToString("0.0")+" m/s";
             }));
         }
 

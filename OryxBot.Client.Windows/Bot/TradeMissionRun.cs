@@ -9,6 +9,7 @@ using OryxBot.Client.Windows.Bot.Services;
 using OryxBot.Shared;
 using OryxBot.Shared.Contracts;
 using OryxBot.Shared.Design;
+using OryxBot.Shared.Events;
 using OryxBot.Shared.Extensions;
 using OryxBot.Shared.Game;
 using ServiceContainer = OryxBot.Shared.Design.ServiceContainer;
@@ -24,6 +25,13 @@ namespace OryxBot.Client.Windows.Bot
         private const int DelayBetweenSteps = 1000;
 
         private TradeMissionStep _step;
+        internal TradeMissionStep Step {
+            get => _step;
+            private set {
+                _step = value;
+                StatusChanged?.Invoke(this, new BotEventArgs(this));
+            }
+        }
         
         private static TradeMissionRouteManager _routeManager = null!;
         public readonly TradeMissionRoute Route;
@@ -36,6 +44,7 @@ namespace OryxBot.Client.Windows.Bot
         private City City;
         private City TradeCity;
         private RunConfiguration.ContractType Contract;
+        public EventHandler<BotEventArgs>? StatusChanged;
         
 
 
@@ -55,6 +64,7 @@ namespace OryxBot.Client.Windows.Bot
 
             runningThread = new Thread(EntryPoint);
             runningThread.Start();
+            StatusChanged?.Invoke(this, new BotEventArgs(this));
         }
 
         public override void Stop() {
@@ -70,27 +80,27 @@ namespace OryxBot.Client.Windows.Bot
         }
 
         private void ResetRun() {
-            _step = new RunToBank();
+            Step = new RunToBank();
             Reset?.Invoke(this, EventArgs.Empty);
         }
 
         public void EntryPoint() {
             while (Running) {
                 try {
-                    _step.Tick();
+                    Step.Tick();
                 } catch (OperationCanceledException) {
                 } catch (CharacterDiedException) {
                     Debug.WriteLine(">>>>>>>>>>>>>>>>>>> CHARACTER HAS DIED. RESPAWNING!!");
                     actions.Respawn();
                     Thread.Sleep(2000);
-                    _step = new RunToBank();
+                    Step = new RunToBank();
                 }
 
-                if (_step.Finished) {
+                if (Step.Finished) {
                     Thread.Sleep(DelayBetweenSteps);
                     ProgressToNextStep();
                 } else {
-                    Thread.Sleep(_step.Delay);
+                    Thread.Sleep(Step.Delay);
                 }
             }
 
@@ -98,7 +108,7 @@ namespace OryxBot.Client.Windows.Bot
         }
 
         private void ProgressToNextStep() {
-            _step = _step switch {
+            Step = Step switch {
                 RunToBank => new BankItems(Contract),
                 BankItems => new RunToQuest(),
                 RunToQuest => new TakeQuest(City, TradeCity, Contract),
@@ -107,12 +117,12 @@ namespace OryxBot.Client.Windows.Bot
                 ProgressQuest => new RunRouteBack(Route.RouteBack),
                 RunRouteBack => new FinishQuest(City),
                 FinishQuest => new RunToBank(),
-                _ => throw new ArgumentOutOfRangeException(nameof(_step))
+                _ => throw new ArgumentOutOfRangeException(nameof(Step))
             };
-            Progress?.Invoke(this, new TradeMissionEvent(_step));
-            Console.WriteLine("Progressed to next step: "+_step.GetType());
+            Progress?.Invoke(this, new TradeMissionEvent(Step));
+            Console.WriteLine("Progressed to next step: "+Step.GetType());
             
-            if (_step is RunToBank) {
+            if (Step is RunToBank) {
                 RunComplete?.Invoke(this, EventArgs.Empty);
             }
         }

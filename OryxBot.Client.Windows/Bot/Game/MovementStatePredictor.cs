@@ -11,7 +11,11 @@ namespace OryxBot.Client.Windows.Bot.Game
         {
             private readonly LocalCharacter _character;
             private Position? _previousPosition;
-            private double Speed = 0d; // units per second
+
+            public double Speed {
+                get;
+                private set;
+            } = 0d; // units per second
             private Stopwatch sw = new();
 
             public MovementStatePredictor(LocalCharacter character) {

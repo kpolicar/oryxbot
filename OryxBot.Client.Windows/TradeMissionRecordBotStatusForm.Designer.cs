@@ -30,20 +30,26 @@ namespace OryxBot.Client.Windows
         /// the contents of this method with the code editor.
         /// </summary>
         private void InitializeComponent() {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(TradeMissionRecordBotStatusForm));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(TradeMissionRunBotStatusForm));
             this.formLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
             this.botPositionValueLabel = new System.Windows.Forms.Label();
             this.botPositionLabelPanel = new System.Windows.Forms.Panel();
             this.botPositionLabel = new System.Windows.Forms.Label();
+            this.botSpeedLabel = new System.Windows.Forms.Label();
+            this.hideFormInfoLabel = new System.Windows.Forms.Label();
+            this.botSpeedValueLabel = new System.Windows.Forms.Label();
             this.botStatusValueLabel = new System.Windows.Forms.Label();
             this.botStatusLabelPanel = new System.Windows.Forms.Panel();
             this.botStatusLabel = new System.Windows.Forms.Label();
             this.moveButtonPanel = new System.Windows.Forms.Panel();
+            this.hideFormInfoPanel = new System.Windows.Forms.Panel();
+            this.botSpeedLabelPanel = new System.Windows.Forms.Panel();
             this.moveButton = new System.Windows.Forms.Button();
             this.formLayoutPanel.SuspendLayout();
             this.botPositionLabelPanel.SuspendLayout();
             this.botStatusLabelPanel.SuspendLayout();
             this.moveButtonPanel.SuspendLayout();
+            this.hideFormInfoPanel.SuspendLayout();
             this.SuspendLayout();
             // 
             // formLayoutPanel
@@ -55,11 +61,14 @@ namespace OryxBot.Client.Windows
             this.formLayoutPanel.Controls.Add(this.botPositionLabelPanel, 0, 1);
             this.formLayoutPanel.Controls.Add(this.botStatusValueLabel, 1, 0);
             this.formLayoutPanel.Controls.Add(this.botStatusLabelPanel, 0, 0);
+            this.formLayoutPanel.Controls.Add(this.botSpeedValueLabel, 1, 2);
+            this.formLayoutPanel.Controls.Add(this.botSpeedLabelPanel, 0, 2);
             this.formLayoutPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.formLayoutPanel.Location = new System.Drawing.Point(0, 21);
             this.formLayoutPanel.Margin = new System.Windows.Forms.Padding(2);
             this.formLayoutPanel.Name = "formLayoutPanel";
-            this.formLayoutPanel.RowCount = 2;
+            this.formLayoutPanel.RowCount = 3;
+            this.formLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.formLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.formLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.formLayoutPanel.Size = new System.Drawing.Size(250, 54);
@@ -78,7 +87,7 @@ namespace OryxBot.Client.Windows
             this.botPositionValueLabel.Padding = new System.Windows.Forms.Padding(4);
             this.botPositionValueLabel.Size = new System.Drawing.Size(150, 27);
             this.botPositionValueLabel.TabIndex = 2;
-            this.botPositionValueLabel.Text = "Unknown position";
+            this.botPositionValueLabel.Text = "Unknown";
             this.botPositionValueLabel.TextAlign = System.Drawing.ContentAlignment.TopRight;
             this.botPositionValueLabel.MouseDown += new System.Windows.Forms.MouseEventHandler(this.Form1_MouseDown);
             // 
@@ -93,6 +102,18 @@ namespace OryxBot.Client.Windows
             this.botPositionLabelPanel.Size = new System.Drawing.Size(100, 27);
             this.botPositionLabelPanel.TabIndex = 3;
             this.botPositionLabelPanel.MouseDown += new System.Windows.Forms.MouseEventHandler(this.Form1_MouseDown);
+            // 
+            // botSpeedLabelPanel
+            // 
+            this.botSpeedLabelPanel.BackColor = System.Drawing.Color.FromArgb(((int) (((byte) (37)))), ((int) (((byte) (40)))), ((int) (((byte) (45)))));
+            this.botSpeedLabelPanel.Controls.Add(this.botSpeedLabel);
+            this.botSpeedLabelPanel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.botSpeedLabelPanel.Location = new System.Drawing.Point(0, 27);
+            this.botSpeedLabelPanel.Margin = new System.Windows.Forms.Padding(0);
+            this.botSpeedLabelPanel.Name = "botSpeedLabelPanel";
+            this.botSpeedLabelPanel.Size = new System.Drawing.Size(100, 27);
+            this.botSpeedLabelPanel.TabIndex = 3;
+            this.botSpeedLabelPanel.MouseDown += new System.Windows.Forms.MouseEventHandler(this.Form1_MouseDown);
             // 
             // botPositionLabel
             // 
@@ -123,9 +144,41 @@ namespace OryxBot.Client.Windows
             this.botStatusValueLabel.Padding = new System.Windows.Forms.Padding(4);
             this.botStatusValueLabel.Size = new System.Drawing.Size(150, 27);
             this.botStatusValueLabel.TabIndex = 1;
-            this.botStatusValueLabel.Text = "Unknown status";
+            this.botStatusValueLabel.Text = "Unknown";
             this.botStatusValueLabel.TextAlign = System.Drawing.ContentAlignment.TopRight;
             this.botStatusValueLabel.MouseDown += new System.Windows.Forms.MouseEventHandler(this.Form1_MouseDown);
+            // 
+            // botSpeedValueLabel
+            // 
+            this.botSpeedValueLabel.BackColor = System.Drawing.Color.FromArgb(((int) (((byte) (37)))), ((int) (((byte) (40)))), ((int) (((byte) (45)))));
+            this.botSpeedValueLabel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.botSpeedValueLabel.Font = new System.Drawing.Font("Calibri", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte) (0)));
+            this.botSpeedValueLabel.ForeColor = System.Drawing.SystemColors.ControlDark;
+            this.botSpeedValueLabel.Location = new System.Drawing.Point(100, 0);
+            this.botSpeedValueLabel.Margin = new System.Windows.Forms.Padding(0);
+            this.botSpeedValueLabel.Name = "botSpeedValueLabel";
+            this.botSpeedValueLabel.Padding = new System.Windows.Forms.Padding(4);
+            this.botSpeedValueLabel.Size = new System.Drawing.Size(150, 27);
+            this.botSpeedValueLabel.TabIndex = 1;
+            this.botSpeedValueLabel.Text = "0 m/s";
+            this.botSpeedValueLabel.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            this.botSpeedValueLabel.MouseDown += new System.Windows.Forms.MouseEventHandler(this.Form1_MouseDown);
+            // 
+            // hideFormInfoLabel
+            // 
+            this.hideFormInfoLabel.BackColor = System.Drawing.Color.FromArgb(((int) (((byte) (37)))), ((int) (((byte) (40)))), ((int) (((byte) (45)))));
+            this.hideFormInfoLabel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.hideFormInfoLabel.Font = new System.Drawing.Font("Calibri", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte) (0)));
+            this.hideFormInfoLabel.ForeColor = System.Drawing.SystemColors.ControlDarkDark;
+            this.hideFormInfoLabel.Location = new System.Drawing.Point(0, 0);
+            this.hideFormInfoLabel.Margin = new System.Windows.Forms.Padding(0);
+            this.hideFormInfoLabel.Name = "hideFormInfoLabel";
+            this.hideFormInfoLabel.Padding = new System.Windows.Forms.Padding(4);
+            this.hideFormInfoLabel.Size = new System.Drawing.Size(150, 27);
+            this.hideFormInfoLabel.TabIndex = 1;
+            this.hideFormInfoLabel.Text = "Press INSERT to hide";
+            this.hideFormInfoLabel.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            this.hideFormInfoLabel.MouseDown += new System.Windows.Forms.MouseEventHandler(this.Form1_MouseDown);
             // 
             // botStatusLabelPanel
             // 
@@ -156,6 +209,23 @@ namespace OryxBot.Client.Windows
             this.botStatusLabel.TextAlign = System.Drawing.ContentAlignment.TopRight;
             this.botStatusLabel.MouseDown += new System.Windows.Forms.MouseEventHandler(this.Form1_MouseDown);
             // 
+            // botSpeedLabel
+            // 
+            this.botSpeedLabel.BackColor = System.Drawing.Color.FromArgb(((int) (((byte) (37)))), ((int) (((byte) (40)))), ((int) (((byte) (45)))));
+            this.botSpeedLabel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.botSpeedLabel.Font = new System.Drawing.Font("Calibri", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte) (0)));
+            this.botSpeedLabel.ForeColor = System.Drawing.SystemColors.Control;
+            this.botSpeedLabel.Location = new System.Drawing.Point(0, 0);
+            this.botSpeedLabel.Margin = new System.Windows.Forms.Padding(0);
+            this.botSpeedLabel.Name = "botSpeedLabel";
+            this.botSpeedLabel.Padding = new System.Windows.Forms.Padding(4);
+            this.botSpeedLabel.RightToLeft = System.Windows.Forms.RightToLeft.No;
+            this.botSpeedLabel.Size = new System.Drawing.Size(100, 27);
+            this.botSpeedLabel.TabIndex = 1;
+            this.botSpeedLabel.Text = "Speed:";
+            this.botSpeedLabel.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            this.botSpeedLabel.MouseDown += new System.Windows.Forms.MouseEventHandler(this.Form1_MouseDown);
+            // 
             // moveButtonPanel
             // 
             this.moveButtonPanel.BackColor = System.Drawing.Color.FromArgb(((int) (((byte) (37)))), ((int) (((byte) (40)))), ((int) (((byte) (45)))));
@@ -169,10 +239,23 @@ namespace OryxBot.Client.Windows
             this.moveButtonPanel.TabIndex = 0;
             this.moveButtonPanel.MouseDown += new System.Windows.Forms.MouseEventHandler(this.Form1_MouseDown);
             // 
+            // hideFormInfoPanel
+            // 
+            this.hideFormInfoPanel.BackColor = System.Drawing.Color.FromArgb(((int) (((byte) (37)))), ((int) (((byte) (40)))), ((int) (((byte) (45)))));
+            this.hideFormInfoPanel.Controls.Add(this.hideFormInfoLabel);
+            this.hideFormInfoPanel.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.hideFormInfoPanel.Location = new System.Drawing.Point(0, 0);
+            this.hideFormInfoPanel.Margin = new System.Windows.Forms.Padding(0);
+            this.hideFormInfoPanel.Name = "hideFormInfoPanel";
+            this.hideFormInfoPanel.Padding = new System.Windows.Forms.Padding(0, 0, 0, 0);
+            this.hideFormInfoPanel.Size = new System.Drawing.Size(250, 21);
+            this.hideFormInfoPanel.TabIndex = 0;
+            this.hideFormInfoPanel.MouseDown += new System.Windows.Forms.MouseEventHandler(this.Form1_MouseDown);
+            // 
             // moveButton
             // 
             this.moveButton.BackColor = System.Drawing.Color.FromArgb(((int) (((byte) (200)))), ((int) (((byte) (189)))), ((int) (((byte) (156)))));
-            this.moveButton.BackgroundImage = ((System.Drawing.Image) (resources.GetObject("button1.BackgroundImage")));
+            this.moveButton.BackgroundImage = ((System.Drawing.Image) (resources.GetObject("moveButton.BackgroundImage")));
             this.moveButton.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
             this.moveButton.Dock = System.Windows.Forms.DockStyle.Right;
             this.moveButton.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int) (((byte) (200)))), ((int) (((byte) (189)))), ((int) (((byte) (156)))));
@@ -188,6 +271,7 @@ namespace OryxBot.Client.Windows
             this.moveButton.TabStop = false;
             this.moveButton.UseVisualStyleBackColor = false;
             this.moveButton.MouseDown += new System.Windows.Forms.MouseEventHandler(this.Form1_MouseDown);
+            this.moveButton.Cursor = System.Windows.Forms.Cursors.SizeAll;
             // 
             // BotStatusForm
             // 
@@ -196,15 +280,16 @@ namespace OryxBot.Client.Windows
             this.AutoSize = true;
             this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.BackColor = System.Drawing.Color.FromArgb(((int) (((byte) (37)))), ((int) (((byte) (40)))), ((int) (((byte) (45)))));
-            this.ClientSize = new System.Drawing.Size(250, 75);
+            this.ClientSize = new System.Drawing.Size(250, 125);
             this.Controls.Add(this.formLayoutPanel);
             this.Controls.Add(this.moveButtonPanel);
+            this.Controls.Add(this.hideFormInfoPanel);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Icon = ((System.Drawing.Icon) (resources.GetObject("$this.Icon")));
             this.Margin = new System.Windows.Forms.Padding(2);
             this.MaximizeBox = false;
             this.MinimizeBox = false;
-            this.MinimumSize = new System.Drawing.Size(250, 75);
+            this.MinimumSize = new System.Drawing.Size(250, 125);
             this.Name = "TradeMissionRecordBotStatusForm";
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
@@ -216,6 +301,7 @@ namespace OryxBot.Client.Windows
             this.botPositionLabelPanel.ResumeLayout(false);
             this.botStatusLabelPanel.ResumeLayout(false);
             this.moveButtonPanel.ResumeLayout(false);
+            this.hideFormInfoPanel.ResumeLayout(false);
             this.ResumeLayout(false);
         }
 
@@ -225,9 +311,14 @@ namespace OryxBot.Client.Windows
         private System.Windows.Forms.Label botStatusValueLabel;
         private System.Windows.Forms.Label botPositionLabel;
         private System.Windows.Forms.Label botPositionValueLabel;
+        private System.Windows.Forms.Label botSpeedLabel;
+        private System.Windows.Forms.Label botSpeedValueLabel;
+        private System.Windows.Forms.Label hideFormInfoLabel;
         private System.Windows.Forms.Panel botStatusLabelPanel;
         private System.Windows.Forms.Panel botPositionLabelPanel;
+        private System.Windows.Forms.Panel botSpeedLabelPanel;
         private System.Windows.Forms.Panel moveButtonPanel;
+        private System.Windows.Forms.Panel hideFormInfoPanel;
 
         private System.Windows.Forms.TableLayoutPanel formLayoutPanel;
 

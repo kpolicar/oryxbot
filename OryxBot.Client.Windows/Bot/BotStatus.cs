@@ -5,6 +5,5 @@ namespace OryxBot.Client.Windows.Bot
         RecordingWaitingToStartQuest,
         RecordingRoute,
         RecordingRouteBack,
-        
     }
 }

@@ -186,7 +186,7 @@ namespace OryxBot.Client.Windows
 
             private void ToggleBotStatusForm() {
                 var bot = Services.GetService<BotManagerContract>();
-                if (!bot.IsRunning && !bot.IsPaused)
+                if ((!bot.IsRunning && !bot.IsPaused) || app.BotStatusForm == null)
                     return;
                 app.BotStatusForm.Visible = !app.BotStatusForm.Visible;
             }
@@ -202,6 +202,10 @@ namespace OryxBot.Client.Windows
             private void AuthorizedToggleTradeMissionRecord() {
                 var bot = Services.GetService<BotManagerContract>();
                 var auth = Services.GetService<AuthManager>();
+                
+                if (bot.IsRunning && bot is BotManager manager && !(manager.Bot is TradeMissionRecord)) {
+                    bot.Stop();
+                }
                 
                 if (!bot.IsRunning) {
                     var configuration = app.ShowConfigureRecordingForm();
@@ -223,6 +227,10 @@ namespace OryxBot.Client.Windows
                 var bot = Services.GetService<BotManagerContract>();
                 var auth = Services.GetService<AuthManager>();
                 var routeProvider = Services.GetService<TradeMissionRouteManager>();
+
+                if (bot.IsRunning && bot is BotManager manager && !(manager.Bot is TradeMissionRun)) {
+                    bot.Stop();
+                }
 
                 if ((!auth.User?.is_subscribed ?? true) && !bot.IsRunning)
                     return;

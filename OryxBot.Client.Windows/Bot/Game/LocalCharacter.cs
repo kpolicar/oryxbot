@@ -11,6 +11,7 @@ namespace OryxBot.Client.Windows.Bot.Game
         private static LocalCharacter _instance = new();
         public static LocalCharacter Instance => _instance;
         private ActionFactory actions = null!;
+        public double Speed => movementPredictor.Speed;
         
         public void BindDependencies(ServiceContainer serviceContainer) {
             actions = serviceContainer.GetService<ActionFactory>();
