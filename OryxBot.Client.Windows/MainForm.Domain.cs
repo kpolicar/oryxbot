@@ -14,13 +14,13 @@ namespace OryxBot.Client.Windows
         public void OnBotTradeMissionRecordingStarted(object? sender, EventArgs e) {
             ToolStipToggleBotTradeMissionRecordButton.Text =
                 Resources.UIApplicationContext.ToolStipToggleBotTradeMissionRecordButton_TextStop;
-            botStatusForm.Show();
+            BotStatusForm.Show();
         }
 
         public void OnBotTradeMissionRecordingStopped(object? sender, EventArgs e) {
             ToolStipToggleBotTradeMissionRecordButton.Text =
                 Resources.UIApplicationContext.ToolStipToggleBotTradeMissionRecordButton_TextStart;
-            botStatusForm.Hide();
+            BotStatusForm.Hide();
             if (auth.User != null)
                 UpdateControlsForUser(auth.User);
         }

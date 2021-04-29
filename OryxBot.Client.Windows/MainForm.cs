@@ -37,7 +37,9 @@ namespace OryxBot.Client.Windows
         private SelectCityForm selectCityForm;
         private SelectHeartsForm selectHeartsForm;
         private ConfigureRecordingForm configureRecordingForm;
-        private BotStatusForm botStatusForm;
+        public BotStatusForm BotStatusForm {
+            get;
+        }
         private BotManager botManager;
         private BotJob Bot;
 
@@ -66,7 +68,7 @@ namespace OryxBot.Client.Windows
             selectCityForm = new SelectCityForm();
             selectHeartsForm = new SelectHeartsForm();
             configureRecordingForm = new ConfigureRecordingForm();
-            botStatusForm = new BotStatusForm();
+            BotStatusForm = new BotStatusForm();
             api.UserFetched += OnUserFetched;
             botManager.JobChanged += (_, e) => Bot = e.Job;
         }
