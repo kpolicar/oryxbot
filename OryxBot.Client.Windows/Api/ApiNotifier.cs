@@ -47,10 +47,6 @@ namespace Inkybot.Api
         }
 
         private void OnTradeMissionRunComplete(object? sender, EventArgs e) {
-            var bot = (sender as TradeMissionRun)!;
-            if (auth.User?.on_free_trial ?? false) {
-                bot.Stop();
-            }
             Task.Run(api.NotifyRunComplete)
                 .ConfigureAwait(false);
         }

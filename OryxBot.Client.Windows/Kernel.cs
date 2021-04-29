@@ -12,6 +12,7 @@ using OryxBot.Client.Windows.Bot.Game;
 using OryxBot.Client.Windows.Bot.Services;
 using OryxBot.Client.Windows.Api;
 using OryxBot.Client.Windows.Contracts;
+using OryxBot.Client.Windows.Domain;
 using OryxBot.Client.Windows.Events;
 using OryxBot.Client.Windows.Native;
 using OryxBot.Client.Windows.Services;
@@ -110,6 +111,11 @@ namespace OryxBot.Client.Windows
                     else if (e.Job is TradeMissionRun)
                         app.OnBotTradeMissionRunStopped(sender, e);
                 };
+
+                if (bot is BotManager botManager) {
+                    botManager.TradeMissionRun += (_, e) =>
+                        (e.Job as TradeMissionRun)!.RunComplete += OnTradeMissionRunComplete;
+                }
                 
                 tradeMissionRouteManager.BindToApp(app);
                 
@@ -120,6 +126,34 @@ namespace OryxBot.Client.Windows
                 var hotkey = Services.GetService<Hotkey>();
                 hotkey.Insert += (_, _) => AuthorizedShowContextMenuStrip(app);
                 hotkey.F3 += (_, _) => AuthorizedShowContextMenuStrip(app);
+            }
+
+            private void OnTradeMissionRunComplete(object? sender, EventArgs e) {
+                var auth = Services.GetService<AuthManager>();
+
+                var bot = (sender as TradeMissionRun)!;
+                if (auth.User?.on_free_trial ?? false) {
+                    bot.Stop();
+                    ShowTradeMissionRunCompleteMessageBoxSubscribeNow();
+                }
+            }
+
+            private void ShowTradeMissionRunCompleteMessageBoxSubscribeNow() {
+                var confirmation = MessageBox.Show(
+                    "Trade mission run has been completed successfully.\n"+
+                    "Since your account is on free trial the bot has stopped!\n"+
+                    "Subscribe to run the bot uninterrupted.",
+                    "Free Trial",
+                    MessageBoxButtons.OKCancel,
+                    MessageBoxIcon.Information);
+                    
+                if (confirmation != DialogResult.OK)
+                    return;
+                var psi = new ProcessStartInfo {
+                    FileName = $"{Server.BaseUrl}/profile",
+                    UseShellExecute = true
+                };
+                Process.Start(psi);
             }
 
             private void AuthorizedShowContextMenuStrip(MainForm app) {

@@ -6,11 +6,13 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using OryxBot.Client.Windows;
 using Newtonsoft.Json;
+using OryxBot.Client.Windows.Bot;
 using OryxBot.Client.Windows.Contracts;
 using OryxBot.Client.Windows.Domain;
 using OryxBot.Client.Windows.Events;
 using OryxBot.Client.Windows.Exceptions;
 using OryxBot.Shared;
+using BotManagerContract=OryxBot.Shared.Contracts.BotManager;
 using OryxBot.Shared.Design;
 using OryxBot.Shared.Events;
 
