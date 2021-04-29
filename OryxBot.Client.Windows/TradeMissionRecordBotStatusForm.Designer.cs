@@ -33,17 +33,17 @@ namespace OryxBot.Client.Windows
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(TradeMissionRecordBotStatusForm));
             this.formLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
             this.botPositionValueLabel = new System.Windows.Forms.Label();
-            this.panel5 = new System.Windows.Forms.Panel();
+            this.botPositionLabelPanel = new System.Windows.Forms.Panel();
             this.botPositionLabel = new System.Windows.Forms.Label();
             this.botStatusValueLabel = new System.Windows.Forms.Label();
-            this.panel4 = new System.Windows.Forms.Panel();
+            this.botStatusLabelPanel = new System.Windows.Forms.Panel();
             this.botStatusLabel = new System.Windows.Forms.Label();
-            this.panel6 = new System.Windows.Forms.Panel();
-            this.button1 = new System.Windows.Forms.Button();
+            this.moveButtonPanel = new System.Windows.Forms.Panel();
+            this.moveButton = new System.Windows.Forms.Button();
             this.formLayoutPanel.SuspendLayout();
-            this.panel5.SuspendLayout();
-            this.panel4.SuspendLayout();
-            this.panel6.SuspendLayout();
+            this.botPositionLabelPanel.SuspendLayout();
+            this.botStatusLabelPanel.SuspendLayout();
+            this.moveButtonPanel.SuspendLayout();
             this.SuspendLayout();
             // 
             // formLayoutPanel
@@ -52,9 +52,9 @@ namespace OryxBot.Client.Windows
             this.formLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 40F));
             this.formLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 60F));
             this.formLayoutPanel.Controls.Add(this.botPositionValueLabel, 1, 1);
-            this.formLayoutPanel.Controls.Add(this.panel5, 0, 1);
+            this.formLayoutPanel.Controls.Add(this.botPositionLabelPanel, 0, 1);
             this.formLayoutPanel.Controls.Add(this.botStatusValueLabel, 1, 0);
-            this.formLayoutPanel.Controls.Add(this.panel4, 0, 0);
+            this.formLayoutPanel.Controls.Add(this.botStatusLabelPanel, 0, 0);
             this.formLayoutPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.formLayoutPanel.Location = new System.Drawing.Point(0, 21);
             this.formLayoutPanel.Margin = new System.Windows.Forms.Padding(2);
@@ -82,17 +82,17 @@ namespace OryxBot.Client.Windows
             this.botPositionValueLabel.TextAlign = System.Drawing.ContentAlignment.TopRight;
             this.botPositionValueLabel.MouseDown += new System.Windows.Forms.MouseEventHandler(this.Form1_MouseDown);
             // 
-            // panel5
+            // botPositionLabelPanel
             // 
-            this.panel5.BackColor = System.Drawing.Color.FromArgb(((int) (((byte) (37)))), ((int) (((byte) (40)))), ((int) (((byte) (45)))));
-            this.panel5.Controls.Add(this.botPositionLabel);
-            this.panel5.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel5.Location = new System.Drawing.Point(0, 27);
-            this.panel5.Margin = new System.Windows.Forms.Padding(0);
-            this.panel5.Name = "panel5";
-            this.panel5.Size = new System.Drawing.Size(100, 27);
-            this.panel5.TabIndex = 3;
-            this.panel5.MouseDown += new System.Windows.Forms.MouseEventHandler(this.Form1_MouseDown);
+            this.botPositionLabelPanel.BackColor = System.Drawing.Color.FromArgb(((int) (((byte) (37)))), ((int) (((byte) (40)))), ((int) (((byte) (45)))));
+            this.botPositionLabelPanel.Controls.Add(this.botPositionLabel);
+            this.botPositionLabelPanel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.botPositionLabelPanel.Location = new System.Drawing.Point(0, 27);
+            this.botPositionLabelPanel.Margin = new System.Windows.Forms.Padding(0);
+            this.botPositionLabelPanel.Name = "botPositionLabelPanel";
+            this.botPositionLabelPanel.Size = new System.Drawing.Size(100, 27);
+            this.botPositionLabelPanel.TabIndex = 3;
+            this.botPositionLabelPanel.MouseDown += new System.Windows.Forms.MouseEventHandler(this.Form1_MouseDown);
             // 
             // botPositionLabel
             // 
@@ -127,17 +127,17 @@ namespace OryxBot.Client.Windows
             this.botStatusValueLabel.TextAlign = System.Drawing.ContentAlignment.TopRight;
             this.botStatusValueLabel.MouseDown += new System.Windows.Forms.MouseEventHandler(this.Form1_MouseDown);
             // 
-            // panel4
+            // botStatusLabelPanel
             // 
-            this.panel4.BackColor = System.Drawing.Color.FromArgb(((int) (((byte) (37)))), ((int) (((byte) (40)))), ((int) (((byte) (45)))));
-            this.panel4.Controls.Add(this.botStatusLabel);
-            this.panel4.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel4.Location = new System.Drawing.Point(0, 0);
-            this.panel4.Margin = new System.Windows.Forms.Padding(0);
-            this.panel4.Name = "panel4";
-            this.panel4.Size = new System.Drawing.Size(100, 27);
-            this.panel4.TabIndex = 0;
-            this.panel4.MouseDown += new System.Windows.Forms.MouseEventHandler(this.Form1_MouseDown);
+            this.botStatusLabelPanel.BackColor = System.Drawing.Color.FromArgb(((int) (((byte) (37)))), ((int) (((byte) (40)))), ((int) (((byte) (45)))));
+            this.botStatusLabelPanel.Controls.Add(this.botStatusLabel);
+            this.botStatusLabelPanel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.botStatusLabelPanel.Location = new System.Drawing.Point(0, 0);
+            this.botStatusLabelPanel.Margin = new System.Windows.Forms.Padding(0);
+            this.botStatusLabelPanel.Name = "botStatusLabelPanel";
+            this.botStatusLabelPanel.Size = new System.Drawing.Size(100, 27);
+            this.botStatusLabelPanel.TabIndex = 0;
+            this.botStatusLabelPanel.MouseDown += new System.Windows.Forms.MouseEventHandler(this.Form1_MouseDown);
             // 
             // botStatusLabel
             // 
@@ -156,38 +156,38 @@ namespace OryxBot.Client.Windows
             this.botStatusLabel.TextAlign = System.Drawing.ContentAlignment.TopRight;
             this.botStatusLabel.MouseDown += new System.Windows.Forms.MouseEventHandler(this.Form1_MouseDown);
             // 
-            // panel6
+            // moveButtonPanel
             // 
-            this.panel6.BackColor = System.Drawing.Color.FromArgb(((int) (((byte) (37)))), ((int) (((byte) (40)))), ((int) (((byte) (45)))));
-            this.panel6.Controls.Add(this.button1);
-            this.panel6.Dock = System.Windows.Forms.DockStyle.Top;
-            this.panel6.Location = new System.Drawing.Point(0, 0);
-            this.panel6.Margin = new System.Windows.Forms.Padding(0);
-            this.panel6.Name = "panel6";
-            this.panel6.Padding = new System.Windows.Forms.Padding(0, 0, 10, 0);
-            this.panel6.Size = new System.Drawing.Size(250, 21);
-            this.panel6.TabIndex = 0;
-            this.panel6.MouseDown += new System.Windows.Forms.MouseEventHandler(this.Form1_MouseDown);
+            this.moveButtonPanel.BackColor = System.Drawing.Color.FromArgb(((int) (((byte) (37)))), ((int) (((byte) (40)))), ((int) (((byte) (45)))));
+            this.moveButtonPanel.Controls.Add(this.moveButton);
+            this.moveButtonPanel.Dock = System.Windows.Forms.DockStyle.Top;
+            this.moveButtonPanel.Location = new System.Drawing.Point(0, 0);
+            this.moveButtonPanel.Margin = new System.Windows.Forms.Padding(0);
+            this.moveButtonPanel.Name = "moveButtonPanel";
+            this.moveButtonPanel.Padding = new System.Windows.Forms.Padding(0, 0, 10, 0);
+            this.moveButtonPanel.Size = new System.Drawing.Size(250, 21);
+            this.moveButtonPanel.TabIndex = 0;
+            this.moveButtonPanel.MouseDown += new System.Windows.Forms.MouseEventHandler(this.Form1_MouseDown);
             // 
-            // button1
+            // moveButton
             // 
-            this.button1.BackColor = System.Drawing.Color.FromArgb(((int) (((byte) (200)))), ((int) (((byte) (189)))), ((int) (((byte) (156)))));
-            this.button1.BackgroundImage = ((System.Drawing.Image) (resources.GetObject("button1.BackgroundImage")));
-            this.button1.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            this.button1.Dock = System.Windows.Forms.DockStyle.Right;
-            this.button1.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int) (((byte) (200)))), ((int) (((byte) (189)))), ((int) (((byte) (156)))));
-            this.button1.FlatAppearance.CheckedBackColor = System.Drawing.Color.FromArgb(((int) (((byte) (200)))), ((int) (((byte) (189)))), ((int) (((byte) (156)))));
-            this.button1.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int) (((byte) (148)))), ((int) (((byte) (140)))), ((int) (((byte) (116)))));
-            this.button1.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int) (((byte) (200)))), ((int) (((byte) (189)))), ((int) (((byte) (156)))));
-            this.button1.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.button1.ForeColor = System.Drawing.Color.FromArgb(((int) (((byte) (200)))), ((int) (((byte) (189)))), ((int) (((byte) (156)))));
-            this.button1.Location = new System.Drawing.Point(219, 0);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(21, 21);
-            this.button1.TabIndex = 3;
-            this.button1.TabStop = false;
-            this.button1.UseVisualStyleBackColor = false;
-            this.button1.MouseDown += new System.Windows.Forms.MouseEventHandler(this.Form1_MouseDown);
+            this.moveButton.BackColor = System.Drawing.Color.FromArgb(((int) (((byte) (200)))), ((int) (((byte) (189)))), ((int) (((byte) (156)))));
+            this.moveButton.BackgroundImage = ((System.Drawing.Image) (resources.GetObject("button1.BackgroundImage")));
+            this.moveButton.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+            this.moveButton.Dock = System.Windows.Forms.DockStyle.Right;
+            this.moveButton.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int) (((byte) (200)))), ((int) (((byte) (189)))), ((int) (((byte) (156)))));
+            this.moveButton.FlatAppearance.CheckedBackColor = System.Drawing.Color.FromArgb(((int) (((byte) (200)))), ((int) (((byte) (189)))), ((int) (((byte) (156)))));
+            this.moveButton.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int) (((byte) (148)))), ((int) (((byte) (140)))), ((int) (((byte) (116)))));
+            this.moveButton.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int) (((byte) (200)))), ((int) (((byte) (189)))), ((int) (((byte) (156)))));
+            this.moveButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.moveButton.ForeColor = System.Drawing.Color.FromArgb(((int) (((byte) (200)))), ((int) (((byte) (189)))), ((int) (((byte) (156)))));
+            this.moveButton.Location = new System.Drawing.Point(219, 0);
+            this.moveButton.Name = "moveButton";
+            this.moveButton.Size = new System.Drawing.Size(21, 21);
+            this.moveButton.TabIndex = 3;
+            this.moveButton.TabStop = false;
+            this.moveButton.UseVisualStyleBackColor = false;
+            this.moveButton.MouseDown += new System.Windows.Forms.MouseEventHandler(this.Form1_MouseDown);
             // 
             // BotStatusForm
             // 
@@ -198,7 +198,7 @@ namespace OryxBot.Client.Windows
             this.BackColor = System.Drawing.Color.FromArgb(((int) (((byte) (37)))), ((int) (((byte) (40)))), ((int) (((byte) (45)))));
             this.ClientSize = new System.Drawing.Size(250, 75);
             this.Controls.Add(this.formLayoutPanel);
-            this.Controls.Add(this.panel6);
+            this.Controls.Add(this.moveButtonPanel);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Icon = ((System.Drawing.Icon) (resources.GetObject("$this.Icon")));
             this.Margin = new System.Windows.Forms.Padding(2);
@@ -213,21 +213,21 @@ namespace OryxBot.Client.Windows
             this.TransparencyKey = System.Drawing.Color.FromArgb(((int) (((byte) (37)))), ((int) (((byte) (40)))), ((int) (((byte) (45)))));
             this.MouseDown += new System.Windows.Forms.MouseEventHandler(this.Form1_MouseDown);
             this.formLayoutPanel.ResumeLayout(false);
-            this.panel5.ResumeLayout(false);
-            this.panel4.ResumeLayout(false);
-            this.panel6.ResumeLayout(false);
+            this.botPositionLabelPanel.ResumeLayout(false);
+            this.botStatusLabelPanel.ResumeLayout(false);
+            this.moveButtonPanel.ResumeLayout(false);
             this.ResumeLayout(false);
         }
 
-        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Button moveButton;
 
         private System.Windows.Forms.Label botStatusLabel;
         private System.Windows.Forms.Label botStatusValueLabel;
         private System.Windows.Forms.Label botPositionLabel;
         private System.Windows.Forms.Label botPositionValueLabel;
-        private System.Windows.Forms.Panel panel4;
-        private System.Windows.Forms.Panel panel5;
-        private System.Windows.Forms.Panel panel6;
+        private System.Windows.Forms.Panel botStatusLabelPanel;
+        private System.Windows.Forms.Panel botPositionLabelPanel;
+        private System.Windows.Forms.Panel moveButtonPanel;
 
         private System.Windows.Forms.TableLayoutPanel formLayoutPanel;
 
