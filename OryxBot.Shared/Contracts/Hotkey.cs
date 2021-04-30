@@ -6,9 +6,9 @@ namespace OryxBot.Shared.Contracts
     {
         public event EventHandler? F1;
         public event EventHandler? F2;
-        public event EventHandler? F3;
+        public event EventHandler? F5;
         public event EventHandler? Insert;
-        public event EventHandler? Space;
+        public event EventHandler? F10;
         public event EventHandler? Escape;
     }
 }

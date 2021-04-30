@@ -124,7 +124,7 @@ namespace OryxBot.Client.Windows
                 api.AuthChanged += AuthChanged;
                 
                 var hotkey = Services.GetService<Hotkey>();
-                hotkey.F3 += (_, _) => AuthorizedShowContextMenuStrip(app);
+                hotkey.F5 += (_, _) => AuthorizedShowContextMenuStrip(app);
             }
 
             private void OnTradeMissionRunComplete(object? sender, EventArgs e) {
@@ -179,7 +179,7 @@ namespace OryxBot.Client.Windows
                 hotkey.F1 += (_, _) => AuthorizedToggleTradeMissionRecord();
                 hotkey.F2 += (_, _) => AuthorizedToggleTradeMissionRun();
                 hotkey.Insert += (_, _) => ToggleBotStatusForm();
-                hotkey.Space += (_, _) => AuthorizedPauseTradeMissionRun();
+                hotkey.F10 += (_, _) => AuthorizedPauseTradeMissionRun();
                 logger.BindToServices(Services);
                 NLog.LogManager.Shutdown();
             }

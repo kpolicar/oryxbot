@@ -75,6 +75,8 @@ namespace OryxBot.Client.Windows.Bot
             if (Running) {
                 _isPaused = true;
                 base.Stop();
+            } else if (_isPaused) {
+                Start();
             }
         }
 
