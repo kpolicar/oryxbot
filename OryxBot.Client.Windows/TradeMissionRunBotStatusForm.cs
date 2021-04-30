@@ -39,8 +39,18 @@ namespace OryxBot.Client.Windows
             var bot = Program.Services.GetService<BotManager>() as Bot.BotManager;
             bot!.TradeMissionRun += (_, record) =>
                 (record.Job as TradeMissionRun)!.StatusChanged += OnBotStatusChanged;
+            bot!.TradeMissionRun += (_, record) =>
+                (record.Job as TradeMissionRun)!.Stopped += OnTradeMissionBotStopped;
             LocalCharacter.Instance.Move += OnCharacterMove;
             LocalCharacter.Instance.StateChanged += OnCharacterStateChanged;
+        }
+
+        private void OnTradeMissionBotStopped(object? sender, EventArgs e) {
+            BeginInvoke(new Action(() => {
+                var run = (sender as TradeMissionRun)!;
+                if (run.IsPaused)
+                    botStatusValueLabel.Text = "PAUSED";
+            }));
         }
 
         private void OnCharacterStateChanged(object? sender, EventArgs e) {

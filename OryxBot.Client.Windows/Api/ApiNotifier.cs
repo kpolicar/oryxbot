@@ -56,7 +56,7 @@ namespace Inkybot.Api
         }
         
         private void OnTradeMissionStuck(object? sender, TradeMissionEvent e) {
-            Task.Run(api.NotifyTradeMissionIdle)
+            Task.Run(api.NotifyTradeMissionStuck)
                 .ConfigureAwait(false);
         }
     }

@@ -64,15 +64,10 @@ namespace OryxBot.Client.Windows.Api
                 .PostAsync($"{Server.ApiUrl}/notify/trademission/complete", new StringContent(""));
         }
         
-        public async Task NotifyTradeMissionIdle() {
-            var form_params = new Dictionary<string, string> {
-                {"idle_timeout", TradeMissionRun.IdleTimeout.ToString()},
-            };
-            var encrypted = Aes256CbcEncrypter.Encrypt(form_params);
-            
+        public async Task NotifyTradeMissionStuck() {
             await WaitForStableConnection();
             Connection?.Request()
-                .PostAsync($"{Server.ApiUrl}/notify/trademission/idle", new StringContent(encrypted));
+                .PostAsync($"{Server.ApiUrl}/notify/trademission/stuck", new StringContent(""));
         }
 
         public async Task NotifyRunStarting(string title, string message) {

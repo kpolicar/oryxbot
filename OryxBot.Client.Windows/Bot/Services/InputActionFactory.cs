@@ -75,7 +75,7 @@ namespace OryxBot.Client.Windows.Bot.Services
             
             MoveTowards(direction);
             if (fixingCourse)
-                Thread.Sleep(1000);
+                Thread.Sleep(1500);
         }
 
         private void MoveTowards(Vector2 direction, bool forceReclick=false) {

@@ -62,6 +62,7 @@ namespace OryxBot.Client.Windows.Bot
             
             private ExpiringTimestampsList stuckTimestamps = new (IdleTimeout);
             public event EventHandler? Stuck;
+            internal const int IdleTimeout = 30000;
             internal const int TryToGetUnstuckAfterIdleDuration = 1000;
             internal const int MaxTriesToGetUnstuckWithinTimeout = 5;
 
@@ -119,8 +120,6 @@ namespace OryxBot.Client.Windows.Bot
                     actions.MoveTowards(target.Position, tryToGetUnstuck);
                     
                     if (tryToGetUnstuck) {
-                        Debug.WriteLine("trying to get unstuck: "+DateTime.Now);
-                        Debug.WriteLine("trying to get unstuck length: "+stuckTimestamps.Count);
                         stuckTimestamps.RemoveExpired();
                         stuckTimestamps.Enqueue(DateTime.Now);
                     }

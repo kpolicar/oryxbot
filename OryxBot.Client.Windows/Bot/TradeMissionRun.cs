@@ -25,7 +25,6 @@ namespace OryxBot.Client.Windows.Bot
         internal event EventHandler? Reset;
         internal event EventHandler<TradeMissionEvent>? Stuck;
         private const int DelayBetweenSteps = 1000;
-        internal const int IdleTimeout = 30000;
 
         private TradeMissionStep _step;
         internal TradeMissionStep Step {
