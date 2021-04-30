@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using OryxBot.Client.Windows.Api;
 using OryxBot.Client.Windows.Bot;
+using OryxBot.Client.Windows.Bot.Events;
 using OryxBot.Client.Windows.Contracts;
 using OryxBot.Shared.Contracts;
 using OryxBot.Shared.Design;
@@ -24,9 +25,12 @@ namespace Inkybot.Api
             api = serviceContainer.GetService<ApiClient>();
             auth = serviceContainer.GetService<AuthManager>();
             var bot = (serviceContainer.GetService<BotManagerContract>() as BotManager)!;
-            
-            bot.TradeMissionRun += (_, e) =>
-                (e.Job as TradeMissionRun)!.RunComplete += OnTradeMissionRunComplete;
+
+            bot.TradeMissionRun += (_, e) => {
+                var run = (e.Job as TradeMissionRun)!;
+                run.RunComplete += OnTradeMissionRunComplete;
+                run.Stuck += OnTradeMissionStuck;
+            };
             bot.Starting += OnBotStarting;
         }
 
@@ -48,6 +52,11 @@ namespace Inkybot.Api
 
         private void OnTradeMissionRunComplete(object? sender, EventArgs e) {
             Task.Run(api.NotifyRunComplete)
+                .ConfigureAwait(false);
+        }
+        
+        private void OnTradeMissionStuck(object? sender, TradeMissionEvent e) {
+            Task.Run(api.NotifyTradeMissionIdle)
                 .ConfigureAwait(false);
         }
     }

@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
+using OryxBot.Client.Windows.Bot;
 using OryxBot.Client.Windows.Contracts;
 using OryxBot.Client.Windows.Domain;
 using OryxBot.Client.Windows.Events;
@@ -61,6 +62,17 @@ namespace OryxBot.Client.Windows.Api
             await WaitForStableConnection();
             Connection?.Request()
                 .PostAsync($"{Server.ApiUrl}/notify/trademission/complete", new StringContent(""));
+        }
+        
+        public async Task NotifyTradeMissionIdle() {
+            var form_params = new Dictionary<string, string> {
+                {"idle_timeout", TradeMissionRun.IdleTimeout.ToString()},
+            };
+            var encrypted = Aes256CbcEncrypter.Encrypt(form_params);
+            
+            await WaitForStableConnection();
+            Connection?.Request()
+                .PostAsync($"{Server.ApiUrl}/notify/trademission/idle", new StringContent(encrypted));
         }
 
         public async Task NotifyRunStarting(string title, string message) {

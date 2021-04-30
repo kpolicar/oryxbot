@@ -59,12 +59,22 @@ namespace OryxBot.Client.Windows.Bot
             private ITwoWayEnumerator<TradeMissionRecord.RecordableStep>? Step;
             private bool _characterHasDied;
             private bool hasMadeFirstMove = false;
+            
+            private ExpiringTimestampsList stuckTimestamps = new (IdleTimeout);
+            public event EventHandler? Stuck;
+            internal const int TryToGetUnstuckAfterIdleDuration = 1000;
+            internal const int MaxTriesToGetUnstuckWithinTimeout = 5;
 
             public RunRouteStep(TradeMissionRun run) {
                 LocalCharacter.Instance.ChangeCluster += (_, _) => clusterChanged = true;
                 LocalCharacter.Instance.Died += OnCharacterDied;
                 LocalCharacter.Instance.Move += (_, _) => hasMadeFirstMove = true;
-                run.Started += (_, _) => hasMadeFirstMove = false;
+                run.Started += OnRunStarted;
+            }
+
+            private void OnRunStarted(object? sender, EventArgs e) {
+                hasMadeFirstMove = false;
+                stuckTimestamps = new ExpiringTimestampsList(IdleTimeout);
             }
 
             private void OnCharacterDied(object? sender, EventArgs e) {
@@ -101,12 +111,26 @@ namespace OryxBot.Client.Windows.Bot
                 ProgressMoveStepsAndSkipIfAlreadyAhead();
                 
                 if (Step?.Current is TradeMissionRecord.MoveStep target) {
-                    var tryToGetUnstuck = hasMadeFirstMove == true;
+                    var tryToGetUnstuck =
+                        hasMadeFirstMove == true &&
+                        !LocalCharacter.Instance.Moving &&
+                        LocalCharacter.Instance.IdleDuration >= TryToGetUnstuckAfterIdleDuration;
+                    
                     actions.MoveTowards(target.Position, tryToGetUnstuck);
+                    
+                    if (tryToGetUnstuck) {
+                        Debug.WriteLine("trying to get unstuck: "+DateTime.Now);
+                        Debug.WriteLine("trying to get unstuck length: "+stuckTimestamps.Count);
+                        stuckTimestamps.RemoveExpired();
+                        stuckTimestamps.Enqueue(DateTime.Now);
+                    }
                 }
                 if (Step?.Current is TradeMissionRecord.ChangeClusterStep) {
                     actions.MoveInSameDirection();
                 }
+                
+                if (stuckTimestamps.Count >= MaxTriesToGetUnstuckWithinTimeout)
+                    Stuck?.Invoke(this, EventArgs.Empty);
             }
             
             private void ProgressMoveStepsAndSkipIfAlreadyAhead() {
@@ -185,6 +209,21 @@ namespace OryxBot.Client.Windows.Bot
                 Console.WriteLine(@"route finished!");
                 actions.StopAllActions();
                 Finished = true;
+            }
+        }
+
+        internal class ExpiringTimestampsList : Queue<DateTime>
+        {
+            public readonly int ExpiresInMilliSeconds;
+            
+            public ExpiringTimestampsList(int expiresInMilliSeconds) =>
+                ExpiresInMilliSeconds = expiresInMilliSeconds;
+
+            public void RemoveExpired() {
+                var now = DateTime.Now;
+                while (Count > 0 && now.Subtract(Peek()).TotalMilliseconds >= ExpiresInMilliSeconds) {
+                    Dequeue();
+                }
             }
         }
 

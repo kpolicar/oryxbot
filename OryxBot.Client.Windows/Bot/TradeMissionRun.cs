@@ -5,6 +5,7 @@ using System.Threading;
 using OryxBot.Client.Windows.Bot.Contracts;
 using OryxBot.Client.Windows.Bot.Events;
 using OryxBot.Client.Windows.Bot.Exceptions;
+using OryxBot.Client.Windows.Bot.Game;
 using OryxBot.Client.Windows.Bot.Services;
 using OryxBot.Shared;
 using OryxBot.Shared.Contracts;
@@ -22,17 +23,22 @@ namespace OryxBot.Client.Windows.Bot
         public event EventHandler? RunComplete;
         internal event EventHandler<TradeMissionEvent>? Progress;
         internal event EventHandler? Reset;
+        internal event EventHandler<TradeMissionEvent>? Stuck;
         private const int DelayBetweenSteps = 1000;
+        internal const int IdleTimeout = 30000;
 
         private TradeMissionStep _step;
         internal TradeMissionStep Step {
             get => _step;
             private set {
                 _step = value;
+                if (_step is RunRouteStep runStep) {
+                    runStep.Stuck += OnRunStuck;
+                }
                 StatusChanged?.Invoke(this, new BotEventArgs(this));
             }
         }
-        
+
         private static TradeMissionRouteManager _routeManager = null!;
         public readonly TradeMissionRoute Route;
         private static InputActionFactory actions = null!;
@@ -81,7 +87,7 @@ namespace OryxBot.Client.Windows.Bot
         }
 
         private void ResetRun() {
-            Step = new RunRouteToDestination(this, Route.RouteToNpc);
+            Step = new RunToBank(this);
             Reset?.Invoke(this, EventArgs.Empty);
         }
 
@@ -121,11 +127,15 @@ namespace OryxBot.Client.Windows.Bot
                 _ => throw new ArgumentOutOfRangeException(nameof(Step))
             };
             Progress?.Invoke(this, new TradeMissionEvent(Step));
-            Console.WriteLine("Progressed to next step: "+Step.GetType());
             
             if (Step is RunToBank) {
                 RunComplete?.Invoke(this, EventArgs.Empty);
             }
+        }
+        
+        private void OnRunStuck(object? sender, EventArgs e) {
+            Pause();
+            Stuck?.Invoke(this, new TradeMissionEvent(Step));
         }
     }
 }
