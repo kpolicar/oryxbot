@@ -178,10 +178,14 @@ namespace OryxBot.Client.Windows
 
                 hotkey.F1 += (_, _) => AuthorizedToggleTradeMissionRecord();
                 hotkey.F2 += (_, _) => AuthorizedToggleTradeMissionRun();
+                hotkey.F3 += (_, _) => LocalCharacterProgressQuest();
                 hotkey.Insert += (_, _) => ToggleBotStatusForm();
                 hotkey.F10 += (_, _) => AuthorizedPauseTradeMissionRun();
                 logger.BindToServices(Services);
-                NLog.LogManager.Shutdown();
+            }
+
+            private void LocalCharacterProgressQuest() {
+                LocalCharacter.Instance.ProgressQuest();
             }
 
             private void ToggleBotStatusForm() {

@@ -75,9 +75,9 @@ namespace OryxBot.Client.Windows.Bot
         }
 
         public override void Stop() {
-            base.Stop();
             if (!Running)
                 return;
+            base.Stop();
             SaveRecordingToDisk();
             Reset();
         }
