@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
@@ -51,7 +52,8 @@ namespace OryxBot.Client.Windows.Api
                 {"refresh_token", authDetails.refresh_token},
                 {"client_id", Program.GrantId},
                 {"client_secret", Program.GrantSecret},
-                {"scope", ""}
+                {"scope", ""},
+                {"_passport_token_name", Program.InstanceIdentifier},
             };
             var encrypted = Aes256CbcEncrypter.Encrypt(form_params);
             

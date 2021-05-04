@@ -1,5 +1,6 @@
 using System;
 using System.Diagnostics;
+using System.Linq;
 using System.Windows.Forms;
 using OryxBot.Albion.Protocol;
 using OryxBot.Client.Windows.Bot;
@@ -41,6 +42,11 @@ namespace OryxBot.Client.Windows
             Application.SetHighDpiMode(HighDpiMode.SystemAware);
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
+            
+            var random = new Random();
+            const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+            InstanceIdentifier = "instance-" + new string(Enumerable.Repeat(chars, 16)
+                .Select(s => s[random.Next(s.Length)]).ToArray());
 
             var app = new MainForm();
             app.BindDependencies(Services);
@@ -49,5 +55,7 @@ namespace OryxBot.Client.Windows
             Application.ApplicationExit += (_, _) => _kernel.Dispose();
             Application.Run(app);
         }
+        
+        public static string InstanceIdentifier;
     }
 }
