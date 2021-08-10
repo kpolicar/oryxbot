@@ -1,6 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OryxBot.Client.Windows", "OryxBot.Client.Windows\OryxBot.Client.Windows.csproj", "{CD0E5260-DC95-4A07-8FF3-613A1950FE76}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OryxBot.Client.Linux", "OryxBot.Client.Linux\OryxBot.Client.Linux.csproj", "{CD0E5260-DC95-4A07-8FF3-613A1950FE76}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OryxBot.Shared", "OryxBot.Shared\OryxBot.Shared.csproj", "{4D56C687-C96B-4EAD-B87E-F406A1E18CA0}"
 EndProject

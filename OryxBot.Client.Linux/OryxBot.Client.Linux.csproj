@@ -1,0 +1,77 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <TargetFramework>net5.0</TargetFramework>
+        <RuntimeIdentifier>linux-x64</RuntimeIdentifier>
+        <Nullable>enable</Nullable>
+        <Company>OryxBot</Company>
+        <Product>OryxBot</Product>
+        <NeutralLanguage>en</NeutralLanguage>
+        <AssemblyName>OryxBot</AssemblyName>
+        <ApplicationIcon>./../Resources/oryx_icon_small_colored.ico</ApplicationIcon>
+        <ProduceReferenceAssembly>false</ProduceReferenceAssembly>
+        <PackageVersion>1.0.0</PackageVersion>
+        <AssemblyVersion>1.0.0.0</AssemblyVersion>
+        <FileVersion>1.0.0.0</FileVersion>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\OryxBot.Albion\OryxBot.Albion.csproj" />
+      <ProjectReference Include="..\OryxBot.Shared\OryxBot.Shared.csproj" />
+        <PackageReference Include="Albion.Network" Version="5.0.0" />
+        <PackageReference Include="SharpPcap" Version="6.0.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Compile Update="Kernel.cs">
+        <DependentUpon>Program.cs</DependentUpon>
+      </Compile>
+      <Compile Update="Resources\UIApplicationContext.Designer.cs">
+        <AutoGen>True</AutoGen>
+        <DependentUpon>ApplicationContext.resx</DependentUpon>
+        <DesignTime>True</DesignTime>
+      </Compile>
+    </ItemGroup>
+
+    <ItemGroup>
+      <EmbeddedResource Update="Resources\UIApplicationContext.resx">
+        <Generator>ResXFileCodeGenerator</Generator>
+        <LastGenOutput>UIApplicationContext.Designer.cs</LastGenOutput>
+      </EmbeddedResource>
+      <EmbeddedResource Include="Bot\Resources\route_martlock_bank_to_quest.csv" />
+      <EmbeddedResource Include="Bot\Resources\route_martlock_quest_to_bank.csv" />
+      <EmbeddedResource Include="Bot\Resources\route_martlock_trademission.csv" />
+      <EmbeddedResource Include="Bot\Resources\route_thetford_bank_to_quest.csv" />
+      <EmbeddedResource Include="Bot\Resources\route_thetford_quest_to_bank.csv" />
+      <EmbeddedResource Include="Bot\Resources\route_thetford_trademission.csv" />
+      <EmbeddedResource Include="Bot\Resources\route_fortsterling_bank_to_quest.csv" />
+      <EmbeddedResource Include="Bot\Resources\route_fortsterling_quest_to_bank.csv" />
+      <EmbeddedResource Include="Bot\Resources\route_fortsterling_trademission.csv" />
+      <EmbeddedResource Include="Bot\Resources\route_bridgewatch_bank_to_quest.csv" />
+      <EmbeddedResource Include="Bot\Resources\route_bridgewatch_quest_to_bank.csv" />
+      <EmbeddedResource Include="Bot\Resources\route_bridgewatch_trademission.csv" />
+      <EmbeddedResource Include="Bot\Resources\route_caerleon_bank_to_quest.csv" />
+      <EmbeddedResource Include="Bot\Resources\route_caerleon_quest_to_bank.csv" />
+      <EmbeddedResource Include="Bot\Resources\route_caerleon_trademission.csv" />
+      <EmbeddedResource Include="Bot\Resources\route_lymhurst_bank_to_quest.csv" />
+      <EmbeddedResource Include="Bot\Resources\route_lymhurst_quest_to_bank.csv" />
+      <EmbeddedResource Include="Bot\Resources\route_lymhurst_trademission.csv" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+      <PackageReference Include="NLog" Version="4.7.10" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Update="NLog.config">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Properties" />
+    </ItemGroup>
+
+</Project>
