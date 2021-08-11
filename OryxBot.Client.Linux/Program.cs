@@ -1,9 +1,6 @@
 using System;
-using System.Diagnostics;
 using System.Linq;
 using System.Threading;
-using OryxBot.Albion.Protocol;
-using OryxBot.Client.Linux.Bot;
 using OryxBot.Client.Linux.Bot.Contracts;
 using OryxBot.Client.Linux.Bot.Services;
 using OryxBot.Client.Linux.Native;
@@ -45,7 +42,6 @@ namespace OryxBot.Client.Linux
         /// <summary>
         ///  The main entry point for the application.
         /// </summary>
-        [STAThread]
         static void Main() {
             Anydesk.CloseAnydesk();
             Anydesk.StartAnydesk();
@@ -73,7 +69,7 @@ namespace OryxBot.Client.Linux
             Console.WriteLine("Starting bot.");
             botManager.ToggleTradeMissionRun();
             
-            Thread.Sleep(30000);
+            Console.ReadLine();
             
             Console.WriteLine("Stopping bot.");
             botManager.ToggleTradeMissionRun();
@@ -81,6 +77,8 @@ namespace OryxBot.Client.Linux
             Thread.Sleep(2000);
             Console.WriteLine("Exiting program.");
             _kernel.Dispose();
+            Console.WriteLine("Exited program successfully.");
+            Console.ReadLine();
         }
         
         public static string InstanceIdentifier;

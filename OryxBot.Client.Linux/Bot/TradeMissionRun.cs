@@ -109,7 +109,7 @@ namespace OryxBot.Client.Linux.Bot
                     Thread.Sleep(Step.Delay);
                 }
             }
-
+            
             Finished?.Invoke(this, EventArgs.Empty);
         }
 

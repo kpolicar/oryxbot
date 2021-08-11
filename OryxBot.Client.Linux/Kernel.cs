@@ -66,13 +66,7 @@ namespace OryxBot.Client.Linux
             }
 
             public void Dispose() {
-                foreach (var serviceBinding in _services) {
-                    var (@abstract, _) = (serviceBinding.Key, serviceBinding.Value);
-
-                    var concrete = Services.GetService(@abstract);
-                    if (concrete is IDisposable disposable)
-                        disposable.Dispose();
-                }
+                Services.Dispose();
             }
         }
     }

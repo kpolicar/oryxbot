@@ -11,7 +11,7 @@ using BotManagerContract=OryxBot.Shared.Contracts.BotManager;
 
 namespace OryxBot.Client.Linux.Bot
 {
-    public class BotManager : BotManagerContract, HasDependencies
+    public class BotManager : BotManagerContract, HasDependencies, IDisposable
     {
         public event EventHandler<BotEventArgs>? Starting;
         public event EventHandler<BotEventArgs>? Started;
@@ -97,6 +97,11 @@ namespace OryxBot.Client.Linux.Bot
                 TradeMissionRun?.Invoke(this, new BotEventArgs(Bot));
             else if (Bot is TradeMissionRecord)
                 TradeMissionRecord?.Invoke(this, new BotEventArgs(Bot));
+        }
+
+        public void Dispose() {
+            if (Bot is IDisposable disposableBot)
+                disposableBot.Dispose();
         }
     }
 }

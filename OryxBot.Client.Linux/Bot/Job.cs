@@ -3,7 +3,7 @@ using OryxBot.Shared.Contracts;
 
 namespace OryxBot.Client.Linux.Bot
 {
-    public abstract class Job : BotJob
+    public abstract class Job : BotJob, IDisposable
     {
         public event EventHandler? Started;
         public event EventHandler? Stopped;
@@ -34,6 +34,11 @@ namespace OryxBot.Client.Linux.Bot
         public virtual void Stop() {
             Running = false;
             Stopped?.Invoke(this, EventArgs.Empty);
+        }
+
+        public void Dispose() {
+            if (Running)
+                Stop();
         }
     }
 }

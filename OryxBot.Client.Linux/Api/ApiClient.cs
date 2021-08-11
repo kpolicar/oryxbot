@@ -15,7 +15,7 @@ using OryxBot.Shared.Events;
 
 namespace OryxBot.Client.Linux.Api
 {
-    public class ApiClient : HasDependencies
+    public class ApiClient : HasDependencies, IDisposable
     {
         public ApiConnection? Connection { private set; get; }
 
@@ -92,6 +92,10 @@ namespace OryxBot.Client.Linux.Api
         public void BindDependencies(ServiceContainer serviceContainer) {
             var authManager = serviceContainer.GetService<AuthManager>();
             authManager.ConnectionChanged += OnConnectionChanged;
+        }
+
+        public void Dispose() {
+            Connection?.Dispose();
         }
     }
 }

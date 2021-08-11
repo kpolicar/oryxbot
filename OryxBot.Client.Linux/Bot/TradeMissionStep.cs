@@ -184,8 +184,9 @@ namespace OryxBot.Client.Linux.Bot
             }
             
             private bool MoveToNextRouteStep() {
+                Console.WriteLine(Step?.Current.CsvFormat);
                 var hasNext = Step?.MoveNext();
-                
+
                 if (hasNext == false) {
                     finishRoute();
                     return false;

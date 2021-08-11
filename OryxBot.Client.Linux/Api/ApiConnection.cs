@@ -12,7 +12,7 @@ using OryxBot.Shared;
 
 namespace OryxBot.Client.Linux.Api
 {
-    public class ApiConnection
+    public class ApiConnection : IDisposable
     {
         private AuthDetails authDetails;
         private readonly Timer refreshTokenTimer;
@@ -25,9 +25,8 @@ namespace OryxBot.Client.Linux.Api
             refreshTokenTimer.Start();
         }
 
-        public void Terminate() {
-            refreshTokenTimer.Dispose();
-        }
+        public void Terminate() =>
+            Dispose();
 
         public Task? RefreshTask { private set; get; }
 
@@ -71,5 +70,10 @@ namespace OryxBot.Client.Linux.Api
         
         private async Task<string> GetResultFromEncryptedResponse(HttpResponseMessage response) =>
             Aes256CbcEncrypter.Decrypt(await response.Content.ReadAsStringAsync());
+
+        public void Dispose() {
+            refreshTokenTimer.Close();
+            RefreshTask?.Dispose();
+        }
     }
 }

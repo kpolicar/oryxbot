@@ -14,7 +14,7 @@ using BotManagerContract=OryxBot.Shared.Contracts.BotManager;
 
 namespace OryxBot.Client.Linux.Bot.Services
 {
-    public partial class NetworkAlbionDataProvider : AlbionDataProvider, IDisposable, HasDependencies
+    public partial class NetworkAlbionDataProvider : AlbionDataProvider, IDisposable
     {
         internal static readonly int QueryNetworkInterval = 5;
         
@@ -26,10 +26,6 @@ namespace OryxBot.Client.Linux.Bot.Services
         public event EventHandler<EventPacket>? NetworkEvent;
         
         
-        public void BindDependencies(ServiceContainer serviceContainer) {
-            var bot = serviceContainer.GetService<BotManagerContract>();
-        }
-
         public void Run() {
             if (_running)
                 return;
@@ -42,8 +38,10 @@ namespace OryxBot.Client.Linux.Bot.Services
 
             var ports = new[] { 5056, 5055, 4535 };
             foreach (var device in CaptureDeviceList.Instance) {
-                if (!device.Name.StartsWith("eth"))
-                    return;
+                if (!device.Name.StartsWith("eth")) {
+                    device.Dispose();
+                    continue;
+                }
                 var captureThread = new Thread(() => {
                     device.OnPacketArrival += PacketHandler;
                     device.Open(DeviceModes.Promiscuous, QueryNetworkInterval);
@@ -53,10 +51,9 @@ namespace OryxBot.Client.Linux.Bot.Services
                     
                     if (device.LinkType != LinkLayers.Ethernet) {
                         device.Close();
-                        return;
+                    } else {
+                        device.StartCapture();
                     }
-                    
-                    device.StartCapture();
                 });
                 captureThread.Start();
             }
@@ -69,8 +66,11 @@ namespace OryxBot.Client.Linux.Bot.Services
                 return;
             var stopTasks = CaptureDeviceList.Instance.Select(
                 device => Task.Run(() => {
-                    device.StopCapture();
-                    device.Close();
+                    if (device.Name.StartsWith("eth")) {
+                        device.StopCapture();
+                        device.Close();
+                        device.Dispose();
+                    }
                 }));
 
             Task.WaitAll(stopTasks.ToArray());
