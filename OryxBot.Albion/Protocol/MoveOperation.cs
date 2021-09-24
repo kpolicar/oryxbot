@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Albion.Network;
 using OryxBot.Shared.Events;
 
@@ -8,7 +9,7 @@ namespace OryxBot.Albion.Protocol
     {
         public MoveOperation(Dictionary<byte, object> parameters) : base(parameters)
         {
-            Position = (float[])parameters[1];
+            Position = (float[]) parameters[1];
             // Direction = (float)parameters[2];
             // NewPosition = (float[])parameters[3];
             // Speed = (float)parameters[4];

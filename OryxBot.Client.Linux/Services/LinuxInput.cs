@@ -18,7 +18,7 @@ namespace OryxBot.Client.Linux.Services
             MaxTimeToMoveCursor = DefaultMaxTimeToMoveCursor;
         }
         
-        private const int DefaultMaxTimeToMoveCursor = 300;
+        private const int DefaultMaxTimeToMoveCursor = 100;
         private static readonly int MaxTimeToMoveCursor;
         
         private Task moveCursorTask = Task.CompletedTask;
@@ -37,7 +37,7 @@ namespace OryxBot.Client.Linux.Services
             var newCursorPosition = new Point(targetX, targetY);
 
             cursorTargetPosition = newCursorPosition;
-            EnsureCursorMoveTaskIsRunning();
+            XDoTool.SetCursorPos(cursorTargetPosition.X, cursorTargetPosition.Y);
         }
 
         public void Click() {
@@ -61,7 +61,8 @@ namespace OryxBot.Client.Linux.Services
             if (cursorTargetPosition == new Point(x, y))
                 cursorPosition = new Point(x, y+1);
             cursorTargetPosition = new Point(x, y);
-            EnsureCursorMoveTaskIsRunning();
+            
+            XDoTool.SetCursorPos(cursorTargetPosition.X, cursorTargetPosition.Y);
         }
 
         public void ShiftClick(ResponsivePoint point) {
@@ -69,15 +70,9 @@ namespace OryxBot.Client.Linux.Services
             moveCursorTask.Wait();
             
             XDoTool.KeyDown("shift");
-            Thread.Sleep(150);
-            XDoTool.LeftButtonDown();
-            Thread.Sleep(150);
-            XDoTool.LeftButtonUp();
-            Thread.Sleep(150);
-            XDoTool.LeftButtonDown();
-            Thread.Sleep(150);
-            XDoTool.LeftButtonUp();
-            Thread.Sleep(150);
+            Thread.Sleep(2000);
+            XDoTool.LeftButtonClick();
+            Thread.Sleep(2000);
             XDoTool.KeyUp("shift");
         }
         
@@ -95,7 +90,7 @@ namespace OryxBot.Client.Linux.Services
             if (!moveCursorTask.IsCompleted)
                 return;
             
-            moveCursorTask = Task.Run(() => {
+            moveCursorTask = Task.Run(async () => {
                 var sw = new Stopwatch();
                 sw.Start();
                 var previousCursorTargetPosition = cursorTargetPosition;
@@ -112,7 +107,7 @@ namespace OryxBot.Client.Linux.Services
                     XDoTool.SetCursorPos(cursorPosition.X, cursorPosition.Y);
                     cursorPosition = stepToTargetPosition;
 
-                    Thread.Sleep(5);
+                    await Task.Delay(5);
                 }
                 
                 sw.Stop();

@@ -18,8 +18,10 @@ namespace OryxBot.Client.Linux.Bot.Services
             builder.AddRequestHandler(new UpdateCharacterNotInteracting());
             builder.AddRequestHandler(new RaiseCharacterProgressedQuest());
             builder.AddEventHandler(new CharacterDied());
+            
+            
             //builder.AddHandler(new EventPacketLogger());
-            //builder.AddHandler(new RequestPacketLogger());
+            // builder.AddHandler(new RequestPacketLogger());
             //builder.AddHandler(new ResponsePacketLogger());
         }
 
@@ -35,8 +37,7 @@ namespace OryxBot.Client.Linux.Bot.Services
         private class RequestPacketLogger : PacketHandler<RequestPacket>
         {
             protected override Task OnHandleAsync(RequestPacket packet) {
-                Debug.WriteLine("request code: "+packet.OperationCode);
-                throw new NotImplementedException();
+                return Task.CompletedTask;
             }
         }
 
@@ -80,6 +81,7 @@ namespace OryxBot.Client.Linux.Bot.Services
             }
 
             protected override Task OnActionAsync(MoveOperation value) {
+                Console.WriteLine("## Position: "+value.Position[0]+", "+value.Position[1]);
                 if (DataProvider.IgnoreMovePackets > 0
                     && Game.LocalCharacter.Instance.MillisecondsSinceClusterChange < 1000)
                 {
@@ -116,6 +118,7 @@ namespace OryxBot.Client.Linux.Bot.Services
             
             protected override Task OnActionAsync(UnknownOperation value) {
                 Game.LocalCharacter.Instance.Interacting = true;
+                Console.WriteLine("## Interacting: true");
                 return Task.CompletedTask;
             }
         }
@@ -128,6 +131,7 @@ namespace OryxBot.Client.Linux.Bot.Services
 
             protected override Task OnActionAsync(UnknownOperation value) {
                 Game.LocalCharacter.Instance.Interacting = false;
+                Console.WriteLine("## Interacting: false");
                 return Task.CompletedTask;
             }
         }
@@ -140,6 +144,7 @@ namespace OryxBot.Client.Linux.Bot.Services
 
             protected override Task OnActionAsync(UnknownOperation value) {
                 Game.LocalCharacter.Instance.ProgressQuest();
+                Console.WriteLine("## Quest progressed!");
                 return Task.CompletedTask;
             }
         }

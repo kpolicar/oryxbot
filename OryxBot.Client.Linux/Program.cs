@@ -46,11 +46,15 @@ namespace OryxBot.Client.Linux
             Anydesk.CloseAnydesk();
             Anydesk.StartAnydesk();
             
-            Thread.Sleep(10000);
             
             
+            //ResponsivePoint.CurrentResolution = (1024, 768);
+            ResponsivePoint.CurrentResolution = (
+                (int) (Anydesk.Dimensions!.Value.x * (Anydesk.ScalingPercent!.Value / 100d)),
+                (int) (Anydesk.Dimensions!.Value.y * (Anydesk.ScalingPercent!.Value / 100d))
+            );
+            Console.WriteLine("Resolution: "+ResponsivePoint.CurrentResolution);
             
-            ResponsivePoint.CurrentResolution = (1024, 768);
             var random = new Random();
             const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
             InstanceIdentifier = "instance-" + new string(Enumerable.Repeat(chars, 16)
