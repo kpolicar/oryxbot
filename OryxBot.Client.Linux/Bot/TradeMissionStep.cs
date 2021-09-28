@@ -34,7 +34,7 @@ namespace OryxBot.Client.Linux.Bot
             private const int DefaultAverageClusterChangeDuration = 8000;
             private static readonly int AverageClusterChangeDuration;
             
-            private const float DefaultMaxDistance = 4f;
+            private const float DefaultMaxDistance = 6f;
             private static readonly float MaxDistance;
             
             private const int MaxSkippableSteps = 4;
@@ -60,6 +60,22 @@ namespace OryxBot.Client.Linux.Bot
                 LocalCharacter.Instance.Died += OnCharacterDied;
                 LocalCharacter.Instance.Move += (_, _) => hasMadeFirstMove = true;
                 run.Started += OnRunStarted;
+            }
+
+            private void MoveCharacterTowardsMoveStep() {
+                if (Step?.Current is TradeMissionRecord.MoveStep target) {
+                    var tryToGetUnstuck =
+                        hasMadeFirstMove &&
+                        !LocalCharacter.Instance.Moving &&
+                        LocalCharacter.Instance.IdleDuration >= TryToGetUnstuckAfterIdleDuration;
+                    
+                    actions.MoveTowards(target.Position, tryToGetUnstuck);
+                    
+                    if (tryToGetUnstuck) {
+                        stuckTimestamps.RemoveExpired();
+                        stuckTimestamps.Enqueue(DateTime.Now);
+                    }
+                }
             }
 
             private void OnRunStarted(object? sender, EventArgs e) {
@@ -99,20 +115,11 @@ namespace OryxBot.Client.Linux.Bot
                 #endif
                 
                 ProgressMoveStepsAndSkipIfAlreadyAhead();
-                
-                if (Step?.Current is TradeMissionRecord.MoveStep target) {
-                    var tryToGetUnstuck =
-                        hasMadeFirstMove == true &&
-                        !LocalCharacter.Instance.Moving &&
-                        LocalCharacter.Instance.IdleDuration >= TryToGetUnstuckAfterIdleDuration;
-                    
-                    actions.MoveTowards(target.Position, tryToGetUnstuck);
-                    
-                    if (tryToGetUnstuck) {
-                        stuckTimestamps.RemoveExpired();
-                        stuckTimestamps.Enqueue(DateTime.Now);
-                    }
+
+                if (Step?.Current is TradeMissionRecord.MoveStep) {
+                    MoveCharacterTowardsMoveStep();
                 }
+
                 if (Step?.Current is TradeMissionRecord.ChangeClusterStep) {
                     actions.MoveInSameDirection();
                 }

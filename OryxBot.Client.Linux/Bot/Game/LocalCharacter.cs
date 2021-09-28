@@ -1,5 +1,6 @@
 using System;
 using System.Diagnostics;
+using System.Numerics;
 using OryxBot.Shared.Contracts;
 using OryxBot.Shared.Design;
 using OryxBot.Shared.Game;
@@ -18,6 +19,7 @@ namespace OryxBot.Client.Linux.Bot.Game
         }
 
         public event EventHandler? Move;
+        public event EventHandler? PredictedPositionChanged;
         public event EventHandler? ChangeCluster;
         public event EventHandler? Interaction;
         public event EventHandler? MovingChanged;
@@ -43,14 +45,27 @@ namespace OryxBot.Client.Linux.Bot.Game
         public double DistanceFrom(Position position) =>
             Helpers.Math.Distance(Position, position);
 
+        public Vector2 Direction;
         private Position _position;
         public Position Position {
             get => _position;
             internal set {
                 var old = _position;
                 _position = value;
+                PredictedPosition = _position;
                 if (!value.Equals(old))
                     Move?.Invoke(this, EventArgs.Empty);
+            }
+            
+        }
+        private Position _predictedPosition;
+        public Position PredictedPosition {
+            get => _predictedPosition;
+            internal set {
+                var old = _predictedPosition;
+                _predictedPosition = value;
+                if (!value.Equals(old))
+                    PredictedPositionChanged?.Invoke(this, EventArgs.Empty);
             }
             
         }
@@ -122,6 +137,7 @@ namespace OryxBot.Client.Linux.Bot.Game
                     StateChanged?.Invoke(this, EventArgs.Empty);
             }
         }
+
         public enum CharacterState
         {
             Idle,

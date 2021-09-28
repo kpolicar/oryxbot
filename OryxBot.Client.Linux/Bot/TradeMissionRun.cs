@@ -30,6 +30,8 @@ namespace OryxBot.Client.Linux.Bot
         internal TradeMissionStep Step {
             get => _step;
             private set {
+                if (_step is IDisposable disposable)
+                    disposable.Dispose();
                 _step = value;
                 if (_step is RunRouteStep runStep) {
                     runStep.Stuck += OnRunStuck;
@@ -86,7 +88,7 @@ namespace OryxBot.Client.Linux.Bot
         }
 
         private void ResetRun() {
-            Step = new RunRouteBack(this, Route.RouteBack);
+            Step = new RunRouteToDestination(this, Route.RouteToNpc);
             Reset?.Invoke(this, EventArgs.Empty);
         }
 

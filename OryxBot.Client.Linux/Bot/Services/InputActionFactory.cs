@@ -41,7 +41,7 @@ namespace OryxBot.Client.Linux.Bot.Services
             MoveTowards(previousDirection);
 
         public void MoveAwayFrom(Position target) {
-            var origin = LocalCharacter.Instance.Position;
+            var origin = LocalCharacter.Instance.PredictedPosition;
             var direction = new Vector2(target.X - origin.X, target.Y - origin.Y);
             direction = Vector2.Transform(direction, Matrix3x2.CreateRotation(-(float)System.Math.PI/4));
             direction = Vector2.Transform(direction, Matrix3x2.CreateRotation((float) System.Math.PI));
@@ -54,7 +54,7 @@ namespace OryxBot.Client.Linux.Bot.Services
         public void MoveTowards(Position target, bool tryGetUnstuck, bool forceReclick = false) {
             var fixingCourse = false;
             EnforceBotIsRunning();
-            var origin = LocalCharacter.Instance.Position;
+            var origin = LocalCharacter.Instance.PredictedPosition;
             
             var direction = new Vector2(target.X - origin.X, target.Y - origin.Y);
             
@@ -79,6 +79,9 @@ namespace OryxBot.Client.Linux.Bot.Services
         }
 
         private void MoveTowards(Vector2 direction, bool forceReclick=false) {
+            var gameDirection = Vector2.Transform(direction, Matrix3x2.CreateRotation((float) System.Math.PI / 4));
+            LocalCharacter.Instance.Direction = gameDirection;
+            
             input.MoveCursorRelativeToCenter(direction);
             
             if (!rightMouseIsDown) {
@@ -99,10 +102,11 @@ namespace OryxBot.Client.Linux.Bot.Services
 
         public void InteractWith(Position target) {
             EnforceBotIsRunning();
-            var origin = LocalCharacter.Instance.Position;
+            var origin = LocalCharacter.Instance.PredictedPosition;
             var direction = new Vector2(target.X - origin.X, target.Y - origin.Y);
             direction = Vector2.Transform(direction, Matrix3x2.CreateRotation(-(float)System.Math.PI/4));
             direction = Vector2.Normalize(direction);
+            LocalCharacter.Instance.Direction = direction;
 
             if (rightMouseIsDown) {
                 rightMouseIsDown = false;

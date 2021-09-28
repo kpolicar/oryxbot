@@ -41,7 +41,6 @@ namespace OryxBot.Client.Linux.Services
         }
 
         public void Click() {
-            Console.WriteLine(">> Click");
             moveCursorTask.Wait();
             XDoTool.LeftButtonClick();
         }
