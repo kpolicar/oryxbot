@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
@@ -9,6 +10,8 @@ using OryxBot.Client.Linux.Domain;
 using OryxBot.Client.Linux.Events;
 using OryxBot.Client.Linux.Exceptions;
 using OryxBot.Client.Linux.Bot;
+using OryxBot.Client.Linux.Bot.Game;
+using OryxBot.Client.Linux.Native;
 using OryxBot.Shared;
 using OryxBot.Shared.Design;
 using OryxBot.Shared.Events;
@@ -70,6 +73,43 @@ namespace OryxBot.Client.Linux.Api
                 .PostAsync($"{Server.ApiUrl}/notify/trademission/stuck", new StringContent(""));
         }
 
+        public async Task NotifyStepChanged(string step) {
+            await WaitForStableConnection();
+            
+            var data = new Dictionary<string, string> {
+                {"step", step},
+            };
+            var encrypted = Aes256CbcEncrypter.Encrypt(data);
+            Connection?.Request()
+                .PostAsync($"{Server.ApiUrl}/notify/trademission/stepchanged", new StringContent(encrypted));
+        }
+        
+        public async Task NotifyCharacterMoved() {
+            await WaitForStableConnection();
+            var data = new Dictionary<string, string> {
+                {"x", LocalCharacter.Instance.Position.X.ToString(CultureInfo.InvariantCulture)},
+                {"y", LocalCharacter.Instance.Position.Y.ToString(CultureInfo.InvariantCulture)},
+                {"speed", LocalCharacter.Instance.Speed.ToString(CultureInfo.InvariantCulture)},
+            };
+            
+            var encrypted = Aes256CbcEncrypter.Encrypt(data);
+            Connection?.Request()
+                .PostAsync($"{Server.ApiUrl}/notify/trademission/moved", new StringContent(encrypted));
+        }
+        
+        public async Task NotifyRemoteDesktopConnectionEstablished() {
+            await WaitForStableConnection();
+            var data = new Dictionary<string, string> {
+                {"connected", Anydesk.Connected.ToString()},
+                {"resolution_x", Anydesk.Dimensions?.x.ToString() ?? ""},
+                {"resolution_y", Anydesk.Dimensions?.y.ToString() ?? ""},
+            };
+            
+            var encrypted = Aes256CbcEncrypter.Encrypt(data);
+            Connection?.Request()
+                .PostAsync($"{Server.ApiUrl}/notify/trademission/remotedesktop", new StringContent(encrypted));
+        }
+
         public async Task NotifyRunStarting(string title, string message) {
             await WaitForStableConnection();
             
@@ -85,7 +125,7 @@ namespace OryxBot.Client.Linux.Api
             Connection?.Request()
                 .PostAsync($"{Server.ApiUrl}/notify/trademission/starting", new StringContent(encrypted));
         }
-
+        
         private async Task<string> GetResultFromEncryptedResponse(HttpResponseMessage response) =>
             Aes256CbcEncrypter.Decrypt(await response.Content.ReadAsStringAsync());
 
@@ -96,6 +136,17 @@ namespace OryxBot.Client.Linux.Api
 
         public void Dispose() {
             Connection?.Dispose();
+        }
+
+        public async Task NotifyBotRunningChanged(bool running) {
+            await WaitForStableConnection();
+            var data = new Dictionary<string, string> {
+                {"running", running.ToString()},
+            };
+            
+            var encrypted = Aes256CbcEncrypter.Encrypt(data);
+            Connection?.Request()
+                .PostAsync($"{Server.ApiUrl}/notify/trademission/runningchanged", new StringContent(encrypted));
         }
     }
 }

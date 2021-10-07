@@ -37,6 +37,7 @@ namespace OryxBot.Client.Linux.Bot
                     runStep.Stuck += OnRunStuck;
                 }
                 StatusChanged?.Invoke(this, new BotEventArgs(this));
+                StepChanged?.Invoke(this, new BotEventArgs(this));
             }
         }
 
@@ -52,6 +53,7 @@ namespace OryxBot.Client.Linux.Bot
         private City TradeCity;
         private RunConfiguration.ContractType Contract;
         public EventHandler<BotEventArgs>? StatusChanged;
+        public EventHandler<BotEventArgs>? StepChanged;
 
 
         public TradeMissionRun(TradeMissionRoute route, RunConfiguration.ContractType contract)

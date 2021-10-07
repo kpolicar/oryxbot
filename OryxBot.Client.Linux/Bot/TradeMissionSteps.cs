@@ -17,6 +17,8 @@ namespace OryxBot.Client.Linux.Bot
         
         internal class RunToBank : RunRouteStep
         {
+            public override string Name => "run-to-bank";
+
             protected override Route Route =>
                 _routeManager.RouteFromQuestToBank()!;
 
@@ -26,6 +28,7 @@ namespace OryxBot.Client.Linux.Bot
 
         internal class BankItems : InteractionStep
         {
+            public override string Name => "bank-items";
             private ContractType Contract;
 
             public BankItems(ContractType contract) =>
@@ -48,6 +51,8 @@ namespace OryxBot.Client.Linux.Bot
 
         internal class RunToQuest : RunRouteStep
         {
+            public override string Name => "run-to-quest";
+            
             protected override Route Route =>
                 _routeManager.RouteFromBankToQuest()!;
 
@@ -57,6 +62,8 @@ namespace OryxBot.Client.Linux.Bot
         
         internal class TakeQuest : InteractionStep
         {
+            public override string Name => "take-quest";
+            
             private City City;
             private City Destination;
             private ContractType Contract;
@@ -85,6 +92,8 @@ namespace OryxBot.Client.Linux.Bot
         
         internal class RunRouteToDestination : RunRouteStep
         {
+            public override string Name => "run-route-to-destination";
+            
             protected override Route Route { get; }
 
             public RunRouteToDestination(TradeMissionRun run, Route route) : base(run) =>
@@ -93,6 +102,8 @@ namespace OryxBot.Client.Linux.Bot
         
         internal class ProgressQuest : InteractionStep
         {
+            public override string Name => "progress-quest";
+            
             protected override Position _interactablePosition =>
                 Npc.FactionEmissary.Position
                     .Select(diplomatData => diplomatData.Value)
@@ -107,6 +118,7 @@ namespace OryxBot.Client.Linux.Bot
         
         internal class RunRouteBack : RunRouteStep
         {
+            public override string Name => "run-route-back";
             protected override Route Route { get; }
 
             public RunRouteBack(TradeMissionRun run, Route route) : base(run) =>
@@ -119,6 +131,8 @@ namespace OryxBot.Client.Linux.Bot
         
         internal class FinishQuest : InteractionStep
         {
+            public override string Name => "finish-quest";
+            
             private City City;
             public FinishQuest(City city) =>
                 City = city;

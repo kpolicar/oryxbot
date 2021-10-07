@@ -1,13 +1,23 @@
 using System;
+using System.Diagnostics;
 using System.Linq;
+using System.Net.Http.Headers;
 using System.Threading;
+using Inkybot.Api;
+using Newtonsoft.Json;
+using OryxBot.Client.Linux.Api;
 using OryxBot.Client.Linux.Bot.Contracts;
 using OryxBot.Client.Linux.Bot.Services;
+using OryxBot.Client.Linux.Broadcasting;
+using OryxBot.Client.Linux.Contracts;
+using OryxBot.Client.Linux.Domain;
 using OryxBot.Client.Linux.Native;
 using OryxBot.Shared;
 using OryxBot.Shared.Contracts;
 using OryxBot.Shared.Design;
+using OryxBot.Shared.Events;
 using OryxBot.Shared.Game;
+using PusherClient;
 using BotManager = OryxBot.Shared.Contracts.BotManager;
 using ServiceContainer = OryxBot.Shared.Design.ServiceContainer;
 
@@ -43,45 +53,51 @@ namespace OryxBot.Client.Linux
         ///  The main entry point for the application.
         /// </summary>
         static void Main() {
-            Anydesk.CloseAnydesk();
-            Anydesk.StartAnydesk();
-            
-            
-            
-            //ResponsivePoint.CurrentResolution = (1024, 768);
-            ResponsivePoint.CurrentResolution = (
-                (int) (Anydesk.Dimensions!.Value.x * (Anydesk.ScalingPercent!.Value / 100d)),
-                (int) (Anydesk.Dimensions!.Value.y * (Anydesk.ScalingPercent!.Value / 100d))
-            );
-            Console.WriteLine("Resolution: "+ResponsivePoint.CurrentResolution);
-            
-            var random = new Random();
-            const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-            InstanceIdentifier = "instance-" + new string(Enumerable.Repeat(chars, 16)
-                .Select(s => s[random.Next(s.Length)]).ToArray());
+            // Anydesk.CloseAnydesk();
+            // Anydesk.StartAnydesk();
+            //
+            //
+            //
+            // //ResponsivePoint.CurrentResolution = (1024, 768);
+            // ResponsivePoint.CurrentResolution = (
+            //     (int) (Anydesk.Dimensions!.Value.x * (Anydesk.ScalingPercent!.Value / 100d)),
+            //     (int) (Anydesk.Dimensions!.Value.y * (Anydesk.ScalingPercent!.Value / 100d))
+            // );
+            // Console.WriteLine("Resolution: "+ResponsivePoint.CurrentResolution);
+            //
+             var random = new Random();
+             const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+             InstanceIdentifier = "instance-" + new string(Enumerable.Repeat(chars, 16)
+                 .Select(s => s[random.Next(s.Length)]).ToArray());
+            //
+            // var dataProvider = _kernel.Services.GetService<AlbionDataProvider>() as NetworkAlbionDataProvider;
+            // dataProvider!.Run();
+            //
+            // var routeManager = _kernel.Services.GetService<TradeMissionRouteManager>();
+            // routeManager.SetDefaultRouteCity(City.FortSterling);
+            //
+            // var botManager = _kernel.Services.GetService<BotManager>();
+            // botManager.SetRunConfiguration(new RunConfiguration(RunConfiguration.ContractType.Minor));
+            //
+            //
+            // Console.WriteLine("Starting bot.");
+            // botManager.ToggleTradeMissionRun();
+            //
+            // Console.ReadLine();
+            //
+            // Console.WriteLine("Stopping bot.");
+            // botManager.ToggleTradeMissionRun();
+            //
+            // Thread.Sleep(2000);
+            // Console.WriteLine("Exiting program.");
+            // _kernel.Dispose();
+            // Console.WriteLine("Exited program successfully.");
+            // Console.ReadLine();
 
-            var dataProvider = _kernel.Services.GetService<AlbionDataProvider>() as NetworkAlbionDataProvider;
-            dataProvider!.Run();
-
-            var routeManager = _kernel.Services.GetService<TradeMissionRouteManager>();
-            routeManager.SetDefaultRouteCity(City.FortSterling);
-            
-            var botManager = _kernel.Services.GetService<BotManager>();
-            botManager.SetRunConfiguration(new RunConfiguration(RunConfiguration.ContractType.Minor));
+            var auth = _kernel.Services.GetService<AuthManager>();
+            _ = auth.Login("admin@oryxbot.com", "***REMOVED***").Result;
             
             
-            Console.WriteLine("Starting bot.");
-            botManager.ToggleTradeMissionRun();
-            
-            Console.ReadLine();
-            
-            Console.WriteLine("Stopping bot.");
-            botManager.ToggleTradeMissionRun();
-            
-            Thread.Sleep(2000);
-            Console.WriteLine("Exiting program.");
-            _kernel.Dispose();
-            Console.WriteLine("Exited program successfully.");
             Console.ReadLine();
         }
         

@@ -30,10 +30,12 @@ namespace OryxBot.Client.Linux.Api
 
         public Task? RefreshTask { private set; get; }
 
+        public AuthenticationHeaderValue AuthenticationHeader =>
+            new AuthenticationHeaderValue("Bearer", authDetails.access_token);
+
         public HttpClient Request() {
             var client = new HttpClient();
-            client.DefaultRequestHeaders.Authorization =
-                new AuthenticationHeaderValue("Bearer", authDetails.access_token);
+            client.DefaultRequestHeaders.Authorization = AuthenticationHeader;
             client.BaseAddress = new Uri(Server.BaseUrl);
             return client;
         }

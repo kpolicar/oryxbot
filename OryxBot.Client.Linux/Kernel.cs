@@ -33,6 +33,7 @@ namespace OryxBot.Client.Linux
             private readonly Dictionary<Type, object> _services = new() {
                 {typeof(ApiNotifier), new ApiNotifier()},
                 {typeof(ApiClient), new ApiClient()},
+                {typeof(ApiCommandReceiver), new ApiCommandReceiver()},
                 {typeof(AuthManager), new ApiAuthManager()},
                 {typeof(Input), new LinuxInput()},
                 {typeof(ActionFactory), new InputActionFactory()},

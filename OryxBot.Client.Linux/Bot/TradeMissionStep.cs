@@ -15,6 +15,9 @@ namespace OryxBot.Client.Linux.Bot
     {
         internal interface TradeMissionStep
         {
+            string Name {
+                get;
+            }
             bool Finished {
                 get;
             } 
@@ -39,6 +42,7 @@ namespace OryxBot.Client.Linux.Bot
             
             private const int MaxSkippableSteps = 4;
 
+            public abstract string Name { get; }
             public bool Finished { get; private set; }
             public int Delay => 10;
             private bool preparing = true;
@@ -237,7 +241,8 @@ namespace OryxBot.Client.Linux.Bot
             protected abstract Position _interactablePosition { get; }
             public bool CharacterIsNearInteractable =>
                 LocalCharacter.Instance.DistanceFrom(_interactablePosition) <= MaxDistance;
-            
+
+            public abstract string Name { get; }
             public bool Finished { get; private set; }
 
             public void Tick() {

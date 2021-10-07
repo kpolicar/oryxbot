@@ -9,6 +9,8 @@ namespace OryxBot.Client.Linux.Native
 {
     public static class Anydesk
     {
+        public static event EventHandler? ConnectionEstablished;
+
         public static int WindowId;
         public static bool Connected;
         public static (int x, int y)? Dimensions;
@@ -51,6 +53,8 @@ namespace OryxBot.Client.Linux.Native
                 WindowId = WindowId == 0 ? XDoTool.GetActiveWindow() : WindowId;
                 Thread.Sleep(50);
             } while (WindowId == 0 || !Connected || Dimensions == null || ScalingPercent == null);
+            
+            ConnectionEstablished?.Invoke(null, EventArgs.Empty);
         }
 
         private static void OnVncOutputDataReceived(object sender, DataReceivedEventArgs e) {
