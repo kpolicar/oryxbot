@@ -31,6 +31,9 @@ namespace OryxBot.Client.Linux
         public const string GrantId = "1";
         public const string GrantSecret = "***REMOVED***";
         public const string _appKey = "***REMOVED***";
+        public const string PusherAppKey = "***REMOVED***";
+        public const string WebsocketHost = "127.0.0.1:6001";
+        public const bool WebsocketEncrypted = false;
         
         #else
         
@@ -38,6 +41,9 @@ namespace OryxBot.Client.Linux
         public const string GrantId = "2";
         public const string GrantSecret = "***REMOVED***";
         public const string _appKey = "***REMOVED***";
+        public const string PusherAppKey = "7b2zEWNNKjzRS6QSQsDzL9gz";
+        public const string WebsocketHost = "websocket.oryxbot.com:443";
+        public const bool WebsocketEncrypted = true;
         
         #endif
         
@@ -53,52 +59,61 @@ namespace OryxBot.Client.Linux
         ///  The main entry point for the application.
         /// </summary>
         static void Main() {
-            // Anydesk.CloseAnydesk();
-            // Anydesk.StartAnydesk();
-            //
-            //
-            //
-            // //ResponsivePoint.CurrentResolution = (1024, 768);
-            // ResponsivePoint.CurrentResolution = (
-            //     (int) (Anydesk.Dimensions!.Value.x * (Anydesk.ScalingPercent!.Value / 100d)),
-            //     (int) (Anydesk.Dimensions!.Value.y * (Anydesk.ScalingPercent!.Value / 100d))
-            // );
-            // Console.WriteLine("Resolution: "+ResponsivePoint.CurrentResolution);
-            //
-             var random = new Random();
-             const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-             InstanceIdentifier = "instance-" + new string(Enumerable.Repeat(chars, 16)
-                 .Select(s => s[random.Next(s.Length)]).ToArray());
-            //
-            // var dataProvider = _kernel.Services.GetService<AlbionDataProvider>() as NetworkAlbionDataProvider;
-            // dataProvider!.Run();
-            //
-            // var routeManager = _kernel.Services.GetService<TradeMissionRouteManager>();
-            // routeManager.SetDefaultRouteCity(City.FortSterling);
-            //
-            // var botManager = _kernel.Services.GetService<BotManager>();
-            // botManager.SetRunConfiguration(new RunConfiguration(RunConfiguration.ContractType.Minor));
-            //
-            //
-            // Console.WriteLine("Starting bot.");
-            // botManager.ToggleTradeMissionRun();
-            //
-            // Console.ReadLine();
-            //
-            // Console.WriteLine("Stopping bot.");
-            // botManager.ToggleTradeMissionRun();
-            //
-            // Thread.Sleep(2000);
-            // Console.WriteLine("Exiting program.");
-            // _kernel.Dispose();
-            // Console.WriteLine("Exited program successfully.");
-            // Console.ReadLine();
-
             var auth = _kernel.Services.GetService<AuthManager>();
-            _ = auth.Login("admin@oryxbot.com", "***REMOVED***").Result;
+            var api = _kernel.Services.GetService<ApiClient>();
+            var notifier = _kernel.Services.GetService<ApiNotifier>();
             
+            Console.WriteLine("connecting to server...");
+            
+            //_ = auth.Login("naltamer14@gmail.com", "***REMOVED***").Result;
+            _ = auth.Login("admin@oryxbot.com", "***REMOVED***").Result;
+
+            _ = api.User().Result;
+            notifier.OnCharacterLocationChanged(null, EventArgs.Empty);
+            
+
+            Console.ReadLine();
+        }
+        
+        public static void RunProgram() {
+            Anydesk.CloseAnydesk();
+            Anydesk.StartAnydesk();
+            
+            
+            ResponsivePoint.CurrentResolution = (1024, 768);
+            ResponsivePoint.CurrentResolution = (
+                (int) (Anydesk.Dimensions!.Value.x * (Anydesk.ScalingPercent!.Value / 100d)),
+                (int) (Anydesk.Dimensions!.Value.y * (Anydesk.ScalingPercent!.Value / 100d))
+            );
+            Console.WriteLine("Resolution: "+ResponsivePoint.CurrentResolution);
+            
+            var random = new Random();
+            const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+            InstanceIdentifier = "instance-" + new string(Enumerable.Repeat(chars, 16)
+                .Select(s => s[random.Next(s.Length)]).ToArray());
+            
+            var dataProvider = _kernel.Services.GetService<AlbionDataProvider>() as NetworkAlbionDataProvider;
+            dataProvider!.Run();
+            
+            var routeManager = _kernel.Services.GetService<TradeMissionRouteManager>();
+            routeManager.SetDefaultRouteCity(City.FortSterling);
+            
+            var botManager = _kernel.Services.GetService<BotManager>();
+            botManager.SetRunConfiguration(new RunConfiguration(RunConfiguration.ContractType.Minor));
+            
+            
+            Console.WriteLine("Starting bot.");
+            botManager.ToggleTradeMissionRun();
             
             Console.ReadLine();
+            
+            Console.WriteLine("Stopping bot.");
+            botManager.ToggleTradeMissionRun();
+            
+            Thread.Sleep(2000);
+            Console.WriteLine("Exiting program.");
+            _kernel.Dispose();
+            Console.WriteLine("Exited program successfully.");
         }
         
         public static string InstanceIdentifier;

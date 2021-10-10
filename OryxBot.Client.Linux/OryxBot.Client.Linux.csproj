@@ -3,6 +3,7 @@
     <PropertyGroup>
         <OutputType>Exe</OutputType>
         <TargetFramework>net5.0</TargetFramework>
+        <RuntimeIdentifier2>linux-x64</RuntimeIdentifier2>
         <RuntimeIdentifier>win10-x64</RuntimeIdentifier>
         <Nullable>enable</Nullable>
         <Company>OryxBot</Company>

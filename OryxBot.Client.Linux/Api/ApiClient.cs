@@ -44,7 +44,7 @@ namespace OryxBot.Client.Linux.Api
             response.EnsureSuccessStatusCode();
             var result = await GetResultFromEncryptedResponse(response);
 
-            Debug.WriteLine("Http response: "+result);
+            Console.WriteLine("Http response: "+result);
             var user = JsonConvert.DeserializeObject<User>(result);
 
             UserFetched?.Invoke(this, new FetchedUserEventArgs(user));
@@ -81,7 +81,7 @@ namespace OryxBot.Client.Linux.Api
             };
             var encrypted = Aes256CbcEncrypter.Encrypt(data);
             Connection?.Request()
-                .PostAsync($"{Server.ApiUrl}/notify/trademission/stepchanged", new StringContent(encrypted));
+                .PostAsync($"{Server.ApiUrl}/data/stepchanged", new StringContent(encrypted));
         }
         
         public async Task NotifyCharacterMoved() {
@@ -94,7 +94,7 @@ namespace OryxBot.Client.Linux.Api
             
             var encrypted = Aes256CbcEncrypter.Encrypt(data);
             Connection?.Request()
-                .PostAsync($"{Server.ApiUrl}/notify/trademission/moved", new StringContent(encrypted));
+                .PostAsync($"{Server.ApiUrl}/data/moved", new StringContent(encrypted));
         }
         
         public async Task NotifyRemoteDesktopConnectionEstablished() {
@@ -107,7 +107,7 @@ namespace OryxBot.Client.Linux.Api
             
             var encrypted = Aes256CbcEncrypter.Encrypt(data);
             Connection?.Request()
-                .PostAsync($"{Server.ApiUrl}/notify/trademission/remotedesktop", new StringContent(encrypted));
+                .PostAsync($"{Server.ApiUrl}/data/remotedesktop", new StringContent(encrypted));
         }
 
         public async Task NotifyRunStarting(string title, string message) {
@@ -146,7 +146,7 @@ namespace OryxBot.Client.Linux.Api
             
             var encrypted = Aes256CbcEncrypter.Encrypt(data);
             Connection?.Request()
-                .PostAsync($"{Server.ApiUrl}/notify/trademission/runningchanged", new StringContent(encrypted));
+                .PostAsync($"{Server.ApiUrl}/data/runningchanged", new StringContent(encrypted));
         }
     }
 }

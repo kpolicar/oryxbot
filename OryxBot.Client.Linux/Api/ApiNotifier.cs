@@ -1,5 +1,6 @@
 using System;
 using System.Diagnostics;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using OryxBot.Client.Linux.Api;
@@ -22,6 +23,7 @@ namespace Inkybot.Api
         private ApiClient api = null!;
         private AuthManager auth = null!;
         private BotManager bot;
+        private Task? notifyLocationChanged;
 
         public void BindDependencies(ServiceContainer serviceContainer) {
             api = serviceContainer.GetService<ApiClient>();
@@ -79,9 +81,13 @@ namespace Inkybot.Api
         }
         
         public void OnCharacterLocationChanged(object? sender, EventArgs eventArgs) {
-            //if (bot.IsRunning)
-                Task.Run(api.NotifyCharacterMoved)
-                    .ConfigureAwait(false);
+            if (/*bot.IsRunning && */(notifyLocationChanged?.IsCompleted ?? true)) {
+                notifyLocationChanged = Task.Run(async () => {
+                    await Task.Delay(1000);
+                    await api.NotifyCharacterMoved();
+                });
+                notifyLocationChanged.ConfigureAwait(false);
+            }
         }
         
         private void OnTradeMissionStepChanged(object? sender, BotEventArgs e) {

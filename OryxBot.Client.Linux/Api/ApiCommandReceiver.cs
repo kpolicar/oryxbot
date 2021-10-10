@@ -6,6 +6,7 @@ using OryxBot.Client.Linux.Domain;
 using OryxBot.Client.Linux.Events;
 using OryxBot.Shared.Contracts;
 using OryxBot.Shared.Design;
+using OryxBot.Shared.Events;
 using PusherClient;
 
 namespace OryxBot.Client.Linux.Api
@@ -25,20 +26,20 @@ namespace OryxBot.Client.Linux.Api
             api = serviceContainer.GetService<ApiClient>();
             auth = serviceContainer.GetService<AuthManager>();
             bot = serviceContainer.GetService<BotManager>();
-            auth.ConnectionChanged += OnConnectionChanged;
+            api.UserFetched += OnUserFetched;
         }
 
-        private void OnConnectionChanged(object? sender, ApiConnectionChangedEventArgs e) =>
+        private void OnUserFetched(object? sender, FetchedUserEventArgs e) =>
             EnforceConnectedToSocketServer();
 
         private void EnforceConnectedToSocketServer() {
             if (api.Connection == null || connectedToSocketServer)
                 return;
-            
-            pusher = new Pusher("***REMOVED***", new PusherOptions() {
-                Cluster = "eu",
-                Host = "127.0.0.1:6001",
-                Encrypted = false,
+
+            Console.WriteLine("Preparing connection");
+            pusher = new Pusher(Server.PusherAppKey, new PusherOptions() {
+                Host = Server.WebsocketHost,
+                Encrypted = Server.WebsocketEncrypted,
                 Authorizer = new HttpAuthorizer(Server.BroadcastingAuthUrl) {
                     AuthenticationHeader = api.Connection!.AuthenticationHeader,
                 },
@@ -49,10 +50,13 @@ namespace OryxBot.Client.Linux.Api
             pusher.Subscribed += (_, channel) => Console.WriteLine("Subscribed to "+channel.Name);
             pusher.Error += (_, exception) => Console.WriteLine("Error: "+exception.Message);
 
-            pusher.SubscribeAsync("private-App.Models.User.3");
+            Console.WriteLine("User ID: "+auth.User?.id);
+            pusher.SubscribeAsync("private-App.Models.User."+auth.User!.id);
             pusher.Bind(@"App\Events\RequestBotRunningChanged", OnRequestBotRunningChanged);
             
+            Console.WriteLine("Connected to socket server: "+pusher.State);
             pusher.ConnectAsync();
+            Console.WriteLine("Connected to socket server: "+pusher.State);
             
             connectedToSocketServer = true;
         }
@@ -60,6 +64,11 @@ namespace OryxBot.Client.Linux.Api
         public void OnRequestBotRunningChanged(PusherEvent eventData) {
             var data = JsonConvert.DeserializeObject<RequestBotRunningChanged>(eventData.Data)!;
             Console.WriteLine($"Message from '{data.Running}': {data.InstanceId}");
+
+            if (data.Running) {
+                Program.RunProgram();
+                return;
+            }
             
             if (data.Running && !bot.IsRunning)
                 bot.ToggleTradeMissionRun();

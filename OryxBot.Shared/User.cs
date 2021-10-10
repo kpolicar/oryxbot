@@ -6,6 +6,10 @@ namespace OryxBot.Shared
     #pragma warning disable 8618
     public class User
     {
+        public int id => evmgKPdAiRlfcfa;
+        [Obfuscation(Exclude = true)]
+        public int evmgKPdAiRlfcfa;
+        
         public string email => KEwTWbPyWmdjUKh;
         [Obfuscation(Exclude = true)]
         public string KEwTWbPyWmdjUKh;
