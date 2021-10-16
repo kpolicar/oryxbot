@@ -1,5 +1,6 @@
 using System;
 using Newtonsoft.Json;
+using OryxBot.Client.Linux.Bot.Game;
 using OryxBot.Client.Linux.Broadcasting;
 using OryxBot.Client.Linux.Contracts;
 using OryxBot.Client.Linux.Domain;
@@ -50,15 +51,25 @@ namespace OryxBot.Client.Linux.Api
             pusher.Subscribed += (_, channel) => Console.WriteLine("Subscribed to "+channel.Name);
             pusher.Error += (_, exception) => Console.WriteLine("Error: "+exception.Message);
 
-            Console.WriteLine("User ID: "+auth.User?.id);
+            Console.WriteLine($"User: {auth.User?.id}\t{auth.User?.email}");
             pusher.SubscribeAsync("private-App.Models.User."+auth.User!.id);
             pusher.Bind(@"App\Events\RequestBotRunningChanged", OnRequestBotRunningChanged);
+            pusher.Bind(@"App\Events\RequestStatus", OnRequestStatus);
             
             Console.WriteLine("Connected to socket server: "+pusher.State);
+            Console.WriteLine(Server.WebsocketHost);
+            Console.WriteLine(Server.WebsocketEncrypted);
+            Console.WriteLine(Server.BroadcastingAuthUrl);
+            Console.WriteLine(Server.PusherAppKey);
             pusher.ConnectAsync();
             Console.WriteLine("Connected to socket server: "+pusher.State);
             
             connectedToSocketServer = true;
+        }
+
+        private void OnRequestStatus(PusherEvent eventData) {
+            Console.WriteLine($"Message for status");
+            _ = api.NotifyServerStatus();
         }
 
         public void OnRequestBotRunningChanged(PusherEvent eventData) {
@@ -67,13 +78,9 @@ namespace OryxBot.Client.Linux.Api
 
             if (data.Running) {
                 Program.RunProgram();
-                return;
+            } else {
+                Program.StopProgram();
             }
-            
-            if (data.Running && !bot.IsRunning)
-                bot.ToggleTradeMissionRun();
-            else if (!data.Running && bot.IsRunning)
-                bot.Stop();
         }
 
         public void Dispose() {

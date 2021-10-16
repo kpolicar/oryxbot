@@ -15,11 +15,14 @@ using OryxBot.Client.Linux.Native;
 using OryxBot.Shared;
 using OryxBot.Shared.Design;
 using OryxBot.Shared.Events;
+using OryxBot.Shared.Extensions;
+using BotManagerContract=OryxBot.Shared.Contracts.BotManager;
 
 namespace OryxBot.Client.Linux.Api
 {
     public class ApiClient : HasDependencies, IDisposable
     {
+        private BotManagerContract bot;
         public ApiConnection? Connection { private set; get; }
 
         public event EventHandler<FetchedUserEventArgs>? UserFetched;
@@ -73,12 +76,10 @@ namespace OryxBot.Client.Linux.Api
                 .PostAsync($"{Server.ApiUrl}/notify/trademission/stuck", new StringContent(""));
         }
 
-        public async Task NotifyStepChanged(string step) {
+        public async Task NotifyStepChanged() {
             await WaitForStableConnection();
-            
-            var data = new Dictionary<string, string> {
-                {"step", step},
-            };
+
+            var data = BotStepData();
             var encrypted = Aes256CbcEncrypter.Encrypt(data);
             Connection?.Request()
                 .PostAsync($"{Server.ApiUrl}/data/stepchanged", new StringContent(encrypted));
@@ -86,11 +87,7 @@ namespace OryxBot.Client.Linux.Api
         
         public async Task NotifyCharacterMoved() {
             await WaitForStableConnection();
-            var data = new Dictionary<string, string> {
-                {"x", LocalCharacter.Instance.Position.X.ToString(CultureInfo.InvariantCulture)},
-                {"y", LocalCharacter.Instance.Position.Y.ToString(CultureInfo.InvariantCulture)},
-                {"speed", LocalCharacter.Instance.Speed.ToString(CultureInfo.InvariantCulture)},
-            };
+            var data = LocalCharacterPositionData();
             
             var encrypted = Aes256CbcEncrypter.Encrypt(data);
             Connection?.Request()
@@ -99,11 +96,7 @@ namespace OryxBot.Client.Linux.Api
         
         public async Task NotifyRemoteDesktopConnectionEstablished() {
             await WaitForStableConnection();
-            var data = new Dictionary<string, string> {
-                {"connected", Anydesk.Connected.ToString()},
-                {"resolution_x", Anydesk.Dimensions?.x.ToString() ?? ""},
-                {"resolution_y", Anydesk.Dimensions?.y.ToString() ?? ""},
-            };
+            var data = RemoteDesktopStateData();
             
             var encrypted = Aes256CbcEncrypter.Encrypt(data);
             Connection?.Request()
@@ -132,21 +125,62 @@ namespace OryxBot.Client.Linux.Api
         public void BindDependencies(ServiceContainer serviceContainer) {
             var authManager = serviceContainer.GetService<AuthManager>();
             authManager.ConnectionChanged += OnConnectionChanged;
+            bot = serviceContainer.GetService<BotManagerContract>();
         }
 
         public void Dispose() {
             Connection?.Dispose();
         }
 
-        public async Task NotifyBotRunningChanged(bool running) {
+        public async Task NotifyServerStatus() {
             await WaitForStableConnection();
-            var data = new Dictionary<string, string> {
-                {"running", running.ToString()},
-            };
+            var data = BotStepData()
+                .MergeLeft(LocalCharacterPositionData())
+                .MergeLeft(RemoteDesktopStateData())
+                .MergeLeft(BotRunningData());
+            
+            Console.WriteLine("Notifying Bot status:");
+            foreach (var keyValuePair in data) {
+                Console.WriteLine(keyValuePair.Key + ": " + keyValuePair.Value);
+            }
+            
+            var encrypted = Aes256CbcEncrypter.Encrypt(data);
+            Connection?.Request()
+                .PostAsync($"{Server.ApiUrl}/data/status", new StringContent(encrypted));
+        }
+
+        public async Task NotifyBotRunningChanged() {
+            await WaitForStableConnection();
+            var data = BotRunningData();
             
             var encrypted = Aes256CbcEncrypter.Encrypt(data);
             Connection?.Request()
                 .PostAsync($"{Server.ApiUrl}/data/runningchanged", new StringContent(encrypted));
         }
+        
+        
+        protected Dictionary<string, string> BotStepData() =>
+            new() {
+                {"bot_step", ((bot as BotManager)?.Bot as TradeMissionRun)?.Step.Name ?? ""}
+            };
+
+        protected Dictionary<string, string> LocalCharacterPositionData() =>
+            new() {
+                {"character_x", LocalCharacter.Instance.Position.X.ToString(CultureInfo.InvariantCulture)},
+                {"character_y", LocalCharacter.Instance.Position.Y.ToString(CultureInfo.InvariantCulture)},
+                {"character_speed", LocalCharacter.Instance.Speed.ToString(CultureInfo.InvariantCulture)},
+            };
+        
+        protected Dictionary<string, string> RemoteDesktopStateData() =>
+            new() {
+                {"remote_desktop_connected", Anydesk.Connected.ToString()},
+                {"remote_desktop_resolution_x", Anydesk.Dimensions?.x.ToString() ?? ""},
+                {"remote_desktop_resolution_y", Anydesk.Dimensions?.y.ToString() ?? ""},
+            };
+        
+        protected Dictionary<string, string> BotRunningData() =>
+            new() {
+                {"bot_running", bot.IsRunning.ToString()},
+            };
     }
 }

@@ -44,9 +44,7 @@ namespace Inkybot.Api
         }
 
         public void OnBotRunningChanged(object? sender, BotEventArgs e) {
-            Task.Run(async () => {
-                    await api.NotifyBotRunningChanged(bot.IsRunning);
-                }).ConfigureAwait(false);
+            Task.Run(api.NotifyBotRunningChanged).ConfigureAwait(false);
         }
 
         private void OnBotStarting(object? sender, BotEventArgs e) {
@@ -91,13 +89,8 @@ namespace Inkybot.Api
         }
         
         private void OnTradeMissionStepChanged(object? sender, BotEventArgs e) {
-            var step = (e.Job as TradeMissionRun)?.Step;
-            if (step == null)
-                return;
-            
-            Task.Run(async () => {
-                    await api.NotifyStepChanged(step.Name);
-                }).ConfigureAwait(false);
+            Task.Run(api.NotifyStepChanged)
+                .ConfigureAwait(false);
         }
     }
 }

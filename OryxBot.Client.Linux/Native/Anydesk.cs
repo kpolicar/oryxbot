@@ -38,7 +38,7 @@ namespace OryxBot.Client.Linux.Native
                 StartInfo = new ProcessStartInfo {
                     RedirectStandardOutput = true,
                     FileName = @"java",
-                    Arguments = "-jar /home/user/Documents/VncViewer.jar HOST 10.0.0.100 \"Scaling factor\" auto \"Show controls\" No PASSWORD ***REMOVED*** \"JPEG image quality\" 0 \"Offer relogin\" No \"Restricted colors\" Yes \"Compression level\" 1",
+                    Arguments = "-jar /home/user/Applications/VncViewer/VncViewer.jar HOST 10.0.0.100 \"Scaling factor\" auto \"Show controls\" No PASSWORD ***REMOVED*** \"JPEG image quality\" 0 \"Offer relogin\" No \"Restricted colors\" Yes \"Compression level\" 1",
                     UseShellExecute = false,
                 }
             };

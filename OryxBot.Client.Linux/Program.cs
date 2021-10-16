@@ -1,5 +1,6 @@
 using System;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Net.Http.Headers;
 using System.Threading;
@@ -42,7 +43,7 @@ namespace OryxBot.Client.Linux
         public const string GrantSecret = "***REMOVED***";
         public const string _appKey = "***REMOVED***";
         public const string PusherAppKey = "7b2zEWNNKjzRS6QSQsDzL9gz";
-        public const string WebsocketHost = "websocket.oryxbot.com:443";
+        public const string WebsocketHost = "socket.oryxbot.com:443";
         public const bool WebsocketEncrypted = true;
         
         #endif
@@ -59,26 +60,51 @@ namespace OryxBot.Client.Linux
         ///  The main entry point for the application.
         /// </summary>
         static void Main() {
+            var random = new Random();
+            const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+            InstanceIdentifier = "instance-" + new string(Enumerable.Repeat(chars, 16)
+                .Select(s => s[random.Next(s.Length)]).ToArray());
+            
+            
             var auth = _kernel.Services.GetService<AuthManager>();
             var api = _kernel.Services.GetService<ApiClient>();
             var notifier = _kernel.Services.GetService<ApiNotifier>();
             
             Console.WriteLine("connecting to server...");
             
-            //_ = auth.Login("naltamer14@gmail.com", "***REMOVED***").Result;
-            _ = auth.Login("admin@oryxbot.com", "***REMOVED***").Result;
+            _ = auth.Login("naltamer14@gmail.com", "***REMOVED***").Result;
+            //_ = auth.Login("admin@oryxbot.com", "***REMOVED***").Result;
 
             _ = api.User().Result;
-            notifier.OnCharacterLocationChanged(null, EventArgs.Empty);
+            _ = api.NotifyServerStatus();
+            
+            
+            var routeManager = _kernel.Services.GetService<TradeMissionRouteManager>();
+            routeManager.SetDefaultRouteCity(City.FortSterling);
+            
+            var botManager = _kernel.Services.GetService<BotManager>();
+            botManager.SetRunConfiguration(new RunConfiguration(RunConfiguration.ContractType.Minor));
             
 
             Console.ReadLine();
+            
+            _kernel.Dispose();
+        }
+
+        public static void StopProgram() {
+            var botManager = _kernel.Services.GetService<BotManager>();
+            botManager.Stop();
+            
+            var dataProvider = _kernel.Services.GetService<AlbionDataProvider>() as NetworkAlbionDataProvider;
+            dataProvider!.Stop();
+            
+            Anydesk.CloseAnydesk();
         }
         
         public static void RunProgram() {
+            var botManager = _kernel.Services.GetService<BotManager>();
             Anydesk.CloseAnydesk();
             Anydesk.StartAnydesk();
-            
             
             ResponsivePoint.CurrentResolution = (1024, 768);
             ResponsivePoint.CurrentResolution = (
@@ -87,33 +113,11 @@ namespace OryxBot.Client.Linux
             );
             Console.WriteLine("Resolution: "+ResponsivePoint.CurrentResolution);
             
-            var random = new Random();
-            const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-            InstanceIdentifier = "instance-" + new string(Enumerable.Repeat(chars, 16)
-                .Select(s => s[random.Next(s.Length)]).ToArray());
-            
             var dataProvider = _kernel.Services.GetService<AlbionDataProvider>() as NetworkAlbionDataProvider;
             dataProvider!.Run();
             
-            var routeManager = _kernel.Services.GetService<TradeMissionRouteManager>();
-            routeManager.SetDefaultRouteCity(City.FortSterling);
-            
-            var botManager = _kernel.Services.GetService<BotManager>();
-            botManager.SetRunConfiguration(new RunConfiguration(RunConfiguration.ContractType.Minor));
-            
-            
-            Console.WriteLine("Starting bot.");
-            botManager.ToggleTradeMissionRun();
-            
-            Console.ReadLine();
-            
-            Console.WriteLine("Stopping bot.");
-            botManager.ToggleTradeMissionRun();
-            
-            Thread.Sleep(2000);
-            Console.WriteLine("Exiting program.");
-            _kernel.Dispose();
-            Console.WriteLine("Exited program successfully.");
+            if (!botManager.IsRunning)
+                botManager.ToggleTradeMissionRun();
         }
         
         public static string InstanceIdentifier;

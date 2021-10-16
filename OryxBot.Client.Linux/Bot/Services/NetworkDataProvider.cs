@@ -61,7 +61,7 @@ namespace OryxBot.Client.Linux.Bot.Services
             _running = true;
         }
 
-        private void Stop() {
+        public void Stop() {
             if (!_running)
                 return;
             var stopTasks = CaptureDeviceList.Instance.Select(
