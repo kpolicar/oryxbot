@@ -1,4 +1,5 @@
 using System;
+using System.Threading.Tasks;
 using Newtonsoft.Json;
 using OryxBot.Client.Linux.Bot.Game;
 using OryxBot.Client.Linux.Broadcasting;
@@ -49,7 +50,11 @@ namespace OryxBot.Client.Linux.Api
             pusher.Connected += _ => Console.WriteLine("Connected to pusher.");
             pusher.Disconnected += _ => Console.WriteLine("Disconnected to pusher.");
             pusher.Subscribed += (_, channel) => Console.WriteLine("Subscribed to "+channel.Name);
-            pusher.Error += (_, exception) => Console.WriteLine("Error: "+exception.Message);
+            pusher.Error += (_, exception) => {
+                Console.WriteLine("Error: " + exception.Message);
+                Console.WriteLine("Error code: " + exception.PusherCode);
+                Console.WriteLine("Error state: " + pusher.State);
+            };
 
             Console.WriteLine($"User: {auth.User?.id}\t{auth.User?.email}");
             pusher.SubscribeAsync("private-App.Models.User."+auth.User!.id);
@@ -61,11 +66,28 @@ namespace OryxBot.Client.Linux.Api
             Console.WriteLine(Server.WebsocketEncrypted);
             Console.WriteLine(Server.BroadcastingAuthUrl);
             Console.WriteLine(Server.PusherAppKey);
-            pusher.ConnectAsync();
-            Console.WriteLine("Connected to socket server: "+pusher.State);
+
+            KeepConnectingToPusherUntilConnected();
             
             connectedToSocketServer = true;
         }
+
+        private void KeepConnectingToPusherUntilConnected() =>
+            Task.Run(async () => {
+                var error = false;
+                do {
+                    try {
+                        await pusher.ConnectAsync();
+                        error = false;
+                    } catch (Exception exception) {
+                        error = true;
+                        Console.WriteLine("Error in socket server connection: " + exception);
+                        await Task.Delay(10000);
+                    }
+
+                    Console.WriteLine("Connected to socket server: " + pusher.State);
+                } while (error);
+            });
 
         private void OnRequestStatus(PusherEvent eventData) {
             Console.WriteLine($"Message for status");

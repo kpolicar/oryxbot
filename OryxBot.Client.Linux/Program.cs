@@ -99,12 +99,19 @@ namespace OryxBot.Client.Linux
             dataProvider!.Stop();
             
             Anydesk.CloseAnydesk();
+            var api = _kernel.Services.GetService<ApiClient>();
+            _ = api.NotifyServerStatus();
         }
         
         public static void RunProgram() {
             var botManager = _kernel.Services.GetService<BotManager>();
             Anydesk.CloseAnydesk();
-            Anydesk.StartAnydesk();
+            var success = Anydesk.StartAnydesk();
+            if (!success) {
+                var api = _kernel.Services.GetService<ApiClient>();
+                _ = api.NotifyServerStatus();
+                return;
+            }
             
             ResponsivePoint.CurrentResolution = (1024, 768);
             ResponsivePoint.CurrentResolution = (

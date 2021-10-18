@@ -39,7 +39,6 @@ namespace OryxBot.Client.Linux.Bot.Services
             var ports = new[] { 5056, 5055, 4535 };
             foreach (var device in CaptureDeviceList.Instance) {
                 if (!device.Name.StartsWith("eth")) {
-                    device.Dispose();
                     continue;
                 }
                 var captureThread = new Thread(() => {
@@ -49,9 +48,7 @@ namespace OryxBot.Client.Linux.Bot.Services
                     var portsFilter = "port " + string.Join(" or port ", ports);
                     device.Filter = $"ip and udp and ({portsFilter})";
                     
-                    if (device.LinkType != LinkLayers.Ethernet) {
-                        device.Close();
-                    } else {
+                    if (device.LinkType == LinkLayers.Ethernet) {
                         device.StartCapture();
                     }
                 });
@@ -66,10 +63,8 @@ namespace OryxBot.Client.Linux.Bot.Services
                 return;
             var stopTasks = CaptureDeviceList.Instance.Select(
                 device => Task.Run(() => {
-                    if (device.Name.StartsWith("eth")) {
+                    if (device.Name.StartsWith("eth") && device.LinkType == LinkLayers.Ethernet) {
                         device.StopCapture();
-                        device.Close();
-                        device.Dispose();
                     }
                 }));
 

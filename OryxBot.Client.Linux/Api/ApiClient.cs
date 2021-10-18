@@ -139,11 +139,6 @@ namespace OryxBot.Client.Linux.Api
                 .MergeLeft(RemoteDesktopStateData())
                 .MergeLeft(BotRunningData());
             
-            Console.WriteLine("Notifying Bot status:");
-            foreach (var keyValuePair in data) {
-                Console.WriteLine(keyValuePair.Key + ": " + keyValuePair.Value);
-            }
-            
             var encrypted = Aes256CbcEncrypter.Encrypt(data);
             Connection?.Request()
                 .PostAsync($"{Server.ApiUrl}/data/status", new StringContent(encrypted));
@@ -161,7 +156,7 @@ namespace OryxBot.Client.Linux.Api
         
         protected Dictionary<string, string> BotStepData() =>
             new() {
-                {"bot_step", ((bot as BotManager)?.Bot as TradeMissionRun)?.Step.Name ?? ""}
+                {"bot_step", bot.IsRunning ? ((bot as BotManager)?.Bot as TradeMissionRun)?.Step.Name ?? "" : ""}
             };
 
         protected Dictionary<string, string> LocalCharacterPositionData() =>

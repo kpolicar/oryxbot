@@ -29,10 +29,14 @@ namespace OryxBot.Client.Linux.Native
             };
             process.Start();
             process.WaitForExit();
+            Connected = default;
+            Dimensions = default;
+            ScalingPercent = default;
+            WindowId = default;
         }
 
 
-        public static void StartAnydesk() {
+        public static bool StartAnydesk() {
             Console.WriteLine("Starting Anydesk");
             var process = new Process {
                 StartInfo = new ProcessStartInfo {
@@ -49,12 +53,21 @@ namespace OryxBot.Client.Linux.Native
                 Console.WriteLine(">>>>>>> "+process.ExitCode);
             });
 
+            var waitedFor = 0;
+            var maxWaitFor = 15000;
             do {
                 WindowId = WindowId == 0 ? XDoTool.GetActiveWindow() : WindowId;
                 Thread.Sleep(50);
-            } while (WindowId == 0 || !Connected || Dimensions == null || ScalingPercent == null);
+                waitedFor += 50;
+            } while ((WindowId == 0 || !Connected || Dimensions == null || ScalingPercent == null) && waitedFor < maxWaitFor);
+
+            if (waitedFor >= maxWaitFor) {
+                Console.WriteLine("Tried to connect to Anydesk for "+waitedFor+"ms. Aborting!");
+                return false;
+            }
             
             ConnectionEstablished?.Invoke(null, EventArgs.Empty);
+            return true;
         }
 
         private static void OnVncOutputDataReceived(object sender, DataReceivedEventArgs e) {
