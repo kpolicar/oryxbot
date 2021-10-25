@@ -1,14 +1,18 @@
 using System;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
+using OryxBot.Client.Linux.Bot.Contracts;
 using OryxBot.Client.Linux.Bot.Game;
 using OryxBot.Client.Linux.Broadcasting;
 using OryxBot.Client.Linux.Contracts;
 using OryxBot.Client.Linux.Domain;
 using OryxBot.Client.Linux.Events;
+using OryxBot.Client.Linux.Services;
+using OryxBot.Shared;
 using OryxBot.Shared.Contracts;
 using OryxBot.Shared.Design;
 using OryxBot.Shared.Events;
+using OryxBot.Shared.Game;
 using PusherClient;
 
 namespace OryxBot.Client.Linux.Api
@@ -22,12 +26,14 @@ namespace OryxBot.Client.Linux.Api
         private Pusher pusher;
         
         private BotManager bot;
+        private TradeMissionRouteManager routeManager;
 
         public void BindDependencies(ServiceContainer serviceContainer) {
             botManager = serviceContainer.GetService<BotManager>();
             api = serviceContainer.GetService<ApiClient>();
             auth = serviceContainer.GetService<AuthManager>();
             bot = serviceContainer.GetService<BotManager>();
+            routeManager = serviceContainer.GetService<TradeMissionRouteManager>();
             api.UserFetched += OnUserFetched;
         }
 
@@ -96,8 +102,14 @@ namespace OryxBot.Client.Linux.Api
 
         public void OnRequestBotRunningChanged(PusherEvent eventData) {
             var data = JsonConvert.DeserializeObject<RequestBotRunningChanged>(eventData.Data)!;
-            Console.WriteLine($"Message from '{data.Running}': {data.InstanceId}");
+            Console.WriteLine($"Message from '{data.InstanceId}': {data.Running}");
 
+            if (data.City != null) {
+                routeManager.SetDefaultRouteCity(Cities.City(data.City));
+            }
+            if (data.Hearts != null) {
+                bot.SetRunConfiguration(new RunConfiguration((RunConfiguration.ContractType) data.Hearts));
+            }
             if (data.Running) {
                 Program.RunProgram();
             } else {
