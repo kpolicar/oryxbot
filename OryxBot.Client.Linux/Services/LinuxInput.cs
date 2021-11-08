@@ -64,15 +64,17 @@ namespace OryxBot.Client.Linux.Services
             XDoTool.SetCursorPos(cursorTargetPosition.X, cursorTargetPosition.Y);
         }
 
-        public void ShiftClick(ResponsivePoint point) {
-            MoveCursor(point);
-            moveCursorTask.Wait();
+        public void DragAndDrop(ResponsivePoint point1, ResponsivePoint point2) {
+            MoveCursor(point1);
+            Thread.Sleep(300);
             
-            XDoTool.KeyDown("shift");
-            Thread.Sleep(2000);
-            XDoTool.LeftButtonClick();
-            Thread.Sleep(2000);
-            XDoTool.KeyUp("shift");
+            XDoTool.LeftButtonDown();
+            Thread.Sleep(300);
+            
+            MoveCursor(point2);
+            Thread.Sleep(300);
+            
+            XDoTool.LeftButtonUp();
         }
         
         public void Click(Point point) {

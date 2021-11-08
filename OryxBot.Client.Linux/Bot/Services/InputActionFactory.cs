@@ -118,7 +118,7 @@ namespace OryxBot.Client.Linux.Bot.Services
 
         public void BankRewardItems() {
             EnforceBotIsRunning();
-            input.ShiftClick(AlbionInterface.FirstItemInInventory);
+            input.DragAndDrop(AlbionInterface.FirstItemInInventory, AlbionInterface.ThirdItemInBank);
         }
 
         public void UnbankTokenItem(ContractType contract) =>
@@ -146,7 +146,7 @@ namespace OryxBot.Client.Linux.Bot.Services
             
             Thread.Sleep(delay);
             EnforceBotIsRunning();
-            input.ShiftClick(AlbionInterface.SecondItemInBank);
+            input.DragAndDrop(AlbionInterface.SecondItemInBank, AlbionInterface.FirstItemInInventory);
         }
 
         public void NpcQuestOpenTradeMissionsTab() {

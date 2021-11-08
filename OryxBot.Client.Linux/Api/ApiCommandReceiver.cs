@@ -63,7 +63,8 @@ namespace OryxBot.Client.Linux.Api
             };
 
             Console.WriteLine($"User: {auth.User?.id}\t{auth.User?.email}");
-            pusher.SubscribeAsync("private-App.Models.User."+auth.User!.id);
+            
+            pusher.SubscribeAsync("private-App.Models.User." + auth.User!.id);
             pusher.Bind(@"App\Events\RequestBotRunningChanged", OnRequestBotRunningChanged);
             pusher.Bind(@"App\Events\RequestStatus", OnRequestStatus);
             

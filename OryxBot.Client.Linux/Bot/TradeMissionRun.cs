@@ -90,7 +90,8 @@ namespace OryxBot.Client.Linux.Bot
         }
 
         private void ResetRun() {
-            Step = new RunRouteToDestination(this, Route.RouteToNpc);
+            Step = new RunToBank(this);
+            //Step = new RunRouteBack(this, Route.RouteBack);
             Reset?.Invoke(this, EventArgs.Empty);
         }
 

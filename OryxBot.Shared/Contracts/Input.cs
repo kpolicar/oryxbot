@@ -10,7 +10,7 @@ namespace OryxBot.Shared.Contracts
         void Click();
         void Click(Point point);
         void Click(ResponsivePoint point);
-        void ShiftClick(ResponsivePoint point);
+        void DragAndDrop(ResponsivePoint point1, ResponsivePoint point2);
         void RightMouseDown();
         void RightMouseUp();
         void MoveCursor(ResponsivePoint point);

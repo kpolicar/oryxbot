@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net.Http.Headers;
+using System.Text.RegularExpressions;
 using System.Threading;
 using Inkybot.Api;
 using Newtonsoft.Json;
@@ -49,9 +50,9 @@ namespace OryxBot.Client.Linux
         #endif
         
         public static byte[] AppKey => System.Convert.FromBase64String(_appKey);
-        public const string VersionNumber = "6";
-        public const string Version = "v0.6 Beta";
-        public const string VersionEndpoint = "v0.6beta";
+        public const string VersionNumber = "7";
+        public const string Version = "v1.0";
+        public const string VersionEndpoint = "v1";
         
         public static readonly Kernel _kernel = new();
         public static ServiceContainer Services => _kernel.Services;
@@ -72,8 +73,8 @@ namespace OryxBot.Client.Linux
             
             Console.WriteLine("connecting to server...");
             
-            _ = auth.Login("naltamer14@gmail.com", "***REMOVED***").Result;
-            //_ = auth.Login("admin@oryxbot.com", "***REMOVED***").Result;
+            auth.LoginWithToken(
+                File.ReadAllText("/etc/oryxbot.apikey").Replace("\n", ""));
 
             _ = api.User().Result;
             _ = api.NotifyServerStatus();

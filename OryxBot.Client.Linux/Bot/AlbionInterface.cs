@@ -20,6 +20,9 @@ namespace OryxBot.Client.Linux.Bot
         public static ResponsivePoint SecondItemInBank =
             new(255, 515, 3840, 1600, AnchorStyle.Left);
         
+        public static ResponsivePoint ThirdItemInBank =
+            new(378, 515, 3840, 1600, AnchorStyle.Left);
+        
         public static ResponsivePoint IncreaseSplitQuantityButton =
             new(2052, 1060, 3840, 1600, AnchorStyle.Center);
         

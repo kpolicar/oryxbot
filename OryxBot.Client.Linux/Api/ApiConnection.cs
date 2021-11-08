@@ -14,8 +14,13 @@ namespace OryxBot.Client.Linux.Api
 {
     public class ApiConnection : IDisposable
     {
-        private AuthDetails authDetails;
-        private readonly Timer refreshTokenTimer;
+        private AuthDetails? authDetails;
+        private readonly Timer? refreshTokenTimer;
+        private readonly string? AccessToken;
+
+        public ApiConnection(string accessToken) {
+            AccessToken = accessToken;
+        }
 
         public ApiConnection(AuthDetails authDetails) {
             this.authDetails = authDetails;
@@ -31,7 +36,7 @@ namespace OryxBot.Client.Linux.Api
         public Task? RefreshTask { private set; get; }
 
         public AuthenticationHeaderValue AuthenticationHeader =>
-            new AuthenticationHeaderValue("Bearer", authDetails.access_token);
+            new AuthenticationHeaderValue("Bearer", AccessToken ?? authDetails!.access_token);
 
         public HttpClient Request() {
             var client = new HttpClient();
@@ -74,7 +79,7 @@ namespace OryxBot.Client.Linux.Api
             Aes256CbcEncrypter.Decrypt(await response.Content.ReadAsStringAsync());
 
         public void Dispose() {
-            refreshTokenTimer.Close();
+            refreshTokenTimer?.Close();
             RefreshTask?.Dispose();
         }
     }

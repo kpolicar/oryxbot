@@ -33,6 +33,15 @@ namespace OryxBot.Client.Linux.Api
             api.UserFetched += (sender, args) => User = args.user;
         }
 
+
+
+        public ApiConnection LoginWithToken(string token) {
+            var connection = new ApiConnection(token);
+
+            ConnectionChanged?.Invoke(null, new ApiConnectionChangedEventArgs(connection));
+            return connection;
+        }
+
         public async Task<ApiConnection?> Login(string username, string password) {
             var client = new HttpClient();
             var url =  $"{Server.AuthUrl}/token";

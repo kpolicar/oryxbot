@@ -15,6 +15,7 @@ namespace OryxBot.Client.Linux.Contracts
         public event EventHandler<ApiConnectionChangedEventArgs>? ConnectionChanged;
         public event EventHandler<AuthChangedEvent>? AuthChanged;
         public Task<ApiConnection?> Login(string username, string password);
+        public ApiConnection? LoginWithToken(string token);
         public void Logout();
     }
 }
