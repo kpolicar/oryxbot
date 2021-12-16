@@ -9,7 +9,7 @@ namespace OryxBot.Client.Linux.Bot
         {
             public EventHandler? StatusChanged;
             
-            private BotStatus _status = BotStatus.RecordingWaitingToStartQuest;
+            private BotStatus _status = BotStatus.RecordingRoute;
             public BotStatus Status {
                 internal set {
                     _status = value;

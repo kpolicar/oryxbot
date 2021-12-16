@@ -176,6 +176,7 @@ namespace OryxBot.Client.Linux.Api
         protected Dictionary<string, string> BotRunningData() =>
             new() {
                 {"bot_running", bot.IsRunning.ToString()},
+                {"bot_recording_running", (((bot as BotManager)!.Bot as TradeMissionRecord)?.Running ?? false).ToString()},
             };
     }
 }

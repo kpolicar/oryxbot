@@ -81,7 +81,6 @@ namespace OryxBot.Client.Linux.Bot.Services
             }
 
             protected override Task OnActionAsync(MoveOperation value) {
-                Console.WriteLine("## Position: "+value.Position[0]+", "+value.Position[1]);
                 if (DataProvider.IgnoreMovePackets > 0
                     && Game.LocalCharacter.Instance.MillisecondsSinceClusterChange < 1000)
                 {
@@ -118,7 +117,6 @@ namespace OryxBot.Client.Linux.Bot.Services
             
             protected override Task OnActionAsync(UnknownOperation value) {
                 Game.LocalCharacter.Instance.Interacting = true;
-                Console.WriteLine("## Interacting: true");
                 return Task.CompletedTask;
             }
         }
@@ -131,7 +129,6 @@ namespace OryxBot.Client.Linux.Bot.Services
 
             protected override Task OnActionAsync(UnknownOperation value) {
                 Game.LocalCharacter.Instance.Interacting = false;
-                Console.WriteLine("## Interacting: false");
                 return Task.CompletedTask;
             }
         }
@@ -144,7 +141,6 @@ namespace OryxBot.Client.Linux.Bot.Services
 
             protected override Task OnActionAsync(UnknownOperation value) {
                 Game.LocalCharacter.Instance.ProgressQuest();
-                Console.WriteLine("## Quest progressed!");
                 return Task.CompletedTask;
             }
         }

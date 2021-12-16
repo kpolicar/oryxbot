@@ -45,7 +45,7 @@ namespace OryxBot.Client.Linux.Bot
         }
 
         private void OnProgressQuest(object? sender, EventArgs e) {
-            Debug.WriteLine("progressed!");
+            Console.WriteLine("Recording: Progressed quest!");
             lock (State) {
                 if (HasStartedQuest) {
                     State.RecordedSteps.AddLast(new ProgressQuestStep());
@@ -95,7 +95,6 @@ namespace OryxBot.Client.Linux.Bot
                 if (State.RecordedSteps.Count <= 0)
                     return;
             
-                Directory.CreateDirectory("recordings");
                 using var fileStream = routeManager.SaveRouteStream();
 
                 fileStream.WriteLine(

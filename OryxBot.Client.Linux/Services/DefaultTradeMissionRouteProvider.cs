@@ -4,6 +4,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Text.RegularExpressions;
 using Microsoft.VisualBasic.FileIO;
 using OryxBot.Client.Linux.Bot;
 using OryxBot.Client.Linux.Bot.Contracts;
@@ -40,8 +41,21 @@ namespace OryxBot.Client.Linux.Services
         public void ToggleCustomMode() =>
             CustomRoutes = !CustomRoutes;
 
+        private static string GetValidFileName(string fileName) {
+            // remove any invalid character from the filename.
+            String ret = Regex.Replace(fileName.Trim(), "[^A-Za-z0-9_. ]+", "");
+            return ret.Replace(" ", String.Empty);
+        }
+        
         public StreamWriter SaveRouteStream() {
-            return StreamWriter.Null; // Todo
+            Directory.CreateDirectory(AppDomain.CurrentDomain.BaseDirectory+"/recordings");
+                
+            var path = AppDomain.CurrentDomain.BaseDirectory+"/recordings/"
+                       + GetValidFileName(bot.RecordingConfig.Name)
+                       + DateTime.Now.ToString("yyyyMMddHHmmssfff")
+                       + ".csv";
+            Console.WriteLine("Writing recording to "+path);
+            return new StreamWriter(path);
         }
 
         public void SetDefaultRouteCity(City city) =>

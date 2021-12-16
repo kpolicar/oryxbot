@@ -28,7 +28,8 @@ namespace OryxBot.Shared.Game
                 { DeadveinGully, new Position(49.17f, -138.86f) }, // Bridgewatch->Caerleon trade mission
                 { CairnFidair, new Position(-110.5f, 60.35f) }, // Thetford->FortSterling trade mission
                 { BlackthorneQuarry, new Position(338.62f, 260.92f) }, // Caerleon->Martlock trade mission
-                { Aspenwood, new Position(-280.89f, 370.87f) }, // FortSterling->Lymhurst sterling trade mission
+                { Aspenwood, new Position(159.657f, 40.398f) }, // FortSterling->Lymhurst sterling trade mission
+                //{ Aspenwood, new Position(-280.89f, 370.87f) }, // OLD FortSterling->Lymhurst sterling trade mission
                 { NightcreakMarsh, new Position( -81.14f, -199.17f) }, // Martlock->Thetford trade mission
                 { SleetwaterBasin, new Position( 289.2f, 341f) }, // FortSterling->Thetford trade mission
                 { LongtimberGlen, new Position( -80.9f, 210.6f) }, // FortSterling->Caerleon trade mission

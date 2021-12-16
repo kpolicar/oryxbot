@@ -66,6 +66,7 @@ namespace OryxBot.Client.Linux.Api
             
             pusher.SubscribeAsync("private-App.Models.User." + auth.User!.id);
             pusher.Bind(@"App\Events\RequestBotRunningChanged", OnRequestBotRunningChanged);
+            pusher.Bind(@"App\Events\RequestBotRecordStart", OnRequestBotRecordStart);
             pusher.Bind(@"App\Events\RequestStatus", OnRequestStatus);
             
             Console.WriteLine("Connected to socket server: "+pusher.State);
@@ -116,6 +117,18 @@ namespace OryxBot.Client.Linux.Api
             } else {
                 Program.StopProgram();
             }
+        }
+        
+        private void OnRequestBotRecordStart(PusherEvent eventData) {
+            var data = JsonConvert.DeserializeObject<RequestRecordStart>(eventData.Data)!;
+            Console.WriteLine($"Message from '{data.InstanceId}': city: {data.City}, destination: {data.Destination}, name: {data.Name}");
+
+            bot.SetRecordingConfiguration(new RecordingConfiguration(
+                Cities.City(data.City),
+                Regions.Region(data.Destination)!.Value,
+                data.Name));
+            
+            Program.RunRecordingProgram();
         }
 
         public void Dispose() {

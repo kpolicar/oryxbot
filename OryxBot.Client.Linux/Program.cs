@@ -127,6 +127,16 @@ namespace OryxBot.Client.Linux
             if (!botManager.IsRunning)
                 botManager.ToggleTradeMissionRun();
         }
+
+        public static void RunRecordingProgram() {
+            var botManager = _kernel.Services.GetService<BotManager>();
+            
+            var dataProvider = _kernel.Services.GetService<AlbionDataProvider>() as NetworkAlbionDataProvider;
+            dataProvider!.Run();
+            
+            Console.WriteLine("Started recording");
+            botManager.ToggleTradeMissionRecord();
+        }
         
         public static string InstanceIdentifier;
     }

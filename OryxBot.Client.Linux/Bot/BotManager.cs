@@ -53,10 +53,13 @@ namespace OryxBot.Client.Linux.Bot
                 EnforceBotServiceType(
                     typeof(TradeMissionRun), 
                     () => new TradeMissionRun(route, RunConfig.Contract));
+                
+                Console.WriteLine("Running trade mission: "+(Cities.Name((City)route.Origin!.Value)));
             }
             
             if (!Bot!.Running)
                 Starting?.Invoke(this, new BotEventArgs(Bot!));
+            
             Bot!.ToggleStart();
         }
 
