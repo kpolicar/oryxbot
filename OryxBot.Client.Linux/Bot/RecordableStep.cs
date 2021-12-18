@@ -35,7 +35,7 @@ namespace OryxBot.Client.Linux.Bot
             public readonly string Location;
             public readonly string? Alias;
 
-            public ChangeClusterStep(string location, string? alias) =>
+            public ChangeClusterStep(string location, string? alias=null) =>
                 (Location, Alias) = (location, alias);
 
             public override string Name => SerializedName;

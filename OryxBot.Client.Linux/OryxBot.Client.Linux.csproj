@@ -3,8 +3,8 @@
     <PropertyGroup>
         <OutputType>Exe</OutputType>
         <TargetFramework>net5.0</TargetFramework>
-        <RuntimeIdentifier2>linux-x64</RuntimeIdentifier2>
-        <RuntimeIdentifier>win10-x64</RuntimeIdentifier>
+        <RuntimeIdentifier>linux-x64</RuntimeIdentifier>
+        <RuntimeIdentifier2>win10-x64</RuntimeIdentifier2>
         <Nullable>enable</Nullable>
         <Company>OryxBot</Company>
         <Product>OryxBot</Product>
@@ -76,4 +76,10 @@
       <Folder Include="Properties" />
     </ItemGroup>
 
+    <Target Name="BeforeBuild">
+        
+    </Target>
+    <Target Name="AfterBuild">
+        <!-- Insert tasks to run after build here -->
+    </Target>
 </Project>

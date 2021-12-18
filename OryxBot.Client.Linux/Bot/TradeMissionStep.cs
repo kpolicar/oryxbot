@@ -1,8 +1,10 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Diagnostics;
 using System.Globalization;
+using System.Linq;
 using System.Threading;
 using OryxBot.Client.Linux.Bot.Exceptions;
 using OryxBot.Client.Linux.Bot.Game;
@@ -64,6 +66,57 @@ namespace OryxBot.Client.Linux.Bot
                 LocalCharacter.Instance.Died += OnCharacterDied;
                 LocalCharacter.Instance.Move += (_, _) => hasMadeFirstMove = true;
                 run.Started += OnRunStarted;
+            }
+
+            public bool SkipRouteToStep(string alias, Position approximatePosition) {
+                var step = Route.GetTwoWayEnumerator();
+                step.MoveNext();
+
+                var arrivedAtClusterAlias = false;
+                var moveStepsForThisAlias = new List<TradeMissionRecord.MoveStep>();
+                
+                while (true) {
+                    if (step?.Current is TradeMissionRecord.ChangeClusterStep changeClusterStep) {
+                        Console.WriteLine("alias is "+changeClusterStep);
+                        if (arrivedAtClusterAlias)
+                            break;
+                        arrivedAtClusterAlias = changeClusterStep.Alias == alias;
+                    } else if (step?.Current is TradeMissionRecord.MoveStep moveStep) {
+                        if (arrivedAtClusterAlias)
+                            moveStepsForThisAlias.Add(moveStep);
+                    }
+                    
+                    var hasNext = step.MoveNext();
+                    if (!hasNext)
+                        break;
+                }
+
+                Console.WriteLine("moveStepsForThisAlias count is "+moveStepsForThisAlias.Count +" for " + alias);
+                if (moveStepsForThisAlias.Count == 0)
+                    return false;
+
+                var closestPosition = moveStepsForThisAlias.MinBy(moveStep =>
+                    Helpers.Math.Distance(moveStep.Position, approximatePosition));
+                
+                Console.WriteLine("Closest move step to current character position is "+closestPosition);
+                
+                // Traverse back to the closest Position
+                while (true) {
+                    var hasNext = step.MovePrevious(); // The last step we arrived at was a change cluster step
+                    var moveStep = step.Current as TradeMissionRecord.MoveStep;
+                    
+                    if (!hasNext || moveStep == null) {
+                        Console.WriteLine("Skipping route to a certain step failed for some reason");
+                        return false;
+                    }
+                    if (moveStep == closestPosition) {
+                        break;
+                    }
+                }
+
+                Console.WriteLine("successfully executed resume to "+alias);
+                Step = step;
+                return true;
             }
 
             private void MoveCharacterTowardsMoveStep() {

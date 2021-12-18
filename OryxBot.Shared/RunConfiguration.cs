@@ -10,8 +10,10 @@ namespace OryxBot.Shared
         }
         
         public readonly ContractType Contract { get; }
+        public readonly string? ResumeFromAlias { get; }
+        public readonly bool HasProgresedQuest { get; }
         
-        public RunConfiguration(ContractType type) =>
-            (Contract) = (type);
+        public RunConfiguration(ContractType type, string? resumeFromRegion=null, bool hasProgresedQuest=false) =>
+            (Contract, ResumeFromAlias, HasProgresedQuest) = (type, resumeFromRegion, hasProgresedQuest);
     }
 }

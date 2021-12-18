@@ -67,6 +67,7 @@ namespace OryxBot.Client.Linux.Api
             pusher.SubscribeAsync("private-App.Models.User." + auth.User!.id);
             pusher.Bind(@"App\Events\RequestBotRunningChanged", OnRequestBotRunningChanged);
             pusher.Bind(@"App\Events\RequestBotRecordStart", OnRequestBotRecordStart);
+            pusher.Bind(@"App\Events\RequestBotResume", OnRequestBotResume);
             pusher.Bind(@"App\Events\RequestStatus", OnRequestStatus);
             
             Console.WriteLine("Connected to socket server: "+pusher.State);
@@ -100,6 +101,20 @@ namespace OryxBot.Client.Linux.Api
         private void OnRequestStatus(PusherEvent eventData) {
             Console.WriteLine($"Message for status");
             _ = api.NotifyServerStatus();
+        }
+
+        public void OnRequestBotResume(PusherEvent eventData) {
+            var data = JsonConvert.DeserializeObject<RequestBotResume>(eventData.Data)!;
+            Console.WriteLine($"Message from '{data.InstanceId}': city: {data.City}, region: {data.Alias}, progressed: {data.Progressed}");
+            
+            routeManager.SetDefaultRouteCity(Cities.City(data.City));
+            bot.SetRunConfiguration(new RunConfiguration(
+                (RunConfiguration.ContractType) data.Hearts,
+                data.Alias,
+                data.Progressed)
+            );
+            
+            Program.RunProgram();
         }
 
         public void OnRequestBotRunningChanged(PusherEvent eventData) {

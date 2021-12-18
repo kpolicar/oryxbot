@@ -52,7 +52,7 @@ namespace OryxBot.Client.Linux.Bot
 
                 EnforceBotServiceType(
                     typeof(TradeMissionRun), 
-                    () => new TradeMissionRun(route, RunConfig.Contract));
+                    () => new TradeMissionRun(route, RunConfig));
                 
                 Console.WriteLine("Running trade mission: "+(Cities.Name((City)route.Origin!.Value)));
             }

@@ -49,16 +49,17 @@ namespace OryxBot.Client.Linux.Bot
 
         public bool _isPaused;
         public override bool IsPaused => _isPaused;
+        public bool IsFirstRun = true;
         private City City;
         private City TradeCity;
-        private RunConfiguration.ContractType Contract;
+        private RunConfiguration Config;
         public EventHandler<BotEventArgs>? StatusChanged;
         public EventHandler<BotEventArgs>? StepChanged;
 
 
-        public TradeMissionRun(TradeMissionRoute route, RunConfiguration.ContractType contract)
-        => (City, TradeCity, Route, Contract) =
-            ((City)route.Origin!, Npc.FactionEmissary.Allegiance[route.Destination!.Value], route, contract);
+        public TradeMissionRun(TradeMissionRoute route, RunConfiguration config)
+        => (City, TradeCity, Route, Config) =
+            ((City)route.Origin!, Npc.FactionEmissary.Allegiance[route.Destination!.Value], route, config);
         
         public void BindDependencies(ServiceContainer serviceContainer) {
             _routeManager = serviceContainer.GetService<TradeMissionRouteManager>();
@@ -90,9 +91,18 @@ namespace OryxBot.Client.Linux.Bot
         }
 
         private void ResetRun() {
-            Step = new RunToBank(this);
-            //Step = new RunRouteBack(this, Route.RouteBack);
-            Reset?.Invoke(this, EventArgs.Empty);
+            if (IsFirstRun && Config.ResumeFromAlias != null) {
+                Step = Config.HasProgresedQuest
+                    ? new RunRouteBack(this, Route.RouteBack)
+                    : new RunRouteToDestination(this, Route.RouteToNpc);
+                
+                (Step as RunRouteStep)!.SkipRouteToStep(
+                    Config.ResumeFromAlias, LocalCharacter.Instance.Position);
+            } else {
+                Step = new RunToBank(this);
+                //Step = new RunRouteBack(this, Route.RouteBack);
+                Reset?.Invoke(this, EventArgs.Empty);
+            }
         }
 
         public void EntryPoint() {
@@ -120,9 +130,9 @@ namespace OryxBot.Client.Linux.Bot
 
         private void ProgressToNextStep() {
             Step = Step switch {
-                RunToBank => new BankItems(Contract),
+                RunToBank => new BankItems(Config.Contract),
                 BankItems => new RunToQuest(this),
-                RunToQuest => new TakeQuest(City, TradeCity, Contract),
+                RunToQuest => new TakeQuest(City, TradeCity, Config.Contract),
                 TakeQuest => new RunRouteToDestination(this, Route.RouteToNpc),
                 RunRouteToDestination => new ProgressQuest(),
                 ProgressQuest => new RunRouteBack(this, Route.RouteBack),

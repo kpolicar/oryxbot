@@ -34,7 +34,6 @@ namespace OryxBot.Client.Linux.Services
         public void BindDependencies(ServiceContainer serviceContainer) =>
             bot = serviceContainer.GetService<BotManager>();
 
-
         public TradeMissionRoute? Route() =>
             DefaultRoute();
 
@@ -145,7 +144,7 @@ namespace OryxBot.Client.Linux.Services
                     stepsBeforeQuest = steps;
                     steps = new Route();
                 } else {
-                    Console.WriteLine("Something went wrong");
+                    Console.WriteLine("Something went wrong, step is \""+step+"\"");
                 }
             }
             

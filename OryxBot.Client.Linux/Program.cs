@@ -87,7 +87,9 @@ namespace OryxBot.Client.Linux
             var botManager = _kernel.Services.GetService<BotManager>();
             botManager.SetRunConfiguration(new RunConfiguration(RunConfiguration.ContractType.Minor));
             
-
+            var dataProvider = _kernel.Services.GetService<AlbionDataProvider>() as NetworkAlbionDataProvider;
+            dataProvider!.Run();
+            
             Console.ReadLine();
             
             _kernel.Dispose();
