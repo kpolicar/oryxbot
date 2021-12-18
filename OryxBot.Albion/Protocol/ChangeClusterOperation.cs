@@ -10,6 +10,8 @@ namespace OryxBot.Albion.Protocol
         
         public ChangeClusterOperation(Dictionary<byte, object> parameters) : base(parameters) {
             Location = parameters[0].ToString();
+            //Map = parameters[1].ToString();
+            //Owner = parameters[2].ToString();
         }
         
         public static explicit operator ChangeClusterEventArgs(ChangeClusterOperation @this) =>

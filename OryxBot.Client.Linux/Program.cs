@@ -8,6 +8,7 @@ using System.Threading;
 using Inkybot.Api;
 using Newtonsoft.Json;
 using OryxBot.Client.Linux.Api;
+using OryxBot.Client.Linux.Bot;
 using OryxBot.Client.Linux.Bot.Contracts;
 using OryxBot.Client.Linux.Bot.Services;
 using OryxBot.Client.Linux.Broadcasting;

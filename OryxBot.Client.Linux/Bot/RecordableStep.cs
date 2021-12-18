@@ -33,16 +33,17 @@ namespace OryxBot.Client.Linux.Bot
         public class ChangeClusterStep : RecordableStep {
             public const string SerializedName = "cluster";
             public readonly string Location;
+            public readonly string? Alias;
 
-            public ChangeClusterStep(string location) =>
-                Location = location;
+            public ChangeClusterStep(string location, string? alias) =>
+                (Location, Alias) = (location, alias);
 
             public override string Name => SerializedName;
             protected override string CsvFormatBody =>
                 $"{Location}";
 
             public static LinkedListNode<RecordableStep> From(ChangeClusterEventArgs changeCluster) =>
-                new(new ChangeClusterStep(changeCluster.Location));
+                new(new ChangeClusterStep(changeCluster.Location, changeCluster.Alias));
         }
         
         public abstract class RecordableStep

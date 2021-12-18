@@ -136,7 +136,9 @@ namespace OryxBot.Client.Linux.Services
                     steps.AddLast(TradeMissionRecord.MoveStep.From(move));
                 } else if (step == TradeMissionRecord.ChangeClusterStep.SerializedName) {
                     
-                    var changeCluster = new ChangeClusterEventArgs(fields[1]);
+                    var changeCluster = new ChangeClusterEventArgs(
+                        fields[1], 
+                        fields.Length >= 3 ? fields[2] : null);
                     steps.AddLast(TradeMissionRecord.ChangeClusterStep.From(changeCluster));
                     
                 } else if (step == "quest") {
