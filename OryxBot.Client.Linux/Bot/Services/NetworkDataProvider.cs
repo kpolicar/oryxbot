@@ -21,7 +21,8 @@ namespace OryxBot.Client.Linux.Bot.Services
         
         private IPhotonReceiver _receiver = null!;
         private bool _running;
-        
+        private CaptureDeviceList deviceList;
+
         public event EventHandler<RequestPacket>? NetworkRequest;
         public event EventHandler<EventPacket>? NetworkEvent;
         
@@ -37,7 +38,8 @@ namespace OryxBot.Client.Linux.Bot.Services
             _receiver = builder.Build();
 
             var ports = new[] { 5056, 5055, 4535 };
-            foreach (var device in CaptureDeviceList.Instance) {
+            deviceList = CaptureDeviceList.New();
+            foreach (var device in deviceList) {
                 if (!device.Name.StartsWith("eth")) {
                     continue;
                 }
@@ -61,7 +63,7 @@ namespace OryxBot.Client.Linux.Bot.Services
         public void Stop() {
             if (!_running)
                 return;
-            var stopTasks = CaptureDeviceList.Instance.Select(
+            var stopTasks = deviceList.Select(
                 device => Task.Run(() => {
                     if (device.Name.StartsWith("eth") && device.LinkType == LinkLayers.Ethernet) {
                         device.StopCapture();
