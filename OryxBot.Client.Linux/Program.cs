@@ -99,9 +99,6 @@ namespace OryxBot.Client.Linux
             var botManager = _kernel.Services.GetService<BotManager>();
             botManager.Stop();
             
-            var dataProvider = _kernel.Services.GetService<AlbionDataProvider>() as NetworkAlbionDataProvider;
-            dataProvider!.Stop();
-            
             Anydesk.CloseAnydesk();
             var api = _kernel.Services.GetService<ApiClient>();
             _ = api.NotifyServerStatus();
@@ -125,6 +122,7 @@ namespace OryxBot.Client.Linux
             Console.WriteLine("Resolution: "+ResponsivePoint.CurrentResolution);
             
             var dataProvider = _kernel.Services.GetService<AlbionDataProvider>() as NetworkAlbionDataProvider;
+            dataProvider!.Stop();
             dataProvider!.Run();
             
             if (!botManager.IsRunning)
@@ -135,6 +133,7 @@ namespace OryxBot.Client.Linux
             var botManager = _kernel.Services.GetService<BotManager>();
             
             var dataProvider = _kernel.Services.GetService<AlbionDataProvider>() as NetworkAlbionDataProvider;
+            dataProvider!.Stop();
             dataProvider!.Run();
             
             Console.WriteLine("Started recording");

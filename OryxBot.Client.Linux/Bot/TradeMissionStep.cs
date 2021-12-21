@@ -77,7 +77,7 @@ namespace OryxBot.Client.Linux.Bot
                 
                 while (true) {
                     if (step?.Current is TradeMissionRecord.ChangeClusterStep changeClusterStep) {
-                        Console.WriteLine("alias is "+changeClusterStep);
+                        Console.WriteLine("alias is "+changeClusterStep.Alias);
                         if (arrivedAtClusterAlias)
                             break;
                         arrivedAtClusterAlias = changeClusterStep.Alias == alias;
@@ -98,7 +98,7 @@ namespace OryxBot.Client.Linux.Bot
                 var closestPosition = moveStepsForThisAlias.MinBy(moveStep =>
                     Helpers.Math.Distance(moveStep.Position, approximatePosition));
                 
-                Console.WriteLine("Closest move step to current character position is "+closestPosition);
+                Console.WriteLine("Closest move step to current character position is "+closestPosition.Position);
                 
                 // Traverse back to the closest Position
                 while (true) {
