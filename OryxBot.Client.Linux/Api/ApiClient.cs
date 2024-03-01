@@ -168,9 +168,9 @@ namespace OryxBot.Client.Linux.Api
         
         protected Dictionary<string, string> RemoteDesktopStateData() =>
             new() {
-                {"remote_desktop_connected", Anydesk.Connected.ToString()},
-                {"remote_desktop_resolution_x", Anydesk.Dimensions?.x.ToString() ?? ""},
-                {"remote_desktop_resolution_y", Anydesk.Dimensions?.y.ToString() ?? ""},
+                {"remote_desktop_connected", Vnc.Connected.ToString()},
+                {"remote_desktop_resolution_x", Vnc.Dimensions?.x.ToString() ?? ""},
+                {"remote_desktop_resolution_y", Vnc.Dimensions?.y.ToString() ?? ""},
             };
         
         protected Dictionary<string, string> BotRunningData() =>

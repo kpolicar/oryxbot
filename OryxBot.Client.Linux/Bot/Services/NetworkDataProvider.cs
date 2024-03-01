@@ -52,6 +52,7 @@ namespace OryxBot.Client.Linux.Bot.Services
                     
                     if (device.LinkType == LinkLayers.Ethernet) {
                         device.StartCapture();
+                        Console.WriteLine("Started listening to network device: "+device.Name);
                     }
                 });
                 captureThread.Start();
@@ -72,6 +73,7 @@ namespace OryxBot.Client.Linux.Bot.Services
 
             Task.WaitAll(stopTasks.ToArray());
             _running = false;
+            Console.WriteLine("Stopped listening to all network devices.");
         }
         
         private void PacketHandler(object sender, PacketCapture e)

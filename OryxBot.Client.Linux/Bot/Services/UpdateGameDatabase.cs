@@ -21,7 +21,7 @@ namespace OryxBot.Client.Linux.Bot.Services
             
             
             //builder.AddHandler(new EventPacketLogger());
-            // builder.AddHandler(new RequestPacketLogger());
+            //builder.AddHandler(new RequestPacketLogger());
             //builder.AddHandler(new ResponsePacketLogger());
         }
 
@@ -37,6 +37,7 @@ namespace OryxBot.Client.Linux.Bot.Services
         private class RequestPacketLogger : PacketHandler<RequestPacket>
         {
             protected override Task OnHandleAsync(RequestPacket packet) {
+                Console.WriteLine("response code: "+packet.OperationCode);
                 return Task.CompletedTask;
             }
         }
@@ -89,6 +90,7 @@ namespace OryxBot.Client.Linux.Bot.Services
                 }
 
                 Game.LocalCharacter.Instance.Position = new Position(value.Position[0], value.Position[1]);
+                //Console.WriteLine("Character moved: "+Game.LocalCharacter.Instance.Position.X+","+Game.LocalCharacter.Instance.Position.Y);
                 return Task.CompletedTask;
             }
         }

@@ -99,15 +99,15 @@ namespace OryxBot.Client.Linux
             var botManager = _kernel.Services.GetService<BotManager>();
             botManager.Stop();
             
-            Anydesk.CloseAnydesk();
+            Vnc.CloseVnc();
             var api = _kernel.Services.GetService<ApiClient>();
             _ = api.NotifyServerStatus();
         }
         
         public static void RunProgram() {
             var botManager = _kernel.Services.GetService<BotManager>();
-            Anydesk.CloseAnydesk();
-            var success = Anydesk.StartAnydesk();
+            Vnc.CloseVnc();
+            var success = Vnc.StartVnc();
             if (!success) {
                 var api = _kernel.Services.GetService<ApiClient>();
                 _ = api.NotifyServerStatus();
@@ -116,8 +116,8 @@ namespace OryxBot.Client.Linux
             
             ResponsivePoint.CurrentResolution = (1024, 768);
             ResponsivePoint.CurrentResolution = (
-                (int) (Anydesk.Dimensions!.Value.x * (Anydesk.ScalingPercent!.Value / 100d)),
-                (int) (Anydesk.Dimensions!.Value.y * (Anydesk.ScalingPercent!.Value / 100d))
+                (int) (Vnc.Dimensions!.Value.x * (Vnc.ScalingPercent!.Value / 100d)),
+                (int) (Vnc.Dimensions!.Value.y * (Vnc.ScalingPercent!.Value / 100d))
             );
             Console.WriteLine("Resolution: "+ResponsivePoint.CurrentResolution);
             

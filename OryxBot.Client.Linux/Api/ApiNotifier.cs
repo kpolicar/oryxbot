@@ -40,7 +40,7 @@ namespace Inkybot.Api
             bot.Started += OnBotRunningChanged;
             bot.Stopped += OnBotRunningChanged;
             LocalCharacter.Instance.Move += OnCharacterLocationChanged;
-            Anydesk.ConnectionEstablished += OnRemoteDesktopConnectionEstablished;
+            Vnc.ConnectionEstablished += OnRemoteDesktopConnectionEstablished;
         }
 
         public void OnBotRunningChanged(object? sender, BotEventArgs e) {

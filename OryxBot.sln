@@ -6,6 +6,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OryxBot.Shared", "OryxBot.S
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OryxBot.Albion", "OryxBot.Albion\OryxBot.Albion.csproj", "{FE31CA59-6FA9-4FC7-A263-693A03CF72C8}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ReadJava", "ReadJava\ReadJava.csproj", "{EF2E3EF6-9ACB-433C-818C-545AE657E0A6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -24,5 +26,9 @@ Global
 		{FE31CA59-6FA9-4FC7-A263-693A03CF72C8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FE31CA59-6FA9-4FC7-A263-693A03CF72C8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FE31CA59-6FA9-4FC7-A263-693A03CF72C8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EF2E3EF6-9ACB-433C-818C-545AE657E0A6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EF2E3EF6-9ACB-433C-818C-545AE657E0A6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EF2E3EF6-9ACB-433C-818C-545AE657E0A6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EF2E3EF6-9ACB-433C-818C-545AE657E0A6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

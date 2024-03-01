@@ -2,7 +2,6 @@
 {
     public enum OperationCodes : short
     {
-        Unknown,
         Unused,
         Ping,
         Join,

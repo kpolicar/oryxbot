@@ -5,12 +5,12 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="Albion.Network" Version="5.0.0" />
-      <PackageReference Include="SharpPcap" Version="6.0.0" />
+        <PackageReference Include="Albion.Network" Version="5.0.1"/>
+        <PackageReference Include="SharpPcap" Version="6.0.0"/>
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\OryxBot.Shared\OryxBot.Shared.csproj" />
+        <ProjectReference Include="..\OryxBot.Shared\OryxBot.Shared.csproj"/>
     </ItemGroup>
 
 </Project>
