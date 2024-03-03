@@ -3,7 +3,7 @@ using System.Net.Http;
 
 namespace OryxBot.Client.Linux.Native
 {
-    public static class XDoTool
+    public static class InputCommands
     {
         private static int mouseX = 0;
         private static int mouseY = 0;

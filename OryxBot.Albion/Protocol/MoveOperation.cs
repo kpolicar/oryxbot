@@ -9,10 +9,12 @@ namespace OryxBot.Albion.Protocol
     {
         public MoveOperation(Dictionary<byte, object> parameters) : base(parameters)
         {
+            //Time = (int) parameters[0];
             Position = (float[]) parameters[1];
             // Direction = (float)parameters[2];
             // NewPosition = (float[])parameters[3];
             // Speed = (float)parameters[4];
+            Console.WriteLine("Moved operation!"+Position[0]+", "+Position[1]);
         }
 
         // public int Time { get; }

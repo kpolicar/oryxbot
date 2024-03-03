@@ -20,19 +20,16 @@ namespace OryxBot.Client.Linux.Api
     public class ApiCommandReceiver : HasDependencies, IDisposable
     {
         private ApiClient api;
-        private BotManager botManager;
         private AuthManager auth;
         private bool connectedToSocketServer;
         private Pusher pusher;
-        
         private BotManager bot;
         private TradeMissionRouteManager routeManager;
 
         public void BindDependencies(ServiceContainer serviceContainer) {
-            botManager = serviceContainer.GetService<BotManager>();
+            bot = serviceContainer.GetService<BotManager>();
             api = serviceContainer.GetService<ApiClient>();
             auth = serviceContainer.GetService<AuthManager>();
-            bot = serviceContainer.GetService<BotManager>();
             routeManager = serviceContainer.GetService<TradeMissionRouteManager>();
             api.UserFetched += OnUserFetched;
         }
@@ -51,6 +48,7 @@ namespace OryxBot.Client.Linux.Api
                 Authorizer = new HttpAuthorizer(Server.BroadcastingAuthUrl) {
                     AuthenticationHeader = api.Connection!.AuthenticationHeader,
                 },
+                // TraceLogger = new PusherDebugTracer()
             });
             
             pusher.Connected += _ => Console.WriteLine("Connected to pusher.");
@@ -99,7 +97,7 @@ namespace OryxBot.Client.Linux.Api
             });
 
         private void OnRequestStatus(PusherEvent eventData) {
-            Console.WriteLine($"Message for status");
+            Console.WriteLine($"Message for status2");
             _ = api.NotifyServerStatus();
         }
 
@@ -118,19 +116,27 @@ namespace OryxBot.Client.Linux.Api
         }
 
         public void OnRequestBotRunningChanged(PusherEvent eventData) {
-            var data = JsonConvert.DeserializeObject<RequestBotRunningChanged>(eventData.Data)!;
-            Console.WriteLine($"Message from '{data.InstanceId}': {data.Running}");
+            try {
+                Console.WriteLine(eventData.Data);
+                var data = JsonConvert.DeserializeObject<RequestBotRunningChanged>(eventData.Data)!;
+                Console.WriteLine($"Message from '{data.InstanceId}': {data.Running}");
 
-            if (data.City != null) {
-                routeManager.SetDefaultRouteCity(Cities.City(data.City));
-            }
-            if (data.Hearts != null) {
-                bot.SetRunConfiguration(new RunConfiguration((RunConfiguration.ContractType) data.Hearts));
-            }
-            if (data.Running) {
-                Program.RunProgram();
-            } else {
-                Program.StopProgram();
+                if (data.City != null) {
+                    routeManager.SetDefaultRouteCity(Cities.City(data.City));
+                }
+
+                if (data.Hearts != null) {
+                    bot.SetRunConfiguration(new RunConfiguration((RunConfiguration.ContractType)data.Hearts));
+                }
+
+                if (data.Running) {
+                    Program.RunProgram();
+                } else {
+                    Program.StopProgram();
+                }
+            } catch (Exception e) {
+                Console.WriteLine(e);
+                Console.WriteLine(e.StackTrace);
             }
         }
         

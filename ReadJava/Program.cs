@@ -16,8 +16,8 @@ internal class Program
     public static void SendCommand() {
         var key = Console.ReadLine().FirstOrDefault();
         //var response = new HttpClient().GetAsync($"http://localhost:8010/keyevent?key={key}").Result;
-        var response1 = new HttpClient().GetAsync($"http://localhost:8010/mouse/move?x=1000&y=1000").Result;
-        var response2 = new HttpClient().GetAsync($"http://localhost:8010/mouse/click?x=1000&y=1000&mouse=right").Result;
+        var response1 = new HttpClient().GetAsync($"http://localhost:8010/mouse/move?x=1000&y=900").Result;
+        var response2 = new HttpClient().GetAsync($"http://localhost:8010/mouse/click?x=1000&y=900&mouse=right").Result;
     }
 
     public void CreateFileWatcher(string path) {

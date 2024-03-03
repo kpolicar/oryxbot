@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Diagnostics;
 using System.Globalization;
 using System.Net.Http;
@@ -138,9 +139,9 @@ namespace OryxBot.Client.Linux.Api
                 .MergeLeft(LocalCharacterPositionData())
                 .MergeLeft(RemoteDesktopStateData())
                 .MergeLeft(BotRunningData());
-            
+
             var encrypted = Aes256CbcEncrypter.Encrypt(data);
-            Connection?.Request()
+            var response = await Connection!.Request()
                 .PostAsync($"{Server.ApiUrl}/data/status", new StringContent(encrypted));
         }
 

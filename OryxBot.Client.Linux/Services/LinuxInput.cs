@@ -37,17 +37,17 @@ namespace OryxBot.Client.Linux.Services
             var newCursorPosition = new Point(targetX, targetY);
 
             cursorTargetPosition = newCursorPosition;
-            XDoTool.SetCursorPos(cursorTargetPosition.X, cursorTargetPosition.Y);
+            InputCommands.SetCursorPos(cursorTargetPosition.X, cursorTargetPosition.Y);
         }
 
         public void Click() {
             moveCursorTask.Wait();
-            XDoTool.LeftButtonClick();
+            InputCommands.LeftButtonClick();
         }
 
         public void Key(char character) {
             if (character == 's')
-                XDoTool.Key("s");
+                InputCommands.Key("s");
         }
 
         public void MoveCursor(ResponsivePoint point) =>
@@ -61,20 +61,20 @@ namespace OryxBot.Client.Linux.Services
                 cursorPosition = new Point(x, y+1);
             cursorTargetPosition = new Point(x, y);
             
-            XDoTool.SetCursorPos(cursorTargetPosition.X, cursorTargetPosition.Y);
+            InputCommands.SetCursorPos(cursorTargetPosition.X, cursorTargetPosition.Y);
         }
 
         public void DragAndDrop(ResponsivePoint point1, ResponsivePoint point2) {
             MoveCursor(point1);
             Thread.Sleep(300);
             
-            XDoTool.LeftButtonDown();
+            InputCommands.LeftButtonDown();
             Thread.Sleep(300);
             
             MoveCursor(point2);
             Thread.Sleep(300);
             
-            XDoTool.LeftButtonUp();
+            InputCommands.LeftButtonUp();
         }
         
         public void Click(Point point) {
@@ -105,7 +105,7 @@ namespace OryxBot.Client.Linux.Services
                     var step = System.Math.Min(1F, sw.ElapsedMilliseconds / (float)MaxTimeToMoveCursor);
                     var stepToTargetPosition = Math.Lerp(cursorPosition, cursorTargetPosition, step);
                     
-                    XDoTool.SetCursorPos(cursorPosition.X, cursorPosition.Y);
+                    InputCommands.SetCursorPos(cursorPosition.X, cursorPosition.Y);
                     cursorPosition = stepToTargetPosition;
 
                     await Task.Delay(5);
@@ -116,10 +116,10 @@ namespace OryxBot.Client.Linux.Services
         }
 
         public void RightMouseDown() =>
-            XDoTool.RightButtonDown();
+            InputCommands.RightButtonDown();
 
         public void RightMouseUp() =>
-            XDoTool.RightButtonUp();
+            InputCommands.RightButtonUp();
 
         public Point ResolveScreenCenter() =>
             new(AlbionInterface.Character.X, AlbionInterface.Character.Y);

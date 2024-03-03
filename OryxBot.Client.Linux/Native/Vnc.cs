@@ -9,36 +9,44 @@ namespace OryxBot.Client.Linux.Native
     {
         public static bool Connected;
         public static (int x, int y)? Dimensions;
-        public static int? ScalingPercent;
+        public static int? ScalingPercent = 100;
+        private static Process? process;
         public static event EventHandler? ConnectionEstablished;
 
 
         public static void CloseVnc() {
             Console.WriteLine("Closing VNC client");
+            process?.Kill();
+            process?.WaitForExit();
 
-            var process = new Process {
+            var process2 = new Process {
                 StartInfo = new ProcessStartInfo {
                     FileName = "bash",
-                    Arguments = "-c \"xdotool search --name tightvnc windowkill %@\"",
+                    Arguments = "-c \"pkill -f /home/oryxbot/libs/jdk1.7.0_51/bin/java\"",
                     UseShellExecute = false
                 }
             };
-            process.Start();
-            process.WaitForExit();
+            process2.Start();
+            process2.WaitForExit();
             Connected = default;
             Dimensions = default;
-            ScalingPercent = default;
+            ScalingPercent = 100;
         }
 
 
         public static bool StartVnc() {
             Console.WriteLine("Starting VNC client");
-            var process = new Process {
+            process = new Process {
                 StartInfo = new ProcessStartInfo {
                     RedirectStandardOutput = true,
-                    FileName = @"java",
+                    FileName = @"/home/oryxbot/libs/jdk1.7.0_51/bin/java",
                     Arguments =
-                        "-jar /home/user/Applications/VncClient.jar",
+                        String.Join(' ', 
+                            "-Dawt.toolkit=ghostawt.GhostToolkit -Djava.awt.graphicsenv=ghostawt.image.GhostGraphicsEnvironment -Djava.awt.headless=false -Dsun.font.fontmanager=ghostawt.sun.GFontManager -Dsun.boot.library.path=/home/oryxbot/libs/jdk1.7.0_51/bin",
+                            "-jar /home/oryxbot/apps/VncClient.jar",
+                            "VncViewer HOST 10.0.0.100 PORT 5901 PASSWORD oryxbot \"\\\"Scaling\" \"factor\\\"\" auto \"\\\"Encoding\\\"\" rAW \"\\\"Show\" \"controls\\\"\" No \"\\\"JPEG\" image \"quality\\\"\" 9 \"\\\"Offer\" \"relogin\\\"\" No \"\\\"Restricted\" \"colors\\\"\" No \"\\\"Compression\" \"level\\\"\" 7"
+                            ),
+                    WorkingDirectory = "/home/oryxbot",
                     UseShellExecute = false
                 }
             };
@@ -46,18 +54,21 @@ namespace OryxBot.Client.Linux.Native
             process.Start();
             process.BeginOutputReadLine();
             process.WaitForExitAsync().ContinueWith(task => { Console.WriteLine(">>>>>>> " + process.ExitCode); });
-
+    
             var waitedFor = 0;
             var maxWaitFor = 15000;
             do {
                 Thread.Sleep(50);
-            } while ((!Connected || Dimensions == null || ScalingPercent == null) &&
+            } while ((!Connected || Dimensions == null) &&
                      waitedFor < maxWaitFor);
 
             if (waitedFor >= maxWaitFor) {
                 Console.WriteLine("Tried to connect to VNC server for " + waitedFor + "ms. Aborting!");
                 return false;
             }
+            
+            // Any more
+            Thread.Sleep(200);
 
             ConnectionEstablished?.Invoke(null, EventArgs.Empty);
             return true;
