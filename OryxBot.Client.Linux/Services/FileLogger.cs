@@ -57,12 +57,14 @@ namespace OryxBot.Client.Linux.Services
         private void BindToLocalCharacter() {
             LocalCharacter.Instance.ChangeCluster += (_, _) =>
                 Common.Info("Changed cluster: " + LocalCharacter.Instance.Cluster);
+            // LocalCharacter.Instance.Move += (_, _) =>
+            //     Common.Debug("Move: " + LocalCharacter.Instance.Position);
+            // LocalCharacter.Instance.MovingChanged += (_, _) =>
+            //     Common.Info("Moving state changed: " + LocalCharacter.Instance.Moving);
             LocalCharacter.Instance.Move += (_, _) =>
-                Common.Debug("Move: " + LocalCharacter.Instance.Position);
-            LocalCharacter.Instance.Move += (_, _) =>
-                Debug.WriteLine("Move: " + LocalCharacter.Instance.Position);
+                Console.WriteLine("Move: " + LocalCharacter.Instance.Position);
             LocalCharacter.Instance.MovingChanged += (_, _) =>
-                Common.Info("Moving state changed: " + LocalCharacter.Instance.Moving);
+                Console.WriteLine("Moving state changed: " + LocalCharacter.Instance.Moving);
             LocalCharacter.Instance.Interaction += (_, _) =>
                 Common.Info("Interaction state changed: " + LocalCharacter.Instance.Interacting);
             LocalCharacter.Instance.Died += (_, _) =>

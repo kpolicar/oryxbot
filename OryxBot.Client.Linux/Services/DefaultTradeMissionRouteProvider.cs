@@ -130,7 +130,7 @@ namespace OryxBot.Client.Linux.Services
                 if (step == TradeMissionRecord.MoveStep.SerializedName) {
                     
                     var move = new MoveEventArgs(
-                        float.Parse(fields[1], CultureInfo.InvariantCulture.NumberFormat), 
+                        float.Parse(fields[1], CultureInfo.InvariantCulture.NumberFormat),       
                         float.Parse(fields[2], CultureInfo.InvariantCulture.NumberFormat));
                     steps.AddLast(TradeMissionRecord.MoveStep.From(move));
                 } else if (step == TradeMissionRecord.ChangeClusterStep.SerializedName) {

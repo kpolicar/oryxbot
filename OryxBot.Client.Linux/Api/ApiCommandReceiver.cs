@@ -43,7 +43,6 @@ namespace OryxBot.Client.Linux.Api
                 EnforceConnectedToSocketServer().Wait();
                 try {
                     await channel.TriggerAsync(@"client-LogEntry", e).ConfigureAwait(false);
-                    Console.WriteLine("Sent message log Entry!");
                 } catch (Exception ex) {
                     LogForwardedFailed?.Invoke(this, e);
                     Console.WriteLine("Failed to forward log "+e);

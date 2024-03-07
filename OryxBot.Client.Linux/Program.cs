@@ -2,7 +2,9 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Net.Http.Headers;
+using System.Net.Sockets;
 using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Threading;
@@ -40,8 +42,7 @@ namespace OryxBot.Client.Linux
         public const string GrantSecret = "***REMOVED***";
         public const string _appKey = "***REMOVED***";
         public const string PusherAppKey = "***REMOVED***";
-        // public const string WebsocketHost = "10.0.0.100:6001";
-        public const string WebsocketHost = "127.0.0.1:6001";
+        public const string WebsocketHost = "oryxbot.test:6001";
         public const bool WebsocketEncrypted = false;
         
         #else
@@ -78,6 +79,7 @@ namespace OryxBot.Client.Linux
              var api = _kernel.Services.GetService<ApiClient>();
              var notifier = _kernel.Services.GetService<ApiNotifier>();
              
+             (new DiscoverabilityService()).Init();
              WebSocketLogForwarder.Init();
              Console.WriteLine("connecting to server...");
             
