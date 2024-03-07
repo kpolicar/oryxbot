@@ -1,6 +1,7 @@
 using System;
 using System.Diagnostics;
 using OryxBot.Client.Linux.Bot.Contracts;
+using OryxBot.Client.Linux.Services;
 using OryxBot.Shared;
 using OryxBot.Shared.Contracts;
 using OryxBot.Shared.Design;
@@ -54,7 +55,7 @@ namespace OryxBot.Client.Linux.Bot
                     typeof(TradeMissionRun), 
                     () => new TradeMissionRun(route, RunConfig));
                 
-                Console.WriteLine("Running trade mission: "+(Cities.Name((City)route.Origin!.Value)));
+                FileLogger.Common.Info($"Beginning trade mission for city: "+Cities.Name((City)route.Origin!.Value));
             }
             
             if (!Bot!.Running)

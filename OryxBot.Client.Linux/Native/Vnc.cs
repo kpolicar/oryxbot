@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.Text.RegularExpressions;
 using System.Threading;
+using OryxBot.Client.Linux.Services;
 
 namespace OryxBot.Client.Linux.Native
 {
@@ -15,7 +16,8 @@ namespace OryxBot.Client.Linux.Native
 
 
         public static void CloseVnc() {
-            Console.WriteLine("Closing VNC client");
+            if (process != null)
+                FileLogger.Common.Info($"Closing the VNC client");
             process?.Kill();
             process?.WaitForExit();
 
@@ -35,7 +37,7 @@ namespace OryxBot.Client.Linux.Native
 
 
         public static bool StartVnc() {
-            Console.WriteLine("Starting VNC client");
+            FileLogger.Common.Info($"Starting the VNC client");
             process = new Process {
                 StartInfo = new ProcessStartInfo {
                     RedirectStandardOutput = true,
@@ -57,13 +59,14 @@ namespace OryxBot.Client.Linux.Native
     
             var waitedFor = 0;
             var maxWaitFor = 15000;
+            FileLogger.Common.Info($"Establishing connection to the customer VNC server");
             do {
                 Thread.Sleep(50);
             } while ((!Connected || Dimensions == null) &&
                      waitedFor < maxWaitFor);
 
             if (waitedFor >= maxWaitFor) {
-                Console.WriteLine("Tried to connect to VNC server for " + waitedFor + "ms. Aborting!");
+                FileLogger.Common.Info($"The VNC client was attempting to connect to the VNC server for {waitedFor}ms. Aborting!");
                 return false;
             }
             
@@ -77,13 +80,13 @@ namespace OryxBot.Client.Linux.Native
         private static void OnVncOutputDataReceived(object sender, DataReceivedEventArgs e) {
             if (e.Data == "VNC authentication: success") {
                 Connected = true;
-                Console.WriteLine("Connected: " + Connected);
+                FileLogger.Common.Info($"Connection to the customer VNC server has been established");
             }
 
             if (e.Data?.StartsWith("Desktop size is ") ?? false) {
                 var regex = Regex.Match(e.Data, @"(\d+) ?x ?(\d+)", RegexOptions.Singleline | RegexOptions.IgnoreCase);
                 Dimensions = (int.Parse(regex.Groups[1].Value), int.Parse(regex.Groups[2].Value));
-                Console.WriteLine("Dimensions: " + Dimensions);
+                FileLogger.Common.Info($"VNC server is using the dimensions"+Dimensions);
             }
 
             if (e.Data?.StartsWith("Scaling desktop at ") ?? false) {

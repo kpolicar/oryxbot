@@ -3,10 +3,13 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net.Http.Headers;
+using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Threading;
 using Inkybot.Api;
 using Newtonsoft.Json;
+using NLog;
+using NLog.Targets;
 using OryxBot.Client.Linux.Api;
 using OryxBot.Client.Linux.Bot;
 using OryxBot.Client.Linux.Bot.Contracts;
@@ -15,6 +18,7 @@ using OryxBot.Client.Linux.Broadcasting;
 using OryxBot.Client.Linux.Contracts;
 using OryxBot.Client.Linux.Domain;
 using OryxBot.Client.Linux.Native;
+using OryxBot.Client.Linux.Services;
 using OryxBot.Shared;
 using OryxBot.Shared.Contracts;
 using OryxBot.Shared.Design;
@@ -22,6 +26,7 @@ using OryxBot.Shared.Events;
 using OryxBot.Shared.Game;
 using PusherClient;
 using BotManager = OryxBot.Shared.Contracts.BotManager;
+using Logger = OryxBot.Shared.Contracts.Logger;
 using ServiceContainer = OryxBot.Shared.Design.ServiceContainer;
 
 namespace OryxBot.Client.Linux
@@ -35,8 +40,8 @@ namespace OryxBot.Client.Linux
         public const string GrantSecret = "***REMOVED***";
         public const string _appKey = "***REMOVED***";
         public const string PusherAppKey = "***REMOVED***";
-        public const string WebsocketHost = "10.0.0.100:6001";
-        // public const string WebsocketHost = "127.0.0.1:6001";
+        // public const string WebsocketHost = "10.0.0.100:6001";
+        public const string WebsocketHost = "127.0.0.1:6001";
         public const bool WebsocketEncrypted = false;
         
         #else
@@ -72,15 +77,18 @@ namespace OryxBot.Client.Linux
              var auth = _kernel.Services.GetService<AuthManager>();
              var api = _kernel.Services.GetService<ApiClient>();
              var notifier = _kernel.Services.GetService<ApiNotifier>();
-            
+             
+             WebSocketLogForwarder.Init();
              Console.WriteLine("connecting to server...");
             
              // auth.LoginWithToken(
              //     File.ReadAllText("/etc/oryxbot.apikey").Replace("\n", ""));
             
              _ = auth.Login("admin@oryxbot.com", "***REMOVED***").Result;
-            
+             FileLogger.Common.Info($"Successfully authenticated user admin@oryxbot.com with the Oryxbot API");
+             
              _ = api.User().Result;
+             
              _ = api.NotifyServerStatus();
             
             

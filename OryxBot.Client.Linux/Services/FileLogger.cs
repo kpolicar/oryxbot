@@ -2,6 +2,7 @@ using System;
 using System.Diagnostics;
 using NLog;
 using OryxBot.Albion.Protocol;
+using OryxBot.Client.Linux.Api;
 using OryxBot.Client.Linux.Bot;
 using OryxBot.Client.Linux.Bot.Game;
 using OryxBot.Client.Linux.Bot.Services;
@@ -13,17 +14,26 @@ using NLogger = NLog.Logger;
 
 namespace OryxBot.Client.Linux.Services
 {
-    public class FileLogger : LoggerContract
+    public class FileLogger : LoggerContract, HasDependencies
     {
-        private static readonly NLogger Common = LogManager.GetLogger("log");
+        public static readonly NLogger Common = LogManager.GetLogger("log");
 
+        public void OnDebug() {
+        }
+
+        public void BindDependencies(ServiceContainer serviceContainer) {
+            BindToServices(serviceContainer);
+        }
+        
         public void BindToServices(ServiceContainer services) {
             var bot = services.GetService<BotManager>();
             var dataProvider = (NetworkAlbionDataProvider)services.GetService<AlbionDataProvider>();
+            var api = (ApiClient)services.GetService<ApiClient>();
 
             BindToDataProvider(dataProvider);
             BindToBot(bot);
             BindToLocalCharacter();
+            BindToApi(api);
             ResponsivePoint.ResolutionChanged += OnResolutionChanged;
         }
 
@@ -91,6 +101,11 @@ namespace OryxBot.Client.Linux.Services
                 _ => "Unknown step"
             };
         }
+        
+        private void BindToApi(ApiClient api) {
+            api.UserFetched += (sender, args) => Common.Info("Successfully fetched user "+args.user.email+" from API");
+        }
+        
 #if DEBUG
         private static readonly NLogger NetworkEvent = LogManager.GetLogger("networkevent");
         private static readonly NLogger NetworkRequest = LogManager.GetLogger("networkrequest");

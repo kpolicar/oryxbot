@@ -19,12 +19,14 @@ namespace OryxBot.Client.Linux.Api
 {
     public class ApiCommandReceiver : HasDependencies, IDisposable
     {
+        public event EventHandler<LogEntry>? LogForwardedFailed;
         private ApiClient api;
         private AuthManager auth;
         private bool connectedToSocketServer;
         private Pusher pusher;
         private BotManager bot;
         private TradeMissionRouteManager routeManager;
+        private Channel channel;
 
         public void BindDependencies(ServiceContainer serviceContainer) {
             bot = serviceContainer.GetService<BotManager>();
@@ -32,12 +34,27 @@ namespace OryxBot.Client.Linux.Api
             auth = serviceContainer.GetService<AuthManager>();
             routeManager = serviceContainer.GetService<TradeMissionRouteManager>();
             api.UserFetched += OnUserFetched;
+            WebSocketLogForwarder.Instance.ReceivedLog += OnReceivedLog;
         }
+
+        private void OnReceivedLog(object? sender, LogEntry e) =>
+            Task.Run(async () => {
+                await Task.Delay(2000);
+                EnforceConnectedToSocketServer().Wait();
+                try {
+                    await channel.TriggerAsync(@"client-LogEntry", e).ConfigureAwait(false);
+                    Console.WriteLine("Sent message log Entry!");
+                } catch (Exception ex) {
+                    LogForwardedFailed?.Invoke(this, e);
+                    Console.WriteLine("Failed to forward log "+e);
+                    Console.WriteLine(ex);
+                }
+            }).ConfigureAwait(false);
 
         private void OnUserFetched(object? sender, FetchedUserEventArgs e) =>
             EnforceConnectedToSocketServer();
 
-        private void EnforceConnectedToSocketServer() {
+        private async Task EnforceConnectedToSocketServer() {
             if (api.Connection == null || connectedToSocketServer)
                 return;
 
@@ -62,7 +79,7 @@ namespace OryxBot.Client.Linux.Api
 
             Console.WriteLine($"User: {auth.User?.id}\t{auth.User?.email}");
             
-            pusher.SubscribeAsync("private-App.Models.User." + auth.User!.id);
+            channel = await pusher.SubscribeAsync("private-App.Models.User." + auth.User!.id);
             pusher.Bind(@"App\Events\RequestBotRunningChanged", OnRequestBotRunningChanged);
             pusher.Bind(@"App\Events\RequestBotRecordStart", OnRequestBotRecordStart);
             pusher.Bind(@"App\Events\RequestBotResume", OnRequestBotResume);
@@ -102,6 +119,8 @@ namespace OryxBot.Client.Linux.Api
         }
 
         public void OnRequestBotResume(PusherEvent eventData) {
+            FileLogger.Common.Info($"Received command to resume Oryxbot");
+            
             var data = JsonConvert.DeserializeObject<RequestBotResume>(eventData.Data)!;
             Console.WriteLine($"Message from '{data.InstanceId}': city: {data.City}, region: {data.Alias}, progressed: {data.Progressed}");
             
@@ -130,8 +149,10 @@ namespace OryxBot.Client.Linux.Api
                 }
 
                 if (data.Running) {
+                    FileLogger.Common.Info($"Received command to start Oryxbot");
                     Program.RunProgram();
                 } else {
+                    FileLogger.Common.Info($"Received command to stop Oryxbot");
                     Program.StopProgram();
                 }
             } catch (Exception e) {
