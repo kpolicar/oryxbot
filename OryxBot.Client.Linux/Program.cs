@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Net.Sockets;
 using System.Reflection;
@@ -84,12 +85,29 @@ namespace OryxBot.Client.Linux
              Console.WriteLine("connecting to server...");
             
              // auth.LoginWithToken(
-             //     File.ReadAllText("/etc/oryxbot.apikey").Replace("\n", ""));
-            
-             _ = auth.Login("admin@oryxbot.com", "***REMOVED***").Result;
-             FileLogger.Common.Info($"Successfully authenticated user admin@oryxbot.com with the Oryxbot API");
-             
-             _ = api.User().Result;
+             //    File.ReadAllText("/etc/oryxbot.apikey").Replace("\n", ""));
+             auth.LoginWithToken("x***REMOVED***");
+
+             Console.WriteLine($"waiting to press enter");
+             FileLogger.Common.Error($"waiting to press enter from log");
+             NLog.LogManager.GetCurrentClassLogger().Error("opsie");
+             Console.In.ReadLine();
+
+             User? user = null;
+             try {
+                 user = api.User().Result;
+                 FileLogger.Common.Info($"Successfully authenticated user {user.email} with the Oryxbot API");
+             } catch (AggregateException exception) {
+                 exception.InnerExceptions.ToList().ForEach(ex => {
+                     if (ex is HttpRequestException httpException && httpException.StatusCode == HttpStatusCode.Forbidden) {
+                         FileLogger.Common.Error($"Error occured trying to authorize client with Oryxbot API");
+                     }
+                 });
+             }
+             if (user == null) {
+                 _kernel.Dispose();
+                 return;
+             }
              
              _ = api.NotifyServerStatus();
             

@@ -68,6 +68,7 @@ namespace OryxBot.Client.Linux
 
             public void Dispose() {
                 Services.Dispose();
+                NLog.LogManager.Shutdown();
             }
         }
     }

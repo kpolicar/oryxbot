@@ -13,7 +13,7 @@ public class DiscoverabilityService
     public void Init()
     {
         _listener = new HttpListener();
-        _listener.Prefixes.Add("http://127.0.0.1:" + Port.ToString() + "/");
+        _listener.Prefixes.Add("http://*:" + Port.ToString() + "/");
         _listener.Start();
         Receive();
     }

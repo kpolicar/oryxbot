@@ -24,7 +24,7 @@ namespace OryxBot.Client.Linux.Native
             var process2 = new Process {
                 StartInfo = new ProcessStartInfo {
                     FileName = "bash",
-                    Arguments = "-c \"pkill -f /home/oryxbot/libs/jdk1.7.0_51/bin/java\"",
+                    Arguments = "-c \"pkill -f /etc/java-se-7u75-ri/bin/java\"",
                     UseShellExecute = false
                 }
             };
@@ -41,7 +41,7 @@ namespace OryxBot.Client.Linux.Native
             process = new Process {
                 StartInfo = new ProcessStartInfo {
                     RedirectStandardOutput = true,
-                    FileName = @"/home/oryxbot/libs/jdk1.7.0_51/bin/java",
+                    FileName = @"/etc/java-se-7u75-ri/bin/java",
                     Arguments =
                         String.Join(' ', 
                             "-Dawt.toolkit=ghostawt.GhostToolkit -Djava.awt.graphicsenv=ghostawt.image.GhostGraphicsEnvironment -Djava.awt.headless=false -Dsun.font.fontmanager=ghostawt.sun.GFontManager -Dsun.boot.library.path=/home/oryxbot/libs/jdk1.7.0_51/bin",

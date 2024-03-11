@@ -23,7 +23,7 @@ namespace OryxBot.Client.Linux.Api
         private ApiClient api;
         private AuthManager auth;
         private bool connectedToSocketServer;
-        private Pusher pusher;
+        private Pusher? pusher;
         private BotManager bot;
         private TradeMissionRouteManager routeManager;
         private Channel channel;
@@ -39,8 +39,12 @@ namespace OryxBot.Client.Linux.Api
 
         private void OnReceivedLog(object? sender, LogEntry e) =>
             Task.Run(async () => {
-                await Task.Delay(2000);
-                EnforceConnectedToSocketServer().Wait();
+                await EnforceConnectedToSocketServer();
+                
+                var attempts = 0;
+                while (attempts++ < 5 && !channel.IsSubscribed) {
+                    await Task.Delay(2000);
+                }
                 try {
                     await channel.TriggerAsync(@"client-LogEntry", e).ConfigureAwait(false);
                 } catch (Exception ex) {
@@ -173,7 +177,7 @@ namespace OryxBot.Client.Linux.Api
         }
 
         public void Dispose() {
-            pusher.DisconnectAsync();
+            pusher?.DisconnectAsync();
         }
     }
 }

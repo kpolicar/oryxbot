@@ -67,13 +67,14 @@
     </ItemGroup>
 
     <ItemGroup>
-        <None Update="NLog.config">
-            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-        </None>
+        <Folder Include="Properties" />
     </ItemGroup>
 
     <ItemGroup>
-        <Folder Include="Properties"/>
+      <None Remove="NLog.config" />
+      <Content Include="NLog.config">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Content>
     </ItemGroup>
 
     <Target Name="BeforeBuild">

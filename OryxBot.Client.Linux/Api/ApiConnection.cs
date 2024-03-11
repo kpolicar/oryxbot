@@ -41,6 +41,7 @@ namespace OryxBot.Client.Linux.Api
         public HttpClient Request() {
             var client = new HttpClient();
             client.DefaultRequestHeaders.Authorization = AuthenticationHeader;
+            client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
             client.BaseAddress = new Uri(Server.BaseUrl);
             return client;
         }
