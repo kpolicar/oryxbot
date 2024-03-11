@@ -75,7 +75,6 @@ namespace OryxBot.Client.Linux
              InstanceIdentifier = "instance-" + new string(Enumerable.Repeat(chars, 16)
                  .Select(s => s[random.Next(s.Length)]).ToArray());
             
-            
              var auth = _kernel.Services.GetService<AuthManager>();
              var api = _kernel.Services.GetService<ApiClient>();
              var notifier = _kernel.Services.GetService<ApiNotifier>();
@@ -88,19 +87,15 @@ namespace OryxBot.Client.Linux
              //    File.ReadAllText("/etc/oryxbot.apikey").Replace("\n", ""));
              auth.LoginWithToken("x***REMOVED***");
 
-             Console.WriteLine($"waiting to press enter");
-             FileLogger.Common.Error($"waiting to press enter from log");
-             NLog.LogManager.GetCurrentClassLogger().Error("opsie");
-             Console.In.ReadLine();
-
              User? user = null;
              try {
                  user = api.User().Result;
                  FileLogger.Common.Info($"Successfully authenticated user {user.email} with the Oryxbot API");
              } catch (AggregateException exception) {
                  exception.InnerExceptions.ToList().ForEach(ex => {
-                     if (ex is HttpRequestException httpException && httpException.StatusCode == HttpStatusCode.Forbidden) {
-                         FileLogger.Common.Error($"Error occured trying to authorize client with Oryxbot API");
+                     if (ex is HttpRequestException httpException
+                         && httpException.StatusCode == HttpStatusCode.Unauthorized) {
+                         FileLogger.Common.Error($"Error occured trying to authenticate client with Oryxbot API");
                      }
                  });
              }

@@ -67,6 +67,7 @@ namespace OryxBot.Client.Linux
             }
 
             public void Dispose() {
+                FileLogger.Common.Info($"Program is shutting down...");
                 Services.Dispose();
                 NLog.LogManager.Shutdown();
             }

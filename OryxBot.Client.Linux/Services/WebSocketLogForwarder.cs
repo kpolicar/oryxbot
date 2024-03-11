@@ -30,7 +30,7 @@ namespace OryxBot.Client.Linux.Services
             target.Parameters.Add(new MethodCallParameter("${level}"));
             target.Parameters.Add(new MethodCallParameter("${message}"));
  
-            NLog.Config.LoggingConfiguration config = new NLog.Config.LoggingConfiguration();
+            NLog.Config.LoggingConfiguration config = NLog.LogManager.Configuration;
             config.AddRuleForAllLevels(target);
             NLog.LogManager.Configuration = config;
         }
