@@ -49,51 +49,47 @@ namespace OryxBot.Client.Linux.Api
                     await channel.TriggerAsync(@"client-LogEntry", e).ConfigureAwait(false);
                 } catch (Exception ex) {
                     LogForwardedFailed?.Invoke(this, e);
-                    Console.WriteLine("Failed to forward log "+e);
-                    Console.WriteLine(ex);
+                    FileLogger.Common.Warn($"Failed to forward log to websocket server");
                 }
             }).ConfigureAwait(false);
 
         private void OnUserFetched(object? sender, FetchedUserEventArgs e) =>
-            EnforceConnectedToSocketServer();
+            Task.Run(EnforceConnectedToSocketServer).ConfigureAwait(false);
 
         private async Task EnforceConnectedToSocketServer() {
             if (api.Connection == null || connectedToSocketServer)
                 return;
 
-            Console.WriteLine("Preparing connection");
+            FileLogger.Common.Info($"Establishing connection to websocket server at {Server.WebsocketHost}");
             pusher = new Pusher(Server.PusherAppKey, new PusherOptions() {
                 Host = Server.WebsocketHost,
                 Encrypted = Server.WebsocketEncrypted,
                 Authorizer = new HttpAuthorizer(Server.BroadcastingAuthUrl) {
                     AuthenticationHeader = api.Connection!.AuthenticationHeader,
                 },
-                // TraceLogger = new PusherDebugTracer()
             });
             
-            pusher.Connected += _ => Console.WriteLine("Connected to pusher.");
-            pusher.Disconnected += _ => Console.WriteLine("Disconnected to pusher.");
-            pusher.Subscribed += (_, channel) => Console.WriteLine("Subscribed to "+channel.Name);
             pusher.Error += (_, exception) => {
-                Console.WriteLine("Error: " + exception.Message);
-                Console.WriteLine("Error code: " + exception.PusherCode);
-                Console.WriteLine("Error state: " + pusher.State);
+                FileLogger.Common.Info($"Error occured with websocket connection: "+exception.Message);
+            };
+            pusher.ConnectionStateChanged += (_, state) => {
+                FileLogger.Common.Info($"Connection to websocket server changed: " + state switch {
+                    ConnectionState.Uninitialized => "Uninitialized",
+                    ConnectionState.Connecting => "Connecting",
+                    ConnectionState.Connected => "Connected",
+                    ConnectionState.Disconnecting => "Disconnecting",
+                    ConnectionState.Disconnected => "Disconnected",
+                    ConnectionState.WaitingToReconnect => "Waiting to Reconnect",
+                    _ => "?"
+                });
             };
 
-            Console.WriteLine($"User: {auth.User?.id}\t{auth.User?.email}");
-            
             channel = await pusher.SubscribeAsync("private-App.Models.User." + auth.User!.id);
             pusher.Bind(@"App\Events\RequestBotRunningChanged", OnRequestBotRunningChanged);
             pusher.Bind(@"App\Events\RequestBotRecordStart", OnRequestBotRecordStart);
             pusher.Bind(@"App\Events\RequestBotResume", OnRequestBotResume);
             pusher.Bind(@"App\Events\RequestStatus", OnRequestStatus);
             
-            Console.WriteLine("Connected to socket server: "+pusher.State);
-            Console.WriteLine(Server.WebsocketHost);
-            Console.WriteLine(Server.WebsocketEncrypted);
-            Console.WriteLine(Server.BroadcastingAuthUrl);
-            Console.WriteLine(Server.PusherAppKey);
-
             KeepConnectingToPusherUntilConnected();
             
             connectedToSocketServer = true;
@@ -117,7 +113,6 @@ namespace OryxBot.Client.Linux.Api
             });
 
         private void OnRequestStatus(PusherEvent eventData) {
-            Console.WriteLine($"Message for status2");
             _ = api.NotifyServerStatus();
         }
 
@@ -125,7 +120,7 @@ namespace OryxBot.Client.Linux.Api
             FileLogger.Common.Info($"Received command to resume Oryxbot");
             
             var data = JsonConvert.DeserializeObject<RequestBotResume>(eventData.Data)!;
-            Console.WriteLine($"Message from '{data.InstanceId}': city: {data.City}, region: {data.Alias}, progressed: {data.Progressed}");
+            FileLogger.Common.Info($"Bot requested to resume with configuration: city: {data.City}, region: {data.Alias}, progressed: {data.Progressed}");
             
             routeManager.SetDefaultRouteCity(Cities.City(data.City));
             bot.SetRunConfiguration(new RunConfiguration(
@@ -139,9 +134,12 @@ namespace OryxBot.Client.Linux.Api
 
         public void OnRequestBotRunningChanged(PusherEvent eventData) {
             try {
-                Console.WriteLine(eventData.Data);
                 var data = JsonConvert.DeserializeObject<RequestBotRunningChanged>(eventData.Data)!;
-                Console.WriteLine($"Message from '{data.InstanceId}': {data.Running}");
+                if (data.Running) {
+                    FileLogger.Common.Info($"Bot requested to begin trade mission with configuration: city: {data.City}, hearts: {data.Hearts}");
+                } else {
+                    FileLogger.Common.Info($"Bot requested to stop trade mission run");
+                }
 
                 if (data.City != null) {
                     routeManager.SetDefaultRouteCity(Cities.City(data.City));
@@ -152,21 +150,19 @@ namespace OryxBot.Client.Linux.Api
                 }
 
                 if (data.Running) {
-                    FileLogger.Common.Info($"Received command to start Oryxbot");
                     Program.RunProgram();
                 } else {
-                    FileLogger.Common.Info($"Received command to stop Oryxbot");
                     Program.StopProgram();
                 }
             } catch (Exception e) {
+                FileLogger.Common.Error($"Failed to process request for change bot running state");
                 Console.WriteLine(e);
-                Console.WriteLine(e.StackTrace);
             }
         }
         
         private void OnRequestBotRecordStart(PusherEvent eventData) {
             var data = JsonConvert.DeserializeObject<RequestRecordStart>(eventData.Data)!;
-            Console.WriteLine($"Message from '{data.InstanceId}': city: {data.City}, destination: {data.Destination}, name: {data.Name}");
+            FileLogger.Common.Info($"Bot requested to begin recording trade mission route with configuration: city: {data.City}, destination: {data.Destination}");
 
             bot.SetRecordingConfiguration(new RecordingConfiguration(
                 Cities.City(data.City),

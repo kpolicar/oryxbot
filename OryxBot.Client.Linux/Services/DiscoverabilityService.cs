@@ -29,7 +29,7 @@ public class DiscoverabilityService
             var request = context.Request;
 
             // do something with the request
-            Console.WriteLine($"{request.Url}");
+            FileLogger.Common.Info($"Discoverability server has received a request for {request.Url}");
 
             Receive();
             

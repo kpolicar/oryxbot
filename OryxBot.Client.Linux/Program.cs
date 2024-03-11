@@ -81,7 +81,6 @@ namespace OryxBot.Client.Linux
              
              (new DiscoverabilityService()).Init();
              WebSocketLogForwarder.Init();
-             Console.WriteLine("connecting to server...");
             
              // auth.LoginWithToken(
              //    File.ReadAllText("/etc/oryxbot.apikey").Replace("\n", ""));
@@ -145,7 +144,7 @@ namespace OryxBot.Client.Linux
                 (int) (Vnc.Dimensions!.Value.x * (Vnc.ScalingPercent!.Value / 100d)),
                 (int) (Vnc.Dimensions!.Value.y * (Vnc.ScalingPercent!.Value / 100d))
             );
-            Console.WriteLine("Resolution: "+ResponsivePoint.CurrentResolution);
+            FileLogger.Common.Info($"The screen resolution has been detected as: "+ResponsivePoint.CurrentResolution);
             
             var dataProvider = _kernel.Services.GetService<AlbionDataProvider>() as NetworkAlbionDataProvider;
             dataProvider!.Stop();
@@ -162,7 +161,6 @@ namespace OryxBot.Client.Linux
             dataProvider!.Stop();
             dataProvider!.Run();
             
-            Console.WriteLine("Started recording");
             botManager.ToggleTradeMissionRecord();
         }
         

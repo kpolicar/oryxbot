@@ -48,7 +48,6 @@ namespace OryxBot.Client.Linux.Api
             response.EnsureSuccessStatusCode();
             var result = await GetResultFromEncryptedResponse(response);
 
-            Console.WriteLine("Http response: "+result);
             var user = JsonConvert.DeserializeObject<User>(result);
 
             UserFetched?.Invoke(this, new FetchedUserEventArgs(user));

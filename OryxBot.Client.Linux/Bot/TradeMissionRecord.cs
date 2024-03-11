@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.IO;
 using OryxBot.Client.Linux.Bot.Contracts;
 using OryxBot.Client.Linux.Bot.Game;
+using OryxBot.Client.Linux.Services;
 using OryxBot.Shared.Contracts;
 using OryxBot.Shared.Design;
 using OryxBot.Shared.Events;
@@ -45,7 +46,7 @@ namespace OryxBot.Client.Linux.Bot
         }
 
         private void OnProgressQuest(object? sender, EventArgs e) {
-            Console.WriteLine("Recording: Progressed quest!");
+            FileLogger.Common.Info($"Trade Mission Bot Recording: Quest has been progressed!");
             lock (State) {
                 if (HasStartedQuest) {
                     State.RecordedSteps.AddLast(new ProgressQuestStep());

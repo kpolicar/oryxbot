@@ -144,7 +144,7 @@ namespace OryxBot.Client.Linux.Services
                     stepsBeforeQuest = steps;
                     steps = new Route();
                 } else {
-                    Console.WriteLine("Something went wrong, step is \""+step+"\"");
+                    FileLogger.Common.Error($"Something went wrong parsing route recording, the step is "+step);
                 }
             }
             

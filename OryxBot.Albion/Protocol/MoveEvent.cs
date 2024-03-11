@@ -11,7 +11,6 @@ public class MoveEvent : BaseEvent
 
         Id = parameters[0].ToString();
         Position = new[] { BitConverter.ToSingle(bytes, 9), BitConverter.ToSingle(bytes, 13) };
-        Console.WriteLine("Moved!" + Position[0] + ", " + Position[1]);
     }
 
     public string Id { get; }

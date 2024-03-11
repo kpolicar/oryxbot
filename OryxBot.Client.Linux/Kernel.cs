@@ -49,6 +49,8 @@ namespace OryxBot.Client.Linux
             }
 
             private void BootstrapServices() {
+                FileLogger.Common.Debug($"Kernel has begun bootstrapping services");
+                
                 foreach (var serviceBinding in _services) {
                     var (@abstract, concrete) = (serviceBinding.Key, serviceBinding.Value);
 
@@ -63,11 +65,13 @@ namespace OryxBot.Client.Linux
                     }
                 }
                 
+                FileLogger.Common.Debug($"Kernel has begun dependency injection");
                 LocalCharacter.Instance.BindDependencies(Services);
+                FileLogger.Common.Debug($"Kernel has finished bootstrapping services");
             }
 
             public void Dispose() {
-                FileLogger.Common.Info($"Program is shutting down...");
+                FileLogger.Common.Info($"Kernel is shutting down...");
                 Services.Dispose();
                 NLog.LogManager.Shutdown();
             }

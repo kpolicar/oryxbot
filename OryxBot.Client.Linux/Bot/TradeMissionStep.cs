@@ -8,6 +8,7 @@ using System.Linq;
 using System.Threading;
 using OryxBot.Client.Linux.Bot.Exceptions;
 using OryxBot.Client.Linux.Bot.Game;
+using OryxBot.Client.Linux.Services;
 using OryxBot.Shared.Design;
 using OryxBot.Shared.Extensions;
 
@@ -115,6 +116,7 @@ namespace OryxBot.Client.Linux.Bot
                 }
 
                 Console.WriteLine("successfully executed resume to "+alias);
+                FileLogger.Common.Error($"Successfully resuming with step: "+alias);
                 Step = step;
                 return true;
             }

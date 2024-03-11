@@ -37,7 +37,6 @@ namespace OryxBot.Client.Linux.Bot.Services
         private class RequestPacketLogger : PacketHandler<RequestPacket>
         {
             protected override Task OnHandleAsync(RequestPacket packet) {
-                Console.WriteLine("response code: "+packet.OperationCode);
                 return Task.CompletedTask;
             }
         }
@@ -45,7 +44,6 @@ namespace OryxBot.Client.Linux.Bot.Services
         private class ResponsePacketLogger : PacketHandler<ResponsePacket>
         {
             protected override Task OnHandleAsync(ResponsePacket packet) {
-                Debug.WriteLine("response code: "+packet.OperationCode);
                 return Task.CompletedTask;
             }
         }
