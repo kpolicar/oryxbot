@@ -8,6 +8,7 @@
         <Nullable>enable</Nullable>
         <Company>OryxBot</Company>
         <Product>OryxBot</Product>
+        <SelfContained>false</SelfContained>
         <NeutralLanguage>en</NeutralLanguage>
         <AssemblyName>OryxBot</AssemblyName>
         <ApplicationIcon>./../Resources/oryx_icon_small_colored.ico</ApplicationIcon>

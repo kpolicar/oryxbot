@@ -23,6 +23,7 @@ namespace OryxBot.Client.Linux.Api
         private ApiClient api;
         private AuthManager auth;
         private bool connectedToSocketServer;
+        private bool connectingToSocketServer;
         private Pusher? pusher;
         private BotManager bot;
         private TradeMissionRouteManager routeManager;
@@ -57,10 +58,11 @@ namespace OryxBot.Client.Linux.Api
             Task.Run(EnforceConnectedToSocketServer).ConfigureAwait(false);
 
         private async Task EnforceConnectedToSocketServer() {
-            if (api.Connection == null || connectedToSocketServer)
+            if (api.Connection == null || connectedToSocketServer || connectingToSocketServer)
                 return;
+            connectingToSocketServer = true;
 
-            FileLogger.Common.Info($"Establishing connection to websocket server at {Server.WebsocketHost}");
+            //FileLogger.Common.Info($"Establishing connection to websocket server at {Server.WebsocketHost}");
             pusher = new Pusher(Server.PusherAppKey, new PusherOptions() {
                 Host = Server.WebsocketHost,
                 Encrypted = Server.WebsocketEncrypted,

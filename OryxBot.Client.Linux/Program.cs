@@ -48,11 +48,11 @@ namespace OryxBot.Client.Linux
         
         #else
         
-        public const string Url = "https://oryxbot.com";
+        public const string Url = "https://temp.oryxbot.com";
         public const string GrantId = "2";
         public const string GrantSecret = "***REMOVED***";
         public const string _appKey = "***REMOVED***";
-        public const string PusherAppKey = "7b2zEWNNKjzRS6QSQsDzL9gz";
+        public const string PusherAppKey = "***REMOVED***";
         public const string WebsocketHost = "socket.oryxbot.com:443";
         public const bool WebsocketEncrypted = true;
         
@@ -84,7 +84,7 @@ namespace OryxBot.Client.Linux
             
              // auth.LoginWithToken(
              //    File.ReadAllText("/etc/oryxbot.apikey").Replace("\n", ""));
-             auth.LoginWithToken("x***REMOVED***");
+             auth.LoginWithToken("***REMOVED***");
 
              User? user = null;
              try {
@@ -134,6 +134,7 @@ namespace OryxBot.Client.Linux
             Vnc.CloseVnc();
             var success = Vnc.StartVnc();
             if (!success) {
+                FileLogger.Common.Error($"Failed to start the VNC client");
                 var api = _kernel.Services.GetService<ApiClient>();
                 _ = api.NotifyServerStatus();
                 return;
