@@ -19,7 +19,7 @@ jobs:
         uses: a7ul/tar-action@v1.1.0
         id: compress
         with:
-          command: c
+          command: czf
           cwd: "${{ github.workspace }}/OryxBot.Client.Linux/bin/Release/net7.0/linux-x64"
           files: "."
           outPath: "${{ github.workspace }}/oryxbot.tar.gz"
