@@ -27,9 +27,7 @@ jobs:
       - name: Send oryxbot.tar.gz to live temp.oryxbot.com server
         uses: fjogeleit/http-request-action@v1
         with:
-          url: 'https://temp.oryxbot.com/publish/oryxbot'
+          url: 'https://temp.oryxbot.com/deploy/oryxbot'
           method: 'POST'
-          username: user
-          password: password
-          customHeaders: '{"Content-Type": "application/json"}'
+          bearerToken: 'abcd'
           file: "${{ github.workspace }}/oryxbot.tar.gz"
