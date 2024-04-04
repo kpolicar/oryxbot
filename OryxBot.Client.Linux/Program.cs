@@ -82,9 +82,9 @@ namespace OryxBot.Client.Linux
              (new DiscoverabilityService()).Init();
              WebSocketLogForwarder.Init();
             
-             // auth.LoginWithToken(
-             //    File.ReadAllText("/etc/oryxbot.apikey").Replace("\n", ""));
-             auth.LoginWithToken("***REMOVED***");
+             auth.LoginWithToken(
+             File.ReadAllText("/etc/oryxbot.apikey").Replace("\n", ""));
+             // auth.LoginWithToken("***REMOVED***");
 
              User? user = null;
              try {
