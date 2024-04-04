@@ -12,7 +12,7 @@ jobs:
         with:
           dotnet-version: '7.0.x'
           
-      - name: Compress build files to oryxbot.tar.gz
+      - name: Build .NET application for Linux
         run: dotnet build --configuration Release --runtime linux-x64 --self-contained false OryxBot.Client.Linux
         
       - name: Compress build files to oryxbot.tar.gz
@@ -30,4 +30,4 @@ jobs:
           url: 'https://temp.oryxbot.com/deploy/oryxbot'
           method: 'POST'
           bearerToken: 'abcd'
-          file: "${{ github.workspace }}/oryxbot.tar.gz"
+          files: '{ "file":"${{ github.workspace }}/oryxbot.tar.gz" }'
