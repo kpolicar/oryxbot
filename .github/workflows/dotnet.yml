@@ -11,16 +11,20 @@ jobs:
         uses: actions/setup-dotnet@v3
         with:
           dotnet-version: '7.0.x'
-      - run: dotnet build --configuration Release --runtime linux-x64 --self-contained false OryxBot.Client.Linux
-      - name: Compress action step
+          
+      - name: Compress build files to oryxbot.tar.gz
+        run: dotnet build --configuration Release --runtime linux-x64 --self-contained false OryxBot.Client.Linux
+        
+      - name: Compress build files to oryxbot.tar.gz
         uses: a7ul/tar-action@v1.1.0
         id: compress
         with:
           command: c
           cwd: "${{ github.workspace }}/OryxBot.Client.Linux/bin/Release/net7.0/linux-x64"
-          files: "*"
+          files: "."
           outPath: "${{ github.workspace }}/oryxbot.tar.gz"
-      - name: Make an API call
+          
+      - name: Send oryxbot.tar.gz to live temp.oryxbot.com server
         uses: fjogeleit/http-request-action@v1
         with:
           url: 'https://temp.oryxbot.com/publish/oryxbot'
