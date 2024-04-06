@@ -27,8 +27,8 @@ namespace OryxBot.Client.Linux.Native
 
             var process2 = new Process {
                 StartInfo = new ProcessStartInfo {
-                    FileName = "bash",
-                    Arguments = "-c \"pkill -f /etc/java-se-7u75-ri/bin/java\"",
+                    FileName = "pkill",
+                    Arguments = "-f /etc/java-se-7u75-ri/bin/java",
                     UseShellExecute = false
                 }
             };
@@ -51,7 +51,7 @@ namespace OryxBot.Client.Linux.Native
                             String.Join(' ',
                                 "-Dawt.toolkit=ghostawt.GhostToolkit -Djava.awt.graphicsenv=ghostawt.image.GhostGraphicsEnvironment -Djava.awt.headless=false -Dsun.font.fontmanager=ghostawt.sun.GFontManager -Dsun.boot.library.path=/home/oryxbot/libs/jdk1.7.0_51/bin",
                                 "-jar /home/oryxbot/apps/VncClient.jar",
-                                "VncViewer HOST 10.0.0.100 PORT 5901 PASSWORD oryxbot \"\\\"Scaling\" \"factor\\\"\" auto \"\\\"Encoding\\\"\" rAW \"\\\"Show\" \"controls\\\"\" No \"\\\"JPEG\" image \"quality\\\"\" 9 \"\\\"Offer\" \"relogin\\\"\" No \"\\\"Restricted\" \"colors\\\"\" No \"\\\"Compression\" \"level\\\"\" 7"
+                                "VncViewer HOST 10.0.0.100 PORT 5900 PASSWORD oryxbot \"\\\"Scaling\" \"factor\\\"\" auto \"\\\"Encoding\\\"\" rAW \"\\\"Show\" \"controls\\\"\" No \"\\\"JPEG\" image \"quality\\\"\" 9 \"\\\"Offer\" \"relogin\\\"\" No \"\\\"Restricted\" \"colors\\\"\" No \"\\\"Compression\" \"level\\\"\" 7"
                             ),
                         WorkingDirectory = "/home/oryxbot",
                         UseShellExecute = false

@@ -125,6 +125,7 @@ namespace OryxBot.Client.Linux
             botManager.Stop();
             
             Vnc.CloseVnc();
+            FileLogger.Common.Info($"Successfully stopped the VNC client");
             var api = _kernel.Services.GetService<ApiClient>();
             _ = api.NotifyServerStatus();
         }
