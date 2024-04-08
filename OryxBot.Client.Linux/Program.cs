@@ -145,13 +145,11 @@ namespace OryxBot.Client.Linux
                 return;
             }
             FileLogger.Common.Info($"Successfully established connection to the VNC server");
-            
-            ResponsivePoint.CurrentResolution = (1024, 768);
+
             ResponsivePoint.CurrentResolution = (
-                (int) (Vnc.Dimensions!.Value.x * (Vnc.ScalingPercent!.Value / 100d)),
-                (int) (Vnc.Dimensions!.Value.y * (Vnc.ScalingPercent!.Value / 100d))
-            );
-            FileLogger.Common.Info($"The screen resolution has been detected as: "+ResponsivePoint.CurrentResolution);
+                (int)(Vnc.Dimensions!.Value.x * (Vnc.ScalingPercent!.Value / 100d)),
+                (int)(Vnc.Dimensions!.Value.y * (Vnc.ScalingPercent!.Value / 100d))
+            );;
             
             var dataProvider = _kernel.Services.GetService<AlbionDataProvider>() as NetworkAlbionDataProvider;
             dataProvider!.Stop();

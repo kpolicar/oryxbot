@@ -39,7 +39,7 @@ namespace OryxBot.Client.Linux.Bot
             new(180, 288, 1920, 1080, AnchorStyle.Left);
         
         public static ResponsivePoint QuestNpcTradeMissionsContractTabOffset =
-            new(0, 37, 1910, 1080, AnchorStyle.Left);
+            new(0, 37, 1920, 1080, AnchorStyle.Left);
         
         public static ResponsivePoint QuestNpcSelectFirstTradeMissionContract =
             new(200, 369, 1920, 1080, AnchorStyle.Left);
@@ -48,15 +48,15 @@ namespace OryxBot.Client.Linux.Bot
             new(0,98, 1920, 1080, AnchorStyle.Left);
 
         public static ResponsivePoint QuestNpcOpenTradeMissionContract(City origin, City destination) =>
-            CalculateOffsetedPointForTradeMissionContract(QuestNpcSelectFirstTradeMissionContract, origin, destination);
+            CalculateOffsetedPointForTradeMissionContract(QuestNpcTradeMissionsFirstContractTab, origin, destination);
 
         public static ResponsivePoint QuestNpcSelectTradeMissionContract(City origin, City destination, ContractType contract) {
            var point = CalculateOffsetedPointForTradeMissionContract(
-               QuestNpcTradeMissionsFirstContractTab,
+               QuestNpcSelectFirstTradeMissionContract,
                origin,
                destination);
            
-           var offset = QuestNpcTradeMissionsContractTabOffset;
+           var offset = QuestNpcSelectTradeMissionContractOffset;
            var multiplier = contract switch {
                ContractType.Minor => 0,
                ContractType.Medium => 1,
@@ -77,7 +77,7 @@ namespace OryxBot.Client.Linux.Bot
             City origin,
             City destination)
         {
-            var offset = QuestNpcSelectTradeMissionContractOffset;
+            var offset = QuestNpcTradeMissionsContractTabOffset;
             var multiplier = Cities.FactionLeaderInCityOrderOfMissionForCity(origin, destination);
             
             return new (
