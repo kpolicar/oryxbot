@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Albion.Network;
+using OryxBot.Client.Linux.Services;
 using OryxBot.Shared.Contracts;
 using OryxBot.Shared.Design;
 using OryxBot.Shared.Game;
@@ -52,7 +53,7 @@ namespace OryxBot.Client.Linux.Bot.Services
                     
                     if (device.LinkType == LinkLayers.Ethernet) {
                         device.StartCapture();
-                        Console.WriteLine("Started listening to network device: "+device.Name);
+                        FileLogger.Common.Info("Started listening to network device: "+device.Name);
                     }
                 });
                 captureThread.Start();
@@ -73,7 +74,8 @@ namespace OryxBot.Client.Linux.Bot.Services
 
             Task.WaitAll(stopTasks.ToArray());
             _running = false;
-            Console.WriteLine("Stopped listening to all network devices.");
+            FileLogger.Common.Info("Stopped listening to all network devices.");
+            
         }
         
         private void PacketHandler(object sender, PacketCapture e)
@@ -84,7 +86,7 @@ namespace OryxBot.Client.Linux.Bot.Services
                 if (packet != null)
                     _receiver.ReceivePacket(packet.PayloadData);
             } catch (Exception exception) {
-                Console.Error.WriteLine($"Failed to capture packet, exception: {exception}");
+                //Console.Error.WriteLine($"Failed to capture packet, exception: {exception}");
             }
         }
 

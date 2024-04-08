@@ -61,10 +61,10 @@ namespace OryxBot.Client.Linux.Services
             //     Common.Debug("Move: " + LocalCharacter.Instance.Position);
             // LocalCharacter.Instance.MovingChanged += (_, _) =>
             //     Common.Info("Moving state changed: " + LocalCharacter.Instance.Moving);
-            LocalCharacter.Instance.Move += (_, _) =>
-                Console.WriteLine("Move: " + LocalCharacter.Instance.Position);
+            // LocalCharacter.Instance.Move += (_, _) =>
+                // Console.WriteLine("Move: " + LocalCharacter.Instance.Position);
             LocalCharacter.Instance.MovingChanged += (_, _) =>
-                Console.WriteLine("Moving state changed: " + LocalCharacter.Instance.Moving);
+                Common.Info("Moving state changed: " + LocalCharacter.Instance.Moving);
             LocalCharacter.Instance.Interaction += (_, _) =>
                 Common.Info("Interaction state changed: " + LocalCharacter.Instance.Interacting);
             LocalCharacter.Instance.Died += (_, _) =>

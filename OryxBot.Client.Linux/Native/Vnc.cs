@@ -110,7 +110,7 @@ namespace OryxBot.Client.Linux.Native
             if (e.Data?.StartsWith("Scaling desktop at ") ?? false) {
                 var regex = Regex.Match(e.Data, @"(\d+)", RegexOptions.Singleline);
                 ScalingPercent = int.Parse(regex.Groups[1].Value);
-                Console.WriteLine("Scaling: " + ScalingPercent);
+                FileLogger.Common.Error($"Scaling desktop: {ScalingPercent}%");
             }
         }
     }

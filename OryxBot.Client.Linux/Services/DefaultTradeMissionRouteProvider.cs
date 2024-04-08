@@ -78,8 +78,7 @@ namespace OryxBot.Client.Linux.Services
                 var textStream = new StreamReader(resourceStream);
                 return RouteFromStream(textStream.BaseStream);
             } catch (Exception exception) {
-                Console.WriteLine("failed "+resource);
-                Console.WriteLine(exception);
+                FileLogger.Common.Info($"Route error for resource "+resource);
                 return new Route();
             }
         }

@@ -107,11 +107,8 @@ namespace OryxBot.Client.Linux.Api
                         error = false;
                     } catch (Exception exception) {
                         error = true;
-                        Console.WriteLine("Error in socket server connection: " + exception);
                         await Task.Delay(10000);
                     }
-
-                    Console.WriteLine("Connected to socket server: " + pusher.State);
                 } while (error);
             });
 
@@ -159,7 +156,6 @@ namespace OryxBot.Client.Linux.Api
                 }
             } catch (Exception e) {
                 FileLogger.Common.Error($"Failed to process request for change bot running state");
-                Console.WriteLine(e);
             }
         }
         

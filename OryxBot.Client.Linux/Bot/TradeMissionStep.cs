@@ -78,7 +78,6 @@ namespace OryxBot.Client.Linux.Bot
                 
                 while (true) {
                     if (step?.Current is TradeMissionRecord.ChangeClusterStep changeClusterStep) {
-                        Console.WriteLine("alias is "+changeClusterStep.Alias);
                         if (arrivedAtClusterAlias)
                             break;
                         arrivedAtClusterAlias = changeClusterStep.Alias == alias;
@@ -92,14 +91,13 @@ namespace OryxBot.Client.Linux.Bot
                         break;
                 }
 
-                Console.WriteLine("moveStepsForThisAlias count is "+moveStepsForThisAlias.Count +" for " + alias);
                 if (moveStepsForThisAlias.Count == 0)
                     return false;
 
                 var closestPosition = moveStepsForThisAlias.MinBy(moveStep =>
                     Helpers.Math.Distance(moveStep.Position, approximatePosition));
                 
-                Console.WriteLine("Closest move step to current character position is "+closestPosition.Position);
+                FileLogger.Common.Info("Closest move step to current character position is "+closestPosition.Position);
                 
                 // Traverse back to the closest Position
                 while (true) {
@@ -107,7 +105,7 @@ namespace OryxBot.Client.Linux.Bot
                     var moveStep = step.Current as TradeMissionRecord.MoveStep;
                     
                     if (!hasNext || moveStep == null) {
-                        Console.WriteLine("Skipping route to a certain step failed for some reason");
+                        FileLogger.Common.Error("Skipping route to a certain step failed for some reason.");
                         return false;
                     }
                     if (moveStep == closestPosition) {
@@ -219,20 +217,17 @@ namespace OryxBot.Client.Linux.Bot
                 LocalCharacter.Instance.DistanceFrom(move.Position) <= MaxDistance;
             
             private void OnChangeCluster() {
-                Console.WriteLine($@"> current step: {Step!.Current}");
                 for (var skips = 0 ;; skips++)
                 {
                     if (Step!.Current is TradeMissionRecord.ChangeClusterStep)
                         break;
                     if (skips >= MaxSkippableSteps*2) {
-                        Console.WriteLine(@"ROUTE EXCEPTION!");
+                        FileLogger.Common.Error("ROUTE EXCEPTION");
                         if (Step!.Current is TradeMissionRecord.MoveStep move)
-                            Console.WriteLine($@"> current step: {move.Position}");
+                            FileLogger.Common.Error($"Current step: {move.Position}");
                         for (var i = 0; i < skips; i++)
                             Step.MovePrevious();
                         return;
-                        Console.WriteLine(@"ROUTE EXCEPTION!");
-                        throw new RouteException(Step.Current);
                     }
 
                     if (!MoveToNextRouteStep())
@@ -249,7 +244,6 @@ namespace OryxBot.Client.Linux.Bot
             }
             
             private bool MoveToNextRouteStep() {
-                Console.WriteLine(Step?.Current.CsvFormat);
                 var hasNext = Step?.MoveNext();
 
                 if (hasNext == false) {
@@ -261,7 +255,7 @@ namespace OryxBot.Client.Linux.Bot
             }
             
             private void finishRoute() {
-                Console.WriteLine(@"route finished!");
+                FileLogger.Common.Info($"Route finished");
                 actions.StopAllActions();
                 Finished = true;
             }
@@ -323,11 +317,13 @@ namespace OryxBot.Client.Linux.Bot
                 if (attemptingInteraction && !LocalCharacter.Instance.Interacting &&  !LocalCharacter.Instance.Moving) {
                     attemptingInteraction = false;
                     actions.MoveAwayFrom(_interactablePosition);
-                    Console.WriteLine("moving away from!");
+                    FileLogger.Common.Info($"Temporarily moving away from target position in attempt to unstuck character");
+
                     Thread.Sleep(1000);
                     
                 } else if (CharacterIsNearInteractable) {
                     if (!attemptingInteraction) {
+                        FileLogger.Common.Info($"Character is near to the NPC. Stopping input actions in preparation for interaction.");
                         actions.StopAllActions();
                         Thread.Sleep(500);
                     }
