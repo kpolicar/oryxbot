@@ -46,6 +46,7 @@ namespace OryxBot.Client.Linux.Native
                 process = new Process {
                     StartInfo = new ProcessStartInfo {
                         RedirectStandardOutput = true,
+                        RedirectStandardError = true,
                         FileName = @"/etc/java-se-7u75-ri/bin/java",
                         Arguments =
                             String.Join(' ',
@@ -58,6 +59,7 @@ namespace OryxBot.Client.Linux.Native
                     }
                 };
                 process.OutputDataReceived += OnVncOutputDataReceived;
+                process.ErrorDataReceived += OnVncErrorDataReceived;
                 process.Start();
                 process.BeginOutputReadLine();
                 process.WaitForExitAsync().ContinueWith(task => { FileLogger.Common.Info("Process exit code of VncClient: " + process.ExitCode); });
@@ -112,6 +114,10 @@ namespace OryxBot.Client.Linux.Native
                 ScalingPercent = int.Parse(regex.Groups[1].Value);
                 FileLogger.Common.Error($"Scaling desktop: {ScalingPercent}%");
             }
+        }
+        
+        private static void OnVncErrorDataReceived(object sender, DataReceivedEventArgs e) {
+            FileLogger.Common.Error("VNC client error: "+e.Data);
         }
     }
 }
