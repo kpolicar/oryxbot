@@ -33,19 +33,19 @@ namespace OryxBot.Client.Linux.Bot
             new(2260, 460, 3840, 1600, AnchorStyle.Center);
         
         public static ResponsivePoint QuestNpcTradeMissionsTab =
-            new(610, 720, 3840, 1600, AnchorStyle.Left);
+            new(410, 422, 1920, 1080, AnchorStyle.Left);
         
         public static ResponsivePoint QuestNpcTradeMissionsFirstContractTab =
-            new(210, 575, 3840, 1600, AnchorStyle.Left);
+            new(180, 288, 1920, 1080, AnchorStyle.Left);
         
         public static ResponsivePoint QuestNpcTradeMissionsContractTabOffset =
-            new(0, 132, 3840, 1600, AnchorStyle.Left);
+            new(0, 37, 1910, 1080, AnchorStyle.Left);
         
         public static ResponsivePoint QuestNpcSelectFirstTradeMissionContract =
-            new(99,517, 3840, 1600, AnchorStyle.Left);
+            new(200, 369, 1920, 1080, AnchorStyle.Left);
         
         public static ResponsivePoint QuestNpcSelectTradeMissionContractOffset =
-            new(0,55, 3840, 1600, AnchorStyle.Left);
+            new(0,98, 1920, 1080, AnchorStyle.Left);
 
         public static ResponsivePoint QuestNpcOpenTradeMissionContract(City origin, City destination) =>
             CalculateOffsetedPointForTradeMissionContract(QuestNpcSelectFirstTradeMissionContract, origin, destination);
