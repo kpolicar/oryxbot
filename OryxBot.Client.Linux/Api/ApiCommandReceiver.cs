@@ -69,6 +69,7 @@ namespace OryxBot.Client.Linux.Api
                 Authorizer = new HttpAuthorizer(Server.BroadcastingAuthUrl) {
                     AuthenticationHeader = api.Connection!.AuthenticationHeader,
                 },
+                
             });
             
             pusher.Error += (_, exception) => {

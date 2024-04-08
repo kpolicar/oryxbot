@@ -60,14 +60,17 @@ namespace OryxBot.Client.Linux.Native
                 process.OutputDataReceived += OnVncOutputDataReceived;
                 process.Start();
                 process.BeginOutputReadLine();
-                process.WaitForExitAsync().ContinueWith(task => { Console.WriteLine("Process exit code of VncClient: " + process.ExitCode); });
+                process.WaitForExitAsync().ContinueWith(task => { FileLogger.Common.Info("Process exit code of VncClient: " + process.ExitCode); });
                 processHasStarted = true;
                 
                 var waitedFor = 0;
                 var maxWaitFor = 15000;
                 FileLogger.Common.Info($"Establishing connection to the customer VNC server");
                 do {
-                    Thread.Sleep(50);
+                    Thread.Sleep(1000);
+                    waitedFor += 1000;
+                    FileLogger.Common.Info((waitedFor/1000)+"s since attempting to connect to customer VNC server");
+                    
                     if (process.HasExited && process.ExitCode != 0) {
                         FileLogger.Common.Error(
                             $"The VNC client failed to connect to the VNC server. Aborting!");

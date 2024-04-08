@@ -69,7 +69,11 @@ namespace OryxBot.Client.Linux
         /// <summary>
         ///  The main entry point for the application.
         /// </summary>
-        static void Main() {
+        static void Main(string[] args) {
+            if (args.Length > 0 && args[0] == "--version") {
+                Console.WriteLine(Version);
+                return;
+            }
             var random = new Random();
              const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
              InstanceIdentifier = "instance-" + new string(Enumerable.Repeat(chars, 16)
