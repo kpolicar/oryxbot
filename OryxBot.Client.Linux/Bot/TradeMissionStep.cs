@@ -115,8 +115,7 @@ namespace OryxBot.Client.Linux.Bot
                     }
                 }
 
-                Console.WriteLine("successfully executed resume to "+alias);
-                FileLogger.Common.Error($"Successfully resuming with step: "+alias);
+                FileLogger.Common.Info($"Successfully resuming with step: "+alias);
                 Step = step;
                 return true;
             }

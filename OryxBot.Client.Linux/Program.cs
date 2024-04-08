@@ -144,6 +144,7 @@ namespace OryxBot.Client.Linux
                 _ = api.NotifyServerStatus();
                 return;
             }
+            FileLogger.Common.Info($"Successfully established connection to the VNC server");
             
             ResponsivePoint.CurrentResolution = (1024, 768);
             ResponsivePoint.CurrentResolution = (
