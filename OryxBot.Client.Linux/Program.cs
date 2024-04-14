@@ -9,6 +9,7 @@ using System.Net.Sockets;
 using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Threading;
+using System.Threading.Tasks;
 using Inkybot.Api;
 using Newtonsoft.Json;
 using NLog;
@@ -127,11 +128,15 @@ namespace OryxBot.Client.Linux
         public static void StopProgram() {
             var botManager = _kernel.Services.GetService<BotManager>();
             botManager.Stop();
-            
-            Vnc.CloseVnc();
-            FileLogger.Common.Info($"Successfully stopped the VNC client");
-            var api = _kernel.Services.GetService<ApiClient>();
-            _ = api.NotifyServerStatus();
+
+            // in case there's some more stuff that should be closed
+            Task.Run(async () => {
+                await Task.Delay(400);
+                Vnc.CloseVnc();
+                FileLogger.Common.Info($"Successfully stopped the VNC client");
+                var api = _kernel.Services.GetService<ApiClient>();
+                _ = api.NotifyServerStatus();
+            });
         }
         
         public static void RunProgram() {
