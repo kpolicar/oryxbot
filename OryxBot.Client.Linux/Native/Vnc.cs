@@ -98,7 +98,7 @@ namespace OryxBot.Client.Linux.Native
                 } while ((!Connected || Dimensions == null) && waitedFor < maxWaitFor);
 
                 if (waitedFor >= maxWaitFor) {
-                    FileLogger.Common.Info(
+                    FileLogger.Common.Error(
                         $"The VNC client was attempting to connect to the VNC server for {waitedFor}ms. Aborting!");
                     return false;
                 }

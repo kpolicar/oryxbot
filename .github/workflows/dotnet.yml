@@ -24,10 +24,10 @@ jobs:
           files: "."
           outPath: "${{ github.workspace }}/oryxbot.tar.gz"
           
-      - name: Send oryxbot.tar.gz to live temp.oryxbot.com server
+      - name: Send oryxbot.tar.gz to live oryxbot.com server
         uses: fjogeleit/http-request-action@v1
         with:
-          url: 'https://temp.oryxbot.com/deploy/oryxbot'
+          url: 'https://oryxbot.com/deploy/oryxbot'
           method: 'POST'
-          bearerToken: 'abcd'
+          bearerToken: '***REMOVED***'
           files: '{ "file":"${{ github.workspace }}/oryxbot.tar.gz" }'

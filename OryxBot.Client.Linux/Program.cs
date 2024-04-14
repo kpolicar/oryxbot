@@ -49,7 +49,7 @@ namespace OryxBot.Client.Linux
         
         #else
         
-        public const string Url = "https://temp.oryxbot.com";
+        public const string Url = "https://oryxbot.com";
         public const string GrantId = "2";
         public const string GrantSecret = "***REMOVED***";
         public const string _appKey = "***REMOVED***";
