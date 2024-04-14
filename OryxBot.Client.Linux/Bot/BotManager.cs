@@ -1,6 +1,7 @@
 using System;
 using System.Diagnostics;
 using OryxBot.Client.Linux.Bot.Contracts;
+using OryxBot.Client.Linux.Native;
 using OryxBot.Client.Linux.Services;
 using OryxBot.Shared;
 using OryxBot.Shared.Contracts;

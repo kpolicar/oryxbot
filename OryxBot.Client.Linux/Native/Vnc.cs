@@ -1,22 +1,28 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
 using System.Threading;
 using OryxBot.Client.Linux.Services;
+using OryxBot.Shared.Design;
 
 namespace OryxBot.Client.Linux.Native
 {
     public static class Vnc
     {
+        public static bool closing;
         public static bool Connected;
         public static (int x, int y)? Dimensions;
         public static int? ScalingPercent = 100;
         private static Process? process;
         private static bool processHasStarted;
         public static event EventHandler? ConnectionEstablished;
+        public static event EventHandler? VncError;
 
 
         public static void CloseVnc() {
+            closing = true;
+            
             if (process != null)
                 FileLogger.Common.Info($"Closing the VNC client");
             if (processHasStarted) {
@@ -37,6 +43,8 @@ namespace OryxBot.Client.Linux.Native
             Connected = default;
             Dimensions = default;
             ScalingPercent = 100;
+            
+            closing = false;
         }
 
 
@@ -62,7 +70,16 @@ namespace OryxBot.Client.Linux.Native
                 process.ErrorDataReceived += OnVncErrorDataReceived;
                 process.Start();
                 process.BeginOutputReadLine();
-                process.WaitForExitAsync().ContinueWith(task => { FileLogger.Common.Info("Process exit code of VncClient: " + process.ExitCode); });
+                process.WaitForExitAsync().ContinueWith(task => {
+                    processHasStarted = false;
+                    FileLogger.Common.Info("Process exit code of VncClient: " + process.ExitCode);
+                    if (process.ExitCode != 0) {
+                        VncError?.Invoke(null, EventArgs.Empty);
+                        if (!closing) { // If it stopped not gracefully, restart
+                            StartVnc();
+                        }
+                    }
+                });
                 processHasStarted = true;
                 
                 var waitedFor = 0;
@@ -88,6 +105,12 @@ namespace OryxBot.Client.Linux.Native
 
                 // Any more
                 Thread.Sleep(200);
+                
+                
+                ResponsivePoint.CurrentResolution = (
+                    (int)(Vnc.Dimensions!.Value.x * (Vnc.ScalingPercent!.Value / 100d)),
+                    (int)(Vnc.Dimensions!.Value.y * (Vnc.ScalingPercent!.Value / 100d))
+                );;
 
                 ConnectionEstablished?.Invoke(null, EventArgs.Empty);
                 return true;
