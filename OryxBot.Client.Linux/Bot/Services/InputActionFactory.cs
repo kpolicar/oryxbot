@@ -29,8 +29,12 @@ namespace OryxBot.Client.Linux.Bot.Services
             
             bot.JobChanged += (sender, args) => job = args.Job;
             bot.Stopped += (_, _) => {
-                if (rightMouseIsDown)
+                if (rightMouseIsDown) {
+                    rightMouseIsDown = false;
                     input.RightMouseUp();
+                }
+                Thread.Sleep(15);
+                input.Key('s');
             };
         }
 
