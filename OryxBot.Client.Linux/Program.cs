@@ -60,9 +60,9 @@ namespace OryxBot.Client.Linux
         #endif
         
         public static byte[] AppKey => System.Convert.FromBase64String(_appKey);
-        public const string VersionNumber = "7";
-        public const string Version = "v1.0";
-        public const string VersionEndpoint = "v1";
+        public const string VersionNumber = "8";
+        public const string Version = "v2.0";
+        public const string VersionEndpoint = "v2";
         
         public static readonly Kernel _kernel = new();
         public static ServiceContainer Services => _kernel.Services;
@@ -108,6 +108,7 @@ namespace OryxBot.Client.Linux
                  return;
              }
              
+             _ = api.NotifyClientVersion();
              _ = api.NotifyServerStatus();
             
             

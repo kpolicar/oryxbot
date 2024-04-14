@@ -132,6 +132,17 @@ namespace OryxBot.Client.Linux.Api
             Connection?.Dispose();
         }
 
+        public async Task NotifyClientVersion() {
+            await WaitForStableConnection();
+            var data = new Dictionary<string, string>() {
+                {"version", Program.Version}
+            };
+
+            var encrypted = Aes256CbcEncrypter.Encrypt(data);
+            var response = await Connection!.Request()
+                .PostAsync($"{Server.ApiUrl}/data/clientversion", new StringContent(encrypted));
+        }
+
         public async Task NotifyServerStatus() {
             await WaitForStableConnection();
             var data = BotStepData()
