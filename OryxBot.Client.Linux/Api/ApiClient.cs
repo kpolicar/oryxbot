@@ -44,7 +44,7 @@ namespace OryxBot.Client.Linux.Api
             await WaitForStableConnection();
 
             var client = Connection!.Request();
-            var response = await client.GetAsync($"{Server.ApiUrl}/user");
+            var response = await client.GetAsync($"{Server.ApiBaseUrl}/user");
             response.EnsureSuccessStatusCode();
             var result = await GetResultFromEncryptedResponse(response);
 
@@ -56,7 +56,7 @@ namespace OryxBot.Client.Linux.Api
 
         public async Task<VersionDetails> NewestVersion() {
             var client = new HttpClient();
-            var response = await client.GetAsync(Server.ApiUrl);
+            var response = await client.GetAsync(Server.ApiBaseUrl);
             response.EnsureSuccessStatusCode();
             var result = await response.Content.ReadAsStringAsync();
             
