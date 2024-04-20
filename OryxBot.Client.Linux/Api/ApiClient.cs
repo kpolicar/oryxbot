@@ -167,7 +167,8 @@ namespace OryxBot.Client.Linux.Api
         
         protected Dictionary<string, string> BotStepData() =>
             new() {
-                {"bot_step", bot.IsRunning ? ((bot as BotManager)?.Bot as TradeMissionRun)?.Step.Name ?? "" : ""}
+                {"bot_step", bot.IsRunning ? ((bot as BotManager)?.Bot as TradeMissionRun)?.Step.Name ?? "" : ""},
+                {"bot_step_percent_complete", (bot.IsRunning ? ((bot as BotManager)?.Bot as TradeMissionRun)?.CurrentStepPercentComplete ?? 0 : 0).ToString()}
             };
 
         protected Dictionary<string, string> LocalCharacterPositionData() =>

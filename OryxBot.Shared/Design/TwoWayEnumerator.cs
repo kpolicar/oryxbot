@@ -5,6 +5,7 @@ namespace OryxBot.Shared.Design
 {
     public interface ITwoWayEnumerator<T> : IEnumerator<T>
     {
+        public int Index { get; }
         bool MovePrevious();
     }
 
@@ -13,6 +14,7 @@ namespace OryxBot.Shared.Design
         private IEnumerator<T> _enumerator;
         private List<T> _buffer;
         private int _index;
+        public int Index => _index;
 
         public TwoWayEnumerator(IEnumerator<T> enumerator)
         {

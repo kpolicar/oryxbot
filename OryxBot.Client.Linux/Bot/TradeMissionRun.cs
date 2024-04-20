@@ -50,6 +50,7 @@ namespace OryxBot.Client.Linux.Bot
         public bool _isPaused;
         public override bool IsPaused => _isPaused;
         public bool IsFirstRun = true;
+        public int CurrentStepPercentComplete = 0;
         private City City;
         private City TradeCity;
         private RunConfiguration Config;
@@ -129,6 +130,7 @@ namespace OryxBot.Client.Linux.Bot
         }
 
         private void ProgressToNextStep() {
+            var previousStep = Step;
             Step = Step switch {
                 RunToBank => new BankItems(Config.Contract),
                 BankItems => new RunToQuest(this),
@@ -145,8 +147,20 @@ namespace OryxBot.Client.Linux.Bot
             if (Step is RunToBank) {
                 RunComplete?.Invoke(this, EventArgs.Empty);
             }
+            if (Step is RunRouteStep runRoute) {
+                runRoute.PercentCompleteChanged += OnRunRoutePercentCompleteChanged;
+            }
+            if (previousStep is RunRouteStep previousRunRoute) {
+                previousRunRoute.PercentCompleteChanged -= OnRunRoutePercentCompleteChanged;
+            }
         }
-        
+
+        private void OnRunRoutePercentCompleteChanged(object? sender, EventArgs e) {
+            if (Step is RunRouteStep runRoute) {
+                CurrentStepPercentComplete = runRoute.PercentComplete;
+            }
+        }
+
         private void OnRunStuck(object? sender, EventArgs e) {
             Pause();
             Stuck?.Invoke(this, new TradeMissionEvent(Step));

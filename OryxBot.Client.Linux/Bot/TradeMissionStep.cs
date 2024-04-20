@@ -57,6 +57,8 @@ namespace OryxBot.Client.Linux.Bot
             private bool hasMadeFirstMove = false;
             
             private ExpiringTimestampsList stuckTimestamps = new (IdleTimeout);
+            public int PercentComplete { private set; get; }
+            public event EventHandler? PercentCompleteChanged;
             public event EventHandler? Stuck;
             internal const int IdleTimeout = 30000;
             internal const int TryToGetUnstuckAfterIdleDuration = 1000;
@@ -245,6 +247,10 @@ namespace OryxBot.Client.Linux.Bot
             
             private bool MoveToNextRouteStep() {
                 var hasNext = Step?.MoveNext();
+                var previousPercentComplete = PercentComplete;
+                PercentComplete = (int)(((Step?.Index ?? 0)*1f / Route.Count)*100);
+                if (PercentComplete != previousPercentComplete)
+                    PercentCompleteChanged?.Invoke(this, EventArgs.Empty);
 
                 if (hasNext == false) {
                     finishRoute();
