@@ -1,0 +1,63 @@
+@import "tailwindcss";
+@import "@oryxbot/shared/styles/tokens.css";
+
+/* ── Base Styles ── */
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    margin: 0;
+    font-family: var(--font-body);
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* ── Custom Tailwind Theme ── */
+
+@theme {
+    --color-bg-primary: #25282d;
+    --color-bg-secondary: #2f3237;
+    --color-bg-card: #2f3237;
+    --color-bg-card-hover: #3a3d42;
+    --color-text-primary: #ffffff;
+    --color-text-secondary: #c8c8c8;
+    --color-text-muted: #8a8a8a;
+    --color-accent-gold: #aea480;
+    --color-accent-gold-hover: #c4b98e;
+    --color-accent-green: #22c55e;
+    --color-accent-red: #ef4444;
+    --color-border-subtle: #3a3d42;
+    --color-border-accent: #aea480;
+    --font-family-body: 'Inter', sans-serif;
+    --font-family-mono: 'JetBrains Mono', 'Fira Code', monospace;
+}
+
+/* ── Scrollbar Styling ── */
+
+::-webkit-scrollbar {
+    width: 6px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--bg-secondary);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--border-subtle);
+    border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--accent-gold);
+}
+
+/* ── Selection ── */
+
+::selection {
+    background-color: rgba(174, 164, 128, 0.3);
+    color: var(--text-primary);
+}

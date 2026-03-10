@@ -1,0 +1,11 @@
+{
+  "name": "oryxbot-website",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev:platform": "pnpm --filter platform dev",
+    "dev:pilot": "pnpm --filter pilot dev",
+    "build:platform": "pnpm --filter platform build",
+    "build:pilot": "pnpm --filter pilot build"
+  }
+}
