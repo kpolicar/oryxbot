@@ -1,0 +1,23 @@
+<Solution>
+  <Folder Name="/hosts/">
+    <Project Path="hosts/OryxBot.Host/OryxBot.Host.csproj" />
+  </Folder>
+  <Folder Name="/src/">
+    <Project Path="src/OryxBot.Core/OryxBot.Core.csproj" />
+    <Project Path="src/OryxBot.GameState/OryxBot.GameState.csproj" />
+    <Project Path="src/OryxBot.Input/OryxBot.Input.csproj" />
+    <Project Path="src/OryxBot.Pilot/OryxBot.Pilot.csproj" />
+    <Project Path="src/OryxBot.Protocol/OryxBot.Protocol.csproj" />
+    <Project Path="src/OryxBot.RemoteDesktop/OryxBot.RemoteDesktop.csproj" />
+    <Project Path="src/OryxBot.Routes/OryxBot.Routes.csproj" />
+    <Project Path="src/OryxBot.WorldGraph/OryxBot.WorldGraph.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/OryxBot.Core.Tests/OryxBot.Core.Tests.csproj" />
+    <Project Path="tests/OryxBot.GameState.Tests/OryxBot.GameState.Tests.csproj" />
+    <Project Path="tests/OryxBot.Input.Tests/OryxBot.Input.Tests.csproj" />
+    <Project Path="tests/OryxBot.Pilot.Tests/OryxBot.Pilot.Tests.csproj" />
+    <Project Path="tests/OryxBot.Routes.Tests/OryxBot.Routes.Tests.csproj" />
+    <Project Path="tests/OryxBot.WorldGraph.Tests/OryxBot.WorldGraph.Tests.csproj" />
+  </Folder>
+</Solution>

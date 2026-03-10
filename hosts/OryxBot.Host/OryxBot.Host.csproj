@@ -1,0 +1,29 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\OryxBot.Core\OryxBot.Core.csproj" />
+    <ProjectReference Include="..\..\src\OryxBot.WorldGraph\OryxBot.WorldGraph.csproj" />
+    <ProjectReference Include="..\..\src\OryxBot.Pilot\OryxBot.Pilot.csproj" />
+    <ProjectReference Include="..\..\src\OryxBot.Routes\OryxBot.Routes.csproj" />
+    <ProjectReference Include="..\..\src\OryxBot.Protocol\OryxBot.Protocol.csproj" />
+    <ProjectReference Include="..\..\src\OryxBot.Input\OryxBot.Input.csproj" />
+    <ProjectReference Include="..\..\src\OryxBot.GameState\OryxBot.GameState.csproj" />
+    <ProjectReference Include="..\..\src\OryxBot.RemoteDesktop\OryxBot.RemoteDesktop.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="10.*" />
+    <PackageReference Include="Serilog.Extensions.Hosting" Version="9.*" />
+    <PackageReference Include="Serilog.Settings.Configuration" Version="9.*" />
+    <PackageReference Include="Serilog.Sinks.Console" Version="6.*" />
+    <PackageReference Include="Serilog.Sinks.File" Version="6.*" />
+  </ItemGroup>
+
+</Project>
