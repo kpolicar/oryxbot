@@ -2,8 +2,6 @@ import { motion } from 'framer-motion'
 import { ButtonArrow } from '@shared/components/ButtonArrow'
 import { Lock } from 'lucide-react'
 import { Link } from 'react-router-dom'
-import { MarketplaceGrid } from '../components/MarketplaceGrid'
-import { MARKETPLACE_ENTRIES } from '../data/mockMarketplace'
 
 export default function Marketplace() {
     return (
@@ -44,9 +42,6 @@ export default function Marketplace() {
                     </Link>
                 </div>
             </motion.div>
-            <div className="relative z-10 w-full max-w-7xl mx-auto mt-16">
-                <MarketplaceGrid entries={MARKETPLACE_ENTRIES} />
-            </div>
         </div>
     )
 }

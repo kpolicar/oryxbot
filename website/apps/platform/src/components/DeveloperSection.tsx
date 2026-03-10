@@ -1,6 +1,9 @@
-import { CodeBlock } from '@shared/components/CodeBlock'
+import { useRef, useState, useEffect } from 'react'
+import Prism from 'prismjs'
+import 'prismjs/components/prism-python'
+import 'prismjs/themes/prism-tomorrow.css'
 import { ButtonArrow } from '@shared/components/ButtonArrow'
-import { motion } from 'framer-motion'
+import { motion, useInView } from 'framer-motion'
 import { Terminal, Settings, Zap, ShoppingBag, TrendingDown } from 'lucide-react'
 import { Link } from 'react-router-dom'
 
@@ -60,6 +63,74 @@ const FEATURES = [
     },
 ]
 
+function AnimatedCodeBlock() {
+    const ref = useRef<HTMLDivElement>(null)
+    const isInView = useInView(ref, { once: true, margin: '-80px' })
+    const [revealed, setRevealed] = useState(0)
+    const isDone = revealed >= DEV_CODE.length
+
+    useEffect(() => {
+        if (!isInView) return
+        const total = DEV_CODE.length
+        let current = 0
+        const id = setInterval(() => {
+            current = Math.min(current + 2, total)
+            setRevealed(current)
+            if (current >= total) clearInterval(id)
+        }, 16)
+        return () => clearInterval(id)
+    }, [isInView])
+
+    const visibleCode = DEV_CODE.slice(0, revealed)
+    const highlighted = Prism.highlight(visibleCode, Prism.languages.python, 'python')
+
+    return (
+        <div
+            ref={ref}
+            className="rounded-xl overflow-hidden relative"
+            style={{
+                background: 'linear-gradient(145deg, #111318, #0d0e11)',
+                border: '1px solid rgba(255, 255, 255, 0.06)',
+                boxShadow: isDone ? '0 0 60px rgba(174, 164, 128, 0.06)' : undefined,
+                transition: 'box-shadow 1s ease',
+            }}
+        >
+            {/* Window bar */}
+            <div className="flex items-center gap-2 px-4 py-2.5"
+                style={{ borderBottom: '1px solid rgba(255, 255, 255, 0.04)' }}
+            >
+                <div className="flex gap-1.5">
+                    <div className="w-2.5 h-2.5 rounded-full" style={{ background: 'rgba(248, 113, 113, 0.5)' }} />
+                    <div className="w-2.5 h-2.5 rounded-full" style={{ background: 'rgba(211, 200, 168, 0.4)' }} />
+                    <div className="w-2.5 h-2.5 rounded-full" style={{ background: 'rgba(52, 211, 153, 0.4)' }} />
+                </div>
+                <span className="ml-2 text-[11px] text-text-muted" style={{ fontFamily: 'var(--font-mono)' }}>bot.py</span>
+                {!isDone && (
+                    <span className="ml-auto text-[10px] text-gold-500 opacity-60" style={{ fontFamily: 'var(--font-mono)' }}>
+                        typing…
+                    </span>
+                )}
+            </div>
+
+            {/* Code */}
+            <pre
+                className="p-4 overflow-x-auto leading-relaxed m-0"
+                style={{ background: 'transparent', fontSize: '13px', minHeight: '380px' }}
+            >
+                <code
+                    className="language-python"
+                    style={{ fontFamily: 'var(--font-mono)', fontSize: '13px' }}
+                    dangerouslySetInnerHTML={{ __html: highlighted }}
+                />
+                <span
+                    className="cursor-blink"
+                    style={{ color: '#d3c8a8', fontFamily: 'var(--font-mono)' }}
+                >▌</span>
+            </pre>
+        </div>
+    )
+}
+
 export function DeveloperSection() {
     return (
         <section id="developers" className="py-28 px-6 relative">
@@ -74,7 +145,7 @@ export function DeveloperSection() {
                         transition={{ duration: 0.6 }}
                         className="order-2 lg:order-1"
                     >
-                        <CodeBlock code={DEV_CODE} />
+                        <AnimatedCodeBlock />
                     </motion.div>
 
                     {/* Text Features Column (Right) */}
