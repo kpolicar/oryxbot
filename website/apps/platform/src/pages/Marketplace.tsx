@@ -1,4 +1,5 @@
 import { motion } from 'framer-motion'
+import { ButtonArrow } from '@shared/components/ButtonArrow'
 import { Lock } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import { MarketplaceGrid } from '../components/MarketplaceGrid'
@@ -33,11 +34,13 @@ export default function Marketplace() {
                 </p>
 
                 <div className="flex items-center justify-center gap-4">
-                    <Link to="/login" className="btn-outline">
+                    <Link to="/login" className="btn-outline group">
                         Sign In
+                        <ButtonArrow />
                     </Link>
-                    <Link to="/register" className="btn-gold">
-                        Get Access →
+                    <Link to="/register" className="btn-gold group">
+                        Get Access
+                        <ButtonArrow />
                     </Link>
                 </div>
             </motion.div>

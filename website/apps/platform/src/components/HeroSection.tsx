@@ -1,4 +1,5 @@
 import { motion } from 'framer-motion'
+import { ButtonArrow } from '@shared/components/ButtonArrow'
 import { Link } from 'react-router-dom'
 
 export function HeroSection() {
@@ -31,11 +32,13 @@ export function HeroSection() {
                     </p>
 
                     <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-                        <Link to="/register" className="btn-gold justify-center w-full sm:w-auto h-12 px-8 text-base">
+                        <Link to="/register" className="btn-gold justify-center w-full sm:w-auto h-12 px-8 text-base group">
                             Get Started
+                            <ButtonArrow />
                         </Link>
-                        <a href="#developers" className="btn-outline justify-center w-full sm:w-auto h-12 px-8 text-base">
+                        <a href="#developers" className="btn-outline justify-center w-full sm:w-auto h-12 px-8 text-base group">
                             Documentation
+                            <ButtonArrow />
                         </a>
                     </div>
                 </motion.div>

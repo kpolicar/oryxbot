@@ -1,4 +1,5 @@
 import { CodeBlock } from '@shared/components/CodeBlock'
+import { ButtonArrow } from '@shared/components/ButtonArrow'
 import { motion } from 'framer-motion'
 import { Terminal, Settings, Zap, ShoppingBag, TrendingDown } from 'lucide-react'
 import { Link } from 'react-router-dom'
@@ -124,8 +125,9 @@ export function DeveloperSection() {
                             transition={{ delay: 0.6 }}
                             className="pt-6"
                         >
-                            <Link to="/register" className="btn-gold text-base px-8 h-12 justify-center w-full sm:w-auto">
-                                Get API Key →
+                            <Link to="/register" className="btn-gold text-base px-8 h-12 justify-center w-full sm:w-auto group">
+                                Get API Key
+                                <ButtonArrow />
                             </Link>
                         </motion.div>
                     </motion.div>

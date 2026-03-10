@@ -1,4 +1,5 @@
 import { motion } from 'framer-motion'
+import { ButtonArrow } from '@shared/components/ButtonArrow'
 import { Star, Check } from 'lucide-react'
 
 export interface MarketplaceEntry {
@@ -73,9 +74,10 @@ export function MarketplaceGrid({ entries, onSubscribe }: MarketplaceGridProps) 
                                     {/* Subscribe button */}
                                     <button
                                         onClick={() => onSubscribe?.(entry.name)}
-                                        className="w-full py-3 rounded-xl bg-text-primary text-bg-primary font-semibold text-sm hover:opacity-90 transition-opacity mb-8 shadow-md"
+                                        className="w-full py-3 rounded-xl bg-text-primary text-bg-primary font-semibold text-sm hover:opacity-90 transition-opacity mb-8 shadow-md inline-flex items-center justify-center gap-1.5 group"
                                     >
                                         Subscribe
+                                        <ButtonArrow />
                                     </button>
 
                                     {/* Divider */}

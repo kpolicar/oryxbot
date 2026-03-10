@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
+import { ButtonArrow } from '@shared/components/ButtonArrow'
 import { Star, Users, Clock, TrendingUp, ArrowLeft, Activity } from 'lucide-react'
 
 /* ── Types & Constants ── */
@@ -135,7 +136,7 @@ export function UserSection() {
                     className="relative hidden lg:block w-full"
                 >
                     {/* Asymmetric 3-column layout: side cards offset & clipped, center card anchored */}
-                    <div className="relative w-full overflow-visible" style={{ height: 600 }}>
+                    <div className="relative w-full overflow-visible" style={{ height: 720 }}>
                         <div
                             className="grid gap-4 w-full pointer-events-none items-start"
                             style={{
@@ -144,8 +145,8 @@ export function UserSection() {
                         >
                             {/* Left column — starts half a card above center, fades edges */}
                             <div
-                                className="flex flex-col"
-                                style={{ transform: 'translateY(-280px)', maskImage: 'linear-gradient(to bottom, transparent 0%, black 25%, black 75%, transparent 100%), linear-gradient(to right, transparent 0%, rgba(0,0,0,0.5) 40%, black 100%)', maskComposite: 'intersect' }}
+                                className="flex flex-col gap-4"
+                                style={{ transform: 'translateY(-336px)', maskImage: 'linear-gradient(to bottom, transparent 0%, black 25%, black 75%, transparent 100%), linear-gradient(to right, transparent 0%, rgba(0,0,0,0.5) 40%, black 100%)', maskComposite: 'intersect' }}
                             >
                                 <SideBotCard bot={BOTS[0]} />
                                 <SideBotCard bot={BOTS[2]} />
@@ -187,8 +188,8 @@ export function UserSection() {
 
                             {/* Right column — starts half a card above center, fades edges */}
                             <div
-                                className="flex flex-col"
-                                style={{ transform: 'translateY(-280px)', maskImage: 'linear-gradient(to bottom, transparent 0%, black 25%, black 75%, transparent 100%), linear-gradient(to left, transparent 0%, rgba(0,0,0,0.5) 40%, black 100%)', maskComposite: 'intersect' }}
+                                className="flex flex-col gap-4"
+                                style={{ transform: 'translateY(-336px)', maskImage: 'linear-gradient(to bottom, transparent 0%, black 25%, black 75%, transparent 100%), linear-gradient(to left, transparent 0%, rgba(0,0,0,0.5) 40%, black 100%)', maskComposite: 'intersect' }}
                             >
                                 <SideBotCard bot={BOTS[1]} />
                                 <SideBotCard bot={BOTS[3]} />
@@ -261,7 +262,7 @@ function SideBotCard({ bot }: { bot: typeof BOTS[0] }) {
 function AppFrame({ children, glow }: { children: React.ReactNode; glow?: boolean }) {
     return (
         <div
-            className={`relative rounded-lg border border-border-subtle w-[280px] h-[560px] overflow-hidden ${glow
+            className={`relative rounded-lg border border-border-subtle w-[336px] h-[672px] overflow-hidden ${glow
                 ? 'shadow-[0_0_80px_rgba(174,164,128,0.15)] border-accent-gold/20'
                 : ''
                 }`}
@@ -470,7 +471,7 @@ function DetailView({ isPurchasing }: { isPurchasing: boolean }) {
 
             {/* Purchase button */}
             <motion.div
-                className={`w-full py-2.5 rounded-xl text-[11px] font-semibold text-center transition-colors duration-300 ${clicked ? 'bg-accent-green text-bg-primary' : 'text-bg-primary'
+                className={`w-full py-2.5 rounded-xl text-[11px] font-semibold text-center transition-colors duration-300 inline-flex items-center justify-center gap-1.5 group ${clicked ? 'bg-accent-green text-bg-primary' : 'text-bg-primary'
                     }`}
                 style={!clicked ? { background: 'linear-gradient(135deg, #aea480, #d3c8a8)' } : undefined}
                 animate={
@@ -482,7 +483,12 @@ function DetailView({ isPurchasing }: { isPurchasing: boolean }) {
                 }
                 transition={{ duration: 0.3 }}
             >
-                {clicked ? '✓ Launching...' : 'Purchase & Go →'}
+                {clicked ? '✓ Launching...' : (
+                    <>
+                        Purchase & Go
+                        <ButtonArrow size={11} />
+                    </>
+                )}
             </motion.div>
         </motion.div>
     )

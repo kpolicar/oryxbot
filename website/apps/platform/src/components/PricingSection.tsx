@@ -1,4 +1,5 @@
 import { motion } from 'framer-motion'
+import { ButtonArrow } from '@shared/components/ButtonArrow'
 import { Check } from 'lucide-react'
 import { Link } from 'react-router-dom'
 
@@ -59,9 +60,10 @@ function PricingCard({ title, price, priceNote, features, note, ctaText, ctaLink
 
             <Link
                 to={ctaLink}
-                className={highlighted ? 'btn-gold text-sm text-center justify-center' : 'btn-outline text-sm text-center justify-center'}
+                className={highlighted ? 'btn-gold text-sm text-center justify-center group' : 'btn-outline text-sm text-center justify-center group'}
             >
                 {ctaText}
+                <ButtonArrow />
             </Link>
         </motion.div>
     )
@@ -96,7 +98,7 @@ export function PricingSection() {
                             'Cloud execution — nothing on your machine',
                             'Priority support',
                         ]}
-                        ctaText="Get Started →"
+                        ctaText="Get Started"
                         ctaLink="/register"
                     />
                     <PricingCard
@@ -109,7 +111,7 @@ export function PricingSection() {
                             'Developer dashboard',
                         ]}
                         note="Drops to €10/month once any published script has 5+ active subscribers"
-                        ctaText="Start Building →"
+                        ctaText="Start Building"
                         ctaLink="/register"
                         highlighted
                     />

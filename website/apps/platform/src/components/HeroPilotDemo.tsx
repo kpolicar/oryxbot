@@ -1,4 +1,5 @@
 import { AlbionMinimap } from '@shared/components/AlbionMinimap'
+import { ButtonArrow } from '@shared/components/ButtonArrow'
 import { motion } from 'framer-motion'
 
 export function HeroPilotDemo() {
@@ -35,9 +36,10 @@ export function HeroPilotDemo() {
                     ))}
                 </div>
                 <a href="https://pilot.oryxbot.com" target="_blank" rel="noopener noreferrer"
-                    className="btn-gold text-sm"
+                    className="btn-gold text-sm group"
                 >
-                    Try Pilot →
+                    Try Pilot
+                    <ButtonArrow />
                 </a>
             </div>
 

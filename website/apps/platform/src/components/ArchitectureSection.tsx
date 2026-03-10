@@ -56,7 +56,7 @@ export function ArchitectureSection() {
                     whileInView={{ opacity: 1, x: 0 }}
                     viewport={{ once: true }}
                     transition={{ duration: 0.6, delay: 0.2 }}
-                    className="relative rounded-2xl p-[1px] overflow-hidden group min-h-[400px] sm:min-h-[500px] shadow-2xl"
+                    className="relative rounded-2xl p-[1px] overflow-hidden group shadow-2xl"
                 >
                     {/* Spinning Gradient Border */}
                     <div
@@ -71,7 +71,7 @@ export function ArchitectureSection() {
                     <div className="absolute inset-[1px] rounded-2xl bg-bg-card z-0" />
 
                     {/* Content Container */}
-                    <div className="relative z-10 w-full h-full p-4 sm:p-8 flex flex-col items-center justify-center">
+                    <div className="relative z-10 w-full p-4 sm:p-8 flex flex-col items-center justify-center">
                         <div className="relative w-full shadow-inner shadow-black/20 rounded-xl aspect-[4/5] sm:aspect-square md:aspect-[4/3] max-w-[500px] mx-auto border border-border-subtle/50 bg-black/10">
                             {/* SVG Lines */}
                             <svg className="absolute inset-0 w-full h-full pointer-events-none" style={{ zIndex: 0 }}>
