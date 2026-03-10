@@ -19,7 +19,7 @@ export function HeroSection() {
                     transition={{ duration: 0.6 }}
                 >
                     <span className="inline-block py-1 px-3 rounded-full border border-border-subtle bg-bg-card/50 text-xs font-medium text-gold-300 mb-6 backdrop-blur-sm shadow-sm">
-                        OryxBot System v2.0
+                        OryxBot Platform
                     </span>
 
                     <h1 className="text-4xl md:text-6xl lg:text-7xl font-extrabold text-text-primary mb-6 tracking-tight leading-tight">
@@ -28,7 +28,7 @@ export function HeroSection() {
                     </h1>
 
                     <p className="text-lg md:text-xl text-text-secondary max-w-2xl mx-auto mb-10 leading-relaxed">
-                        Pilot your character natively without client injection. Use the standalone client for automated tasks or script your own logic using the Python API.
+                        Pilot your character natively without client injection. Use the community scripts or write your own logic using our Python SDK.
                     </p>
 
                     <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
@@ -36,10 +36,6 @@ export function HeroSection() {
                             Get Started
                             <ButtonArrow />
                         </Link>
-                        <a href="#developers" className="btn-outline justify-center w-full sm:w-auto h-12 px-8 text-base group">
-                            Documentation
-                            <ButtonArrow />
-                        </a>
                     </div>
                 </motion.div>
             </div>

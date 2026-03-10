@@ -103,14 +103,14 @@ export function PricingSection() {
                     />
                     <PricingCard
                         title="Developer"
-                        price="€50 → €10/mo"
+                        price="€10/mo*"
                         features={[
-                            'Full API access',
+                            'Full SDK access',
                             'Publish scripts to Marketplace',
                             'Set your own script pricing',
                             'Developer dashboard',
                         ]}
-                        note="Drops to €10/month once any published script has 5+ active subscribers"
+                        note="* Drops to €10/month once any published script has 5+ paying subscribers"
                         ctaText="Start Building"
                         ctaLink="/register"
                         highlighted
@@ -124,7 +124,7 @@ export function PricingSection() {
                     viewport={{ once: true }}
                     transition={{ delay: 0.5 }}
                 >
-                    Marketplace script subscriptions billed separately. OryxBot takes a commission on transactions.
+                    Marketplace script subscriptions billed separately. OryxBot takes a 20% commission on transactions.
                 </motion.p>
             </div>
         </section>

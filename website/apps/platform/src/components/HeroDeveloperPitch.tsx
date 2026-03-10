@@ -46,7 +46,7 @@ export function HeroDeveloperPitch() {
                     Build with <span className="text-gradient-gold">OryxBot</span>
                 </h2>
                 <p className="text-text-secondary text-base leading-relaxed mb-5">
-                    Use our Python API to script automated workflows on top of Pilot's navigation engine.
+                    Use our Python SDK to script automated workflows on top of Pilot's navigation engine.
                     Sell your scripts on the Marketplace.
                 </p>
             </div>

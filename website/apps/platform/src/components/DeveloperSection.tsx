@@ -7,22 +7,22 @@ import { motion, useInView } from 'framer-motion'
 import { Terminal, Settings, Zap, ShoppingBag, TrendingDown } from 'lucide-react'
 import { Link } from 'react-router-dom'
 
-const DEV_CODE = `from oryxbot import Pilot, Config, Screen
+const DEV_CODE = `from oryxbot import (
+    Pilot, Config, Screen,
+    Zone, City, OnAttacked, RoutePreference,
+)
 
 # Configure navigation behavior
 config = Config(
-    on_attacked="return_to_city",
-    route_preference="roads",
+    on_attacked=OnAttacked.RETURN_TO_CITY,
+    route_preference=RoutePreference.ROADS,
 )
 
 pilot = Pilot(config)
 screen = Screen()
 
-RESOURCE_ZONE = "Stonemouth Rills"
-BANK_CITY = "Fort Sterling"
-
 while True:
-    pilot.move_to(RESOURCE_ZONE)
+    pilot.move_to(Zone.STONEMOUTH_RILLS)
     pilot.wait_until_arrived()
 
     node = screen.find("t6_ore")
@@ -30,7 +30,7 @@ while True:
     screen.wait_for("gathering_complete")
 
     if screen.find("inventory_full_indicator"):
-        pilot.move_to(BANK_CITY)
+        pilot.move_to(City.FORT_STERLING)
         pilot.wait_until_arrived()
         screen.click(482, 310)   # open bank NPC
         screen.click(520, 440)   # deposit all`
@@ -114,12 +114,12 @@ function AnimatedCodeBlock() {
 
             {/* Code */}
             <pre
-                className="p-4 overflow-x-auto leading-relaxed m-0"
-                style={{ background: 'transparent', fontSize: '13px', minHeight: '380px' }}
+                className="p-4 leading-relaxed m-0 whitespace-pre-wrap break-words"
+                style={{ background: 'transparent', fontSize: '13px', minHeight: '380px', whiteSpace: 'pre-wrap', overflowWrap: 'break-word' }}
             >
                 <code
                     className="language-python"
-                    style={{ fontFamily: 'var(--font-mono)', fontSize: '13px' }}
+                    style={{ fontFamily: 'var(--font-mono)', fontSize: '13px', whiteSpace: 'pre-wrap', overflowWrap: 'break-word' }}
                     dangerouslySetInnerHTML={{ __html: highlighted }}
                 />
                 <span
@@ -161,10 +161,10 @@ export function DeveloperSection() {
                                 For Developers
                             </span>
                             <h2 className="text-3xl lg:text-5xl font-bold text-text-primary leading-tight mb-6">
-                                Script anything on top of <br /> <span className="text-gradient-gold">Pilot</span>
+                                Script anything on top of <span className="text-gradient-gold">Pilot</span>
                             </h2>
                             <p className="text-text-secondary text-lg leading-relaxed mb-8">
-                                Use the powerful Python API to write complex logic. From simple gatherers to marketplace tycoons, Pilot exposes everything you need.
+                                Use the powerful Python SDK to write complex logic. From simple gatherers to marketplace tycoons, Pilot exposes everything you need.
                             </p>
                         </div>
 
@@ -197,7 +197,7 @@ export function DeveloperSection() {
                             className="pt-6"
                         >
                             <Link to="/register" className="btn-gold text-base px-8 h-12 justify-center w-full sm:w-auto group">
-                                Get API Key
+                                Start Building
                                 <ButtonArrow />
                             </Link>
                         </motion.div>

@@ -115,8 +115,8 @@ export function UserSection() {
                     </p>
                     <ul className="space-y-4 mb-8">
                         {[
-                            'Zero setup required',
-                            'Hundreds of community scripts',
+                            'Simple setup',
+                            'Community scripts',
                             'Automatic updates',
                         ].map((item, i) => (
                             <li key={i} className="flex items-center gap-3 text-text-secondary text-sm">

@@ -1,6 +1,8 @@
+import { SignIn } from '@clerk/clerk-react'
 import { motion } from 'framer-motion'
 import { ShieldAlert } from 'lucide-react'
 import { Link } from 'react-router-dom'
+import { clerkAppearance } from '../lib/clerkAppearance'
 
 export default function Login() {
     return (
@@ -21,22 +23,10 @@ export default function Login() {
                     </p>
                 </div>
 
-                {/* Clerk SignIn placeholder */}
-                <div className="bg-bg-card border border-border-subtle rounded-xl p-8 text-center">
-                    <p className="text-text-muted text-sm mb-2">Clerk SignIn component goes here</p>
-                    <p className="text-xs text-text-muted">
-                        Add <code className="text-accent-gold font-family-mono">VITE_CLERK_PUBLISHABLE_KEY</code> to{' '}
-                        <code className="text-accent-gold font-family-mono">.env</code> to enable authentication.
-                    </p>
+                {/* Clerk SignIn */}
+                <div className="flex justify-center">
+                    <SignIn routing="hash" appearance={clerkAppearance} signUpUrl="/register" />
                 </div>
-
-                {/* Register link */}
-                <p className="text-center mt-6 text-sm text-text-muted">
-                    Don't have an account?{' '}
-                    <Link to="/register" className="text-accent-gold hover:text-accent-gold-hover transition-colors">
-                        Register →
-                    </Link>
-                </p>
             </motion.div>
         </div>
     )

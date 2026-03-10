@@ -8,6 +8,7 @@ import Docs from './pages/Docs'
 import Register from './pages/Register'
 import RegisterPending from './pages/RegisterPending'
 import Login from './pages/Login'
+import Pilot from './pages/Pilot'
 
 function ScrollToHash() {
     const location = useLocation()
@@ -36,6 +37,7 @@ export default function App() {
                     <Route path="/register" element={<Register />} />
                     <Route path="/register/pending" element={<RegisterPending />} />
                     <Route path="/login" element={<Login />} />
+                    <Route path="/pilot" element={<Pilot />} />
                 </Routes>
             </main>
             <Footer />

@@ -20,23 +20,6 @@ export default function RegisterPending() {
                     Your request to join OryxBot has been submitted for review. We're currently selective about who
                     gets access — we'll notify you by email once your application is approved.
                 </p>
-
-                <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-                    <Link
-                        to="/#developers"
-                        className="inline-flex items-center gap-2 text-sm text-accent-gold hover:text-accent-gold-hover transition-colors"
-                    >
-                        Explore documentation <ArrowRight size={14} />
-                    </Link>
-                    <a
-                        href="https://pilot.oryxbot.com"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex items-center gap-2 text-sm text-text-muted hover:text-text-secondary transition-colors"
-                    >
-                        Check out Pilot <ArrowRight size={14} />
-                    </a>
-                </div>
             </motion.div>
         </div>
     )

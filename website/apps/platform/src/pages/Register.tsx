@@ -1,17 +1,19 @@
+import { SignUp } from '@clerk/clerk-react'
 import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { ShieldAlert } from 'lucide-react'
 import { RolePicker } from '../components/RolePicker'
+import { clerkAppearance } from '../lib/clerkAppearance'
 
 export default function Register() {
     const [selectedRole, setSelectedRole] = useState<'developer' | 'user' | null>(null)
 
     return (
         <div className="min-h-screen pt-24 pb-16 px-6 flex items-center justify-center">
-            <div className="max-w-lg w-full">
+            <div className="w-full max-w-4xl">
                 {/* Beta notice */}
                 <motion.div
-                    className="bg-accent-gold/5 border border-accent-gold/20 rounded-xl p-5 mb-8"
+                    className="bg-accent-gold/5 border border-accent-gold/20 rounded-xl p-5 mb-10"
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.5 }}
@@ -28,35 +30,42 @@ export default function Register() {
                     </div>
                 </motion.div>
 
-                {/* Step 1: Role Selection */}
-                <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.5, delay: 0.1 }}
-                >
-                    <h2 className="text-xl font-bold text-text-primary mb-2">Choose your role</h2>
-                    <p className="text-sm text-text-muted mb-6">Select how you plan to use OryxBot.</p>
-
-                    <RolePicker selected={selectedRole} onSelect={setSelectedRole} />
-                </motion.div>
-
-                {/* Step 2: Clerk SignUp placeholder */}
-                {selectedRole && (
+                {/* 2-column layout */}
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
+                    {/* Left: Role selection */}
                     <motion.div
-                        className="mt-8"
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.4 }}
+                        transition={{ duration: 0.5, delay: 0.1 }}
                     >
-                        <div className="bg-bg-card border border-border-subtle rounded-xl p-8 text-center">
-                            <p className="text-text-muted text-sm mb-2">Clerk SignUp component goes here</p>
-                            <p className="text-xs text-text-muted">
-                                Add <code className="text-accent-gold font-family-mono">VITE_CLERK_PUBLISHABLE_KEY</code> to{' '}
-                                <code className="text-accent-gold font-family-mono">.env</code> to enable authentication.
-                            </p>
-                        </div>
+                        <h2 className="text-xl font-bold text-text-primary mb-2">State your intent</h2>
+                        <p className="text-sm text-text-muted mb-6">Select how you plan to use OryxBot.</p>
+                        <RolePicker selected={selectedRole} onSelect={setSelectedRole} />
                     </motion.div>
-                )}
+
+                    {/* Right: Clerk SignUp */}
+                    <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.5, delay: 0.2 }}
+                        className="flex flex-col items-center"
+                    >
+                        {selectedRole ? (
+                            <motion.div
+                                key="signup-form"
+                                initial={{ opacity: 0, y: 10 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ duration: 0.3 }}
+                            >
+                                <SignUp routing="hash" appearance={clerkAppearance} signInUrl="/login" afterSignUpUrl="/register/pending" />
+                            </motion.div>
+                        ) : (
+                            <div className="w-full rounded-xl border border-border-subtle bg-bg-card p-10 text-center text-text-muted text-sm">
+                                Select a role on the left to continue.
+                            </div>
+                        )}
+                    </motion.div>
+                </div>
             </div>
         </div>
     )

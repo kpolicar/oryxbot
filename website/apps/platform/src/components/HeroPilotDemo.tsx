@@ -1,5 +1,6 @@
 import { AlbionMinimap } from '@shared/components/AlbionMinimap'
 import { ButtonArrow } from '@shared/components/ButtonArrow'
+import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
 
 export function HeroPilotDemo() {
@@ -35,12 +36,12 @@ export function HeroPilotDemo() {
                         </span>
                     ))}
                 </div>
-                <a href="https://pilot.oryxbot.com" target="_blank" rel="noopener noreferrer"
+                <Link to="/pilot"
                     className="btn-gold text-sm group"
                 >
                     Try Pilot
                     <ButtonArrow />
-                </a>
+                </Link>
             </div>
 
             {/* Minimap — smaller, contained */}
