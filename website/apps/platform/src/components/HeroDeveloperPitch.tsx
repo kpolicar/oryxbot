@@ -18,46 +18,47 @@ while True:
     pilot.move_to(RESOURCE_ZONE)
     pilot.wait_until_arrived()
 
-    # Gather ore — click resource nodes on screen
     node = screen.find("t6_ore")
     screen.click(node.x, node.y)
     screen.wait_for("gathering_complete")
 
-    # Check if inventory is full
     if screen.find("inventory_full_indicator"):
         pilot.move_to(BANK_CITY)
         pilot.wait_until_arrived()
         screen.click(482, 310)   # open bank NPC
-        screen.click(520, 440)   # deposit all button`
+        screen.click(520, 440)   # deposit all`
 
 export function HeroDeveloperPitch() {
     return (
         <motion.div
-            className="flex flex-col h-full"
-            initial={{ opacity: 0, x: 30 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.6, ease: 'easeOut', delay: 0.2 }}
+            className="flex flex-col"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, ease: 'easeOut', delay: 0.15 }}
         >
-            <h2 className="text-2xl lg:text-3xl font-bold text-text-primary mb-2">
-                Build with <span className="text-accent-gold">OryxBot</span>
-            </h2>
-            <p className="text-text-secondary mb-6">
-                Use our API to script automated workflows on top of Pilot's navigation engine.
-            </p>
-
-            <CodeBlock code={HERO_CODE} className="flex-1" />
-
-            <div className="mt-6 space-y-3">
-                <p className="text-sm text-text-muted italic">
-                    Sell your scripts on the Marketplace. Set a monthly price — we handle billing.
-                </p>
-                <a
-                    href="/#developers"
-                    className="inline-flex items-center gap-2 text-accent-gold hover:text-accent-gold-hover font-medium transition-colors"
+            <div className="mb-6">
+                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-[11px] font-medium tracking-wide uppercase mb-5"
+                    style={{ background: 'rgba(174, 164, 128, 0.08)', border: '1px solid rgba(174, 164, 128, 0.15)', color: '#d3c8a8' }}
                 >
-                    Read Developer Docs →
-                </a>
+                    Developer API
+                </div>
+                <h2 className="text-2xl lg:text-3xl font-bold text-text-primary mb-3 leading-tight">
+                    Build with <span className="text-gradient-gold">OryxBot</span>
+                </h2>
+                <p className="text-text-secondary text-base leading-relaxed mb-5">
+                    Use our Python API to script automated workflows on top of Pilot's navigation engine.
+                    Sell your scripts on the Marketplace.
+                </p>
             </div>
+
+            <CodeBlock code={HERO_CODE} className="mb-5" />
+
+            <p className="text-sm text-text-muted italic mb-4">
+                Set a monthly price for your scripts — we handle billing and distribution.
+            </p>
+            <a href="/#developers" className="btn-outline text-sm w-fit">
+                Read Developer Docs →
+            </a>
         </motion.div>
     )
 }

@@ -1,32 +1,27 @@
 import { RailripDiagram } from '@shared/components/RailripDiagram'
 import { motion } from 'framer-motion'
-import { Shield } from 'lucide-react'
 
 export function RailripSection() {
     return (
-        <section className="py-24 px-6">
-            <div className="max-w-6xl mx-auto">
+        <section className="py-28 px-6 relative overflow-hidden">
+            {/* Subtle radial gradient background */}
+            <div className="absolute inset-0 pointer-events-none"
+                style={{ background: 'radial-gradient(ellipse at 30% 50%, rgba(174, 164, 128, 0.03) 0%, transparent 60%)' }}
+            />
+
+            <div className="max-w-5xl mx-auto relative">
                 <motion.div
-                    className="text-center mb-16"
+                    className="mb-14"
                     initial={{ opacity: 0, y: 20 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
                     transition={{ duration: 0.5 }}
                 >
-                    <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-accent-gold/10 border border-accent-gold/20 mb-6">
-                        <Shield size={14} className="text-accent-gold" />
-                        <span className="text-sm font-medium text-accent-gold">Undetectable by Design</span>
-                    </div>
-                    <h2 className="text-3xl lg:text-4xl font-bold text-text-primary">
-                        Powered by{' '}
-                        <a
-                            href="https://railrip.com"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="text-accent-gold hover:text-accent-gold-hover underline underline-offset-4 decoration-accent-gold/30"
-                        >
-                            RailRip
-                        </a>
+                    <span className="text-[11px] font-medium tracking-[0.15em] uppercase text-gold-400 block mb-3">
+                        Architecture
+                    </span>
+                    <h2 className="text-3xl lg:text-4xl font-bold text-text-primary leading-tight">
+                        Undetectable by design
                     </h2>
                 </motion.div>
 

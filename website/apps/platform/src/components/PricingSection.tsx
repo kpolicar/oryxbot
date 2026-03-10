@@ -16,43 +16,50 @@ interface PricingCardProps {
 function PricingCard({ title, price, priceNote, features, note, ctaText, ctaLink, highlighted }: PricingCardProps) {
     return (
         <motion.div
-            className={`rounded-2xl border p-8 flex flex-col ${highlighted
-                    ? 'border-accent-gold/40 bg-accent-gold/5 shadow-lg shadow-accent-gold/5'
-                    : 'border-border-subtle bg-bg-card'
+            className={`rounded-2xl p-7 flex flex-col relative overflow-hidden ${highlighted
+                    ? 'glow-card'
+                    : 'glow-card'
                 }`}
-            initial={{ opacity: 0, y: 30 }}
+            style={highlighted ? {
+                borderColor: 'rgba(211, 200, 168, 0.2)',
+                background: 'linear-gradient(145deg, rgba(174, 164, 128, 0.06), rgba(21, 23, 28, 0.8))',
+            } : {}}
+            initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5 }}
-            whileHover={{ y: -4, transition: { duration: 0.2 } }}
+            whileHover={{ y: -3, transition: { duration: 0.2 } }}
         >
-            <h3 className="text-xl font-bold text-text-primary mb-2">{title}</h3>
+            {highlighted && (
+                <div className="absolute top-0 left-0 right-0 h-px"
+                    style={{ background: 'linear-gradient(90deg, transparent, #d3c8a8, transparent)' }}
+                />
+            )}
+
+            <h3 className="text-lg font-bold text-text-primary mb-2">{title}</h3>
             <div className="mb-6">
-                <span className="text-3xl font-bold text-accent-gold">{price}</span>
+                <span className="text-2xl font-bold text-gradient-gold-bright">{price}</span>
                 {priceNote && (
-                    <span className="text-sm text-text-muted ml-2">{priceNote}</span>
+                    <span className="text-xs text-text-muted ml-2">{priceNote}</span>
                 )}
             </div>
 
-            <ul className="space-y-3 mb-8 flex-1">
+            <ul className="space-y-3 mb-6 flex-1">
                 {features.map((feature) => (
-                    <li key={feature} className="flex items-start gap-3 text-sm text-text-secondary">
-                        <Check size={16} className="text-accent-gold shrink-0 mt-0.5" />
+                    <li key={feature} className="flex items-start gap-2.5 text-sm text-text-secondary">
+                        <Check size={14} className="text-gold-300 shrink-0 mt-0.5" />
                         {feature}
                     </li>
                 ))}
             </ul>
 
             {note && (
-                <p className="text-xs text-text-muted mb-6 italic">{note}</p>
+                <p className="text-[11px] text-text-muted mb-5 italic">{note}</p>
             )}
 
             <Link
                 to={ctaLink}
-                className={`text-center font-medium py-3 px-6 rounded-lg transition-colors ${highlighted
-                        ? 'bg-accent-gold text-bg-primary hover:bg-accent-gold-hover'
-                        : 'bg-bg-card-hover text-text-primary hover:bg-border-subtle'
-                    }`}
+                className={highlighted ? 'btn-gold text-sm text-center justify-center' : 'btn-outline text-sm text-center justify-center'}
             >
                 {ctaText}
             </Link>
@@ -62,26 +69,33 @@ function PricingCard({ title, price, priceNote, features, note, ctaText, ctaLink
 
 export function PricingSection() {
     return (
-        <section id="pricing" className="py-24 px-6 bg-bg-secondary/30">
-            <div className="max-w-4xl mx-auto">
-                <motion.h2
-                    className="text-3xl lg:text-4xl font-bold text-text-primary text-center mb-16"
+        <section id="pricing" className="py-28 px-6 relative">
+            <div className="absolute inset-0 pointer-events-none section-gradient" />
+
+            <div className="max-w-3xl mx-auto relative">
+                <motion.div
+                    className="text-center mb-14"
                     initial={{ opacity: 0, y: 20 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
                     transition={{ duration: 0.5 }}
                 >
-                    Simple <span className="text-accent-gold">Pricing</span>
-                </motion.h2>
+                    <span className="text-[11px] font-medium tracking-[0.15em] uppercase text-gold-400 block mb-3">
+                        Pricing
+                    </span>
+                    <h2 className="text-3xl lg:text-4xl font-bold text-text-primary">
+                        Simple <span className="text-gradient-gold">pricing</span>
+                    </h2>
+                </motion.div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <PricingCard
                         title="User"
                         price="€50/month"
                         features={[
                             'OryxBot Pilot access',
                             'Access to Marketplace scripts',
-                            'Cloud execution (no local cheat software)',
+                            'Cloud execution — nothing on your machine',
                             'Priority support',
                         ]}
                         ctaText="Get Started →"
@@ -89,14 +103,14 @@ export function PricingSection() {
                     />
                     <PricingCard
                         title="Developer"
-                        price="€50/month → €10/month"
+                        price="€50 → €10/mo"
                         features={[
                             'Full API access',
                             'Publish scripts to Marketplace',
-                            'Set your own monthly price for scripts',
+                            'Set your own script pricing',
                             'Developer dashboard',
                         ]}
-                        note="Drops to €10/month once any of your published scripts has 5+ active subscribers"
+                        note="Drops to €10/month once any published script has 5+ active subscribers"
                         ctaText="Start Building →"
                         ctaLink="/register"
                         highlighted
@@ -104,14 +118,13 @@ export function PricingSection() {
                 </div>
 
                 <motion.p
-                    className="text-center text-sm text-text-muted mt-10 italic"
+                    className="text-center text-xs text-text-muted mt-8"
                     initial={{ opacity: 0 }}
                     whileInView={{ opacity: 1 }}
                     viewport={{ once: true }}
                     transition={{ delay: 0.5 }}
                 >
-                    Marketplace script subscriptions are billed separately by each script's author. OryxBot takes a
-                    commission on marketplace transactions.
+                    Marketplace script subscriptions billed separately. OryxBot takes a commission on transactions.
                 </motion.p>
             </div>
         </section>
