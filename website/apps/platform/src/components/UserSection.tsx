@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Star, Users, Clock, TrendingUp, ArrowLeft, Activity, Wifi, Battery, Signal } from 'lucide-react'
+import { Star, Users, Clock, TrendingUp, ArrowLeft, Activity } from 'lucide-react'
 
 /* ── Types & Constants ── */
 
@@ -15,12 +15,56 @@ const PHASE_SCHEDULE: [Phase, number][] = [
 ]
 const CYCLE_MS = 19000
 
-/* ── Side phone static content ── */
-
-const SIDE_SCRIPTS = {
-    left: { name: 'Caerleon Courier', author: '@fastroutes', price: '€5/mo', tag: 'Navigation', rating: 4 },
-    right: { name: 'WoodCutter Elite', author: '@lumberai', price: '€7/mo', tag: 'Gathering', rating: 3 },
-}
+const BOTS = [
+    {
+        title: 'Personal Island Farming',
+        loop: 'Walk to a dirt square, plant seed, water, wait 24h, harvest. Repeat for every square.',
+        why: 'Zero combat, zero risk, zero dynamic interaction. Just menus and clicking on the ground.',
+        tag: 'Farming',
+        price: '€10/mo',
+        rating: 4.8
+    },
+    {
+        title: 'Refining and Mass Crafting',
+        loop: 'Overload mount, walk slowly to refining station, craft, watch progress bar. Walk back.',
+        why: 'Incredibly monotonous idle loop converting Item A into Item B.',
+        tag: 'Crafting',
+        price: '€12/mo',
+        rating: 4.5
+    },
+    {
+        title: 'Safe Zone Fishing',
+        loop: 'Cast line, keep bobber in the green zone until caught. Move down the shore.',
+        why: 'Muscle memory mini-game in Blue/Yellow zones. Zone out and watch a second monitor.',
+        tag: 'Fishing',
+        price: '€8/mo',
+        rating: 4.9
+    },
+    {
+        title: 'Safe Zone Gathering',
+        loop: 'Mount up, run in a circle. Click glowing node, wait, remount. Repeat.',
+        why: 'Zero full-loot PvP threat. The backbone of the economy, easily automated.',
+        tag: 'Gathering',
+        price: '€9/mo',
+        rating: 4.7
+    },
+    {
+        title: 'Laborers Management',
+        loop: 'Fill journals, hand them out, collect silver next day. Repeat across islands.',
+        why: 'Pure menu navigation. No combat, no movement — just click and collect.',
+        tag: 'Economy',
+        price: '€7/mo',
+        rating: 4.6
+    },
+    {
+        title: 'Market Flipping',
+        loop: 'Scan buy/sell orders, place undercuts, collect fulfilled orders. Relist.',
+        why: 'Spreadsheet gameplay. Repetitive price checking and order placement.',
+        tag: 'Trading',
+        price: '€15/mo',
+        rating: 4.4
+    }
+]
 
 /* ── Main Component ── */
 
@@ -49,75 +93,107 @@ export function UserSection() {
 
     return (
         <section className="py-28 px-6 relative overflow-hidden">
-            <div
-                className="absolute inset-0 pointer-events-none"
-                style={{ background: 'radial-gradient(ellipse at 50% 60%, rgba(174, 164, 128, 0.04) 0%, transparent 60%)' }}
-            />
-
-            <div className="max-w-5xl mx-auto relative">
-                {/* Header */}
+            <div className="max-w-[90rem] mx-auto relative grid grid-cols-1 lg:grid-cols-[2fr_3fr] gap-16 items-start">
+                {/* Header Text - Left Column */}
                 <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
+                    initial={{ opacity: 0, x: -30 }}
+                    whileInView={{ opacity: 1, x: 0 }}
                     viewport={{ once: true }}
-                    transition={{ duration: 0.5 }}
-                    className="text-center mb-16"
+                    transition={{ duration: 0.6 }}
+                    className="text-left z-10"
                 >
                     <span className="text-[11px] font-medium tracking-[0.15em] uppercase text-gold-400 block mb-3">
                         OryxBot Marketplace
                     </span>
-                    <h2 className="text-3xl lg:text-4xl font-bold text-text-primary mb-4">
+                    <h2 className="text-3xl lg:text-5xl font-bold text-text-primary mb-6 leading-tight">
                         Discover, purchase, and <span className="text-gradient-gold">go</span>
                     </h2>
-                    <p className="text-text-secondary max-w-xl mx-auto leading-relaxed">
+                    <p className="text-text-secondary text-lg leading-relaxed mb-8">
                         Browse community-built scripts on the marketplace. Find what you need,
-                        hit purchase, and your bot is running in seconds.
+                        hit purchase, and your bot is running in seconds. All executed safely in the cloud.
                     </p>
+                    <ul className="space-y-4 mb-8">
+                        {[
+                            'Zero setup required',
+                            'Hundreds of community scripts',
+                            'Automatic updates',
+                        ].map((item, i) => (
+                            <li key={i} className="flex items-center gap-3 text-text-secondary text-sm">
+                                <span className="w-1.5 h-1.5 rounded-full bg-accent-gold" />
+                                {item}
+                            </li>
+                        ))}
+                    </ul>
                 </motion.div>
 
-                {/* Phone trio — Clerk-style layout */}
+                {/* Animated Layout — Right Column */}
                 <motion.div
-                    initial={{ opacity: 0, y: 30 }}
-                    whileInView={{ opacity: 1, y: 0 }}
+                    initial={{ opacity: 0, x: 30 }}
+                    whileInView={{ opacity: 1, x: 0 }}
                     viewport={{ once: true }}
                     transition={{ duration: 0.6, delay: 0.2 }}
-                    className="relative flex items-end justify-center gap-0"
+                    className="relative hidden lg:block w-full"
                 >
-                    {/* Left faded phone */}
-                    <div className="hidden lg:block relative z-0 -mr-3 mb-8">
-                        <div className="opacity-[0.15] scale-[0.88]">
-                            <PhoneFrame>
-                                <SidePhoneContent script={SIDE_SCRIPTS.left} />
-                            </PhoneFrame>
-                        </div>
-                        {/* Fade overlay */}
-                        <div className="absolute inset-0 pointer-events-none" style={{ background: 'linear-gradient(90deg, rgba(10,11,13,0.7) 0%, transparent 60%)' }} />
-                    </div>
-
-                    {/* Center phone — main animation */}
-                    <div className="relative z-10">
-                        <PhoneFrame glow>
-                            <BrowserBar phase={phase} />
-                            <div className="relative h-[calc(100%-24px)] overflow-hidden">
-                                <AnimatePresence mode="wait">
-                                    {showBrowse && <BrowseView key="browse" isHovering={phase === 'hover'} />}
-                                    {showDetail && <DetailView key="detail" isPurchasing={phase === 'purchase'} />}
-                                    {phase === 'dashboard' && <DashboardView key="dashboard" />}
-                                </AnimatePresence>
-                                <CursorOverlay phase={phase} />
+                    {/* Asymmetric 3-column layout: side cards offset & clipped, center card anchored */}
+                    <div className="relative w-full overflow-visible" style={{ height: 600 }}>
+                        <div
+                            className="grid gap-4 w-full pointer-events-none items-start"
+                            style={{
+                                gridTemplateColumns: '1fr 1fr 1fr',
+                            }}
+                        >
+                            {/* Left column — starts half a card above center, fades edges */}
+                            <div
+                                className="flex flex-col"
+                                style={{ transform: 'translateY(-280px)', maskImage: 'linear-gradient(to bottom, transparent 0%, black 25%, black 75%, transparent 100%), linear-gradient(to right, transparent 0%, rgba(0,0,0,0.5) 40%, black 100%)', maskComposite: 'intersect' }}
+                            >
+                                <SideBotCard bot={BOTS[0]} />
+                                <SideBotCard bot={BOTS[2]} />
                             </div>
-                        </PhoneFrame>
-                    </div>
 
-                    {/* Right faded phone */}
-                    <div className="hidden lg:block relative z-0 -ml-3 mb-8">
-                        <div className="opacity-[0.15] scale-[0.88]">
-                            <PhoneFrame>
-                                <SidePhoneContent script={SIDE_SCRIPTS.right} />
-                            </PhoneFrame>
+                            {/* Center column — card above (clipped), animated primary, card below (clipped) */}
+                            <div className="flex flex-col items-center z-10">
+                                {/* Card peeking from above — pulled out of flow with negative margin, translated up */}
+                                <div style={{ marginBottom: 0, height: 0, overflow: 'visible' }}>
+                                    <div style={{
+                                        transform: 'translateY(-100%)',
+                                        maskImage: 'linear-gradient(to bottom, transparent 0%, transparent 40%, black 100%)',
+                                    }}>
+                                        <SideBotCard bot={BOTS[4]} />
+                                    </div>
+                                </div>
+                                <div className="shadow-2xl shadow-black/60 rounded-lg pointer-events-auto relative z-10">
+                                    <AppFrame glow>
+                                        <BrowserBar phase={phase} />
+                                        <div className="relative h-[calc(100%-24px)] overflow-hidden">
+                                            <AnimatePresence mode="wait">
+                                                {showBrowse && <BrowseView key="browse" isHovering={phase === 'hover'} />}
+                                                {showDetail && <DetailView key="detail" isPurchasing={phase === 'purchase'} />}
+                                                {phase === 'dashboard' && <DashboardView key="dashboard" />}
+                                            </AnimatePresence>
+                                            <CursorOverlay phase={phase} />
+                                        </div>
+                                    </AppFrame>
+                                </div>
+                                {/* Card peeking below — fades out at bottom */}
+                                <div style={{ marginTop: -4 }}>
+                                    <div style={{
+                                        maskImage: 'linear-gradient(to bottom, black 0%, transparent 40%, transparent 100%)',
+                                    }}>
+                                        <SideBotCard bot={BOTS[5]} />
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Right column — starts half a card above center, fades edges */}
+                            <div
+                                className="flex flex-col"
+                                style={{ transform: 'translateY(-280px)', maskImage: 'linear-gradient(to bottom, transparent 0%, black 25%, black 75%, transparent 100%), linear-gradient(to left, transparent 0%, rgba(0,0,0,0.5) 40%, black 100%)', maskComposite: 'intersect' }}
+                            >
+                                <SideBotCard bot={BOTS[1]} />
+                                <SideBotCard bot={BOTS[3]} />
+                            </div>
                         </div>
-                        {/* Fade overlay */}
-                        <div className="absolute inset-0 pointer-events-none" style={{ background: 'linear-gradient(-90deg, rgba(10,11,13,0.7) 0%, transparent 60%)' }} />
                     </div>
                 </motion.div>
             </div>
@@ -125,73 +201,76 @@ export function UserSection() {
     )
 }
 
-/* ── Phone Frame ── */
-
-function PhoneFrame({ children, glow }: { children: React.ReactNode; glow?: boolean }) {
+function SideBotCard({ bot }: { bot: typeof BOTS[0] }) {
+    const slug = bot.title.toLowerCase().replace(/\s+/g, '')
     return (
-        <div
-            className={`relative rounded-[2.5rem] border-[3px] w-[280px] h-[560px] overflow-hidden ${
-                glow
-                    ? 'border-white/[0.12] shadow-[0_0_80px_rgba(174,164,128,0.08)]'
-                    : 'border-white/[0.06]'
-            }`}
-            style={{ background: 'linear-gradient(145deg, #0f1014, #0a0b0d)' }}
-        >
-            {/* Notch */}
-            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-28 h-6 rounded-b-2xl bg-black z-30" />
-
-            {/* Status bar */}
-            <div className="relative z-20 flex items-center justify-between px-6 pt-2 pb-1">
-                <span className="text-[8px] text-text-muted font-medium">9:41</span>
-                <div className="flex items-center gap-1">
-                    <Signal size={8} className="text-text-muted" />
-                    <Wifi size={8} className="text-text-muted" />
-                    <Battery size={8} className="text-text-muted" />
+        <AppFrame>
+            <div className="flex items-center h-6 px-3 border-b border-border-subtle bg-bg-card/30">
+                <div className="flex items-center gap-1 flex-1 min-w-0">
+                    <svg width="8" height="8" viewBox="0 0 16 16" className="shrink-0 text-accent-green">
+                        <path d="M8 1a3.5 3.5 0 0 0-3.5 3.5V6H3a1 1 0 0 0-1 1v7a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V7a1 1 0 0 0-1-1h-1.5V4.5A3.5 3.5 0 0 0 8 1z" fill="currentColor" />
+                    </svg>
+                    <span className="text-[7px] text-text-muted truncate font-[family-name:var(--font-family-mono)] opacity-70">
+                        dashboard.oryxbot.com/marketplace/{slug}
+                    </span>
                 </div>
             </div>
 
-            {/* Content area */}
-            <div className="relative h-[508px]">
-                {children}
-            </div>
+            <div className="absolute inset-0 top-6 p-4 pt-2">
+                {/* Back */}
+                <div className="flex items-center gap-1 mb-3 text-text-muted">
+                    <ArrowLeft size={10} />
+                    <span className="text-[8px]">Back</span>
+                </div>
 
-            {/* Home indicator */}
-            <div className="absolute bottom-2 left-1/2 -translate-x-1/2 w-28 h-1 rounded-full bg-white/10" />
-        </div>
+                {/* Header */}
+                <div className="flex items-start justify-between mb-2">
+                    <div>
+                        <h3 className="text-[13px] font-bold text-accent-gold leading-tight">{bot.title}</h3>
+                        <span className="text-[9px] text-text-muted">by @botsmith</span>
+                    </div>
+                </div>
+
+                {/* Rating */}
+                <div className="flex items-center gap-0.5 mb-3">
+                    {[1, 2, 3, 4, 5].map((s) => (
+                        <Star
+                            key={s}
+                            size={9}
+                            className={s <= bot.rating ? 'text-accent-gold fill-accent-gold' : 'text-accent-gold/30 fill-accent-gold/30'}
+                        />
+                    ))}
+                    <span className="text-[8px] text-text-muted ml-1">{bot.rating} · verified</span>
+                </div>
+
+                <div className="space-y-4 mt-6">
+                    <div className="rounded-lg border border-border-subtle bg-bg-card/50 p-3">
+                        <span className="text-[9px] font-bold text-text-muted uppercase tracking-[0.1em] block mb-1.5">The Loop</span>
+                        <p className="text-[10px] text-text-secondary leading-relaxed">{bot.loop}</p>
+                    </div>
+                    <div className="rounded-lg border border-border-subtle bg-bg-card/50 p-3">
+                        <span className="text-[9px] font-bold text-text-muted uppercase tracking-[0.1em] block mb-1.5">Why it fits</span>
+                        <p className="text-[10px] text-text-secondary leading-relaxed">{bot.why}</p>
+                    </div>
+                </div>
+            </div>
+        </AppFrame>
     )
 }
 
-/* ── Side Phone Content (static) ── */
-
-function SidePhoneContent({ script }: { script: typeof SIDE_SCRIPTS.left }) {
+function AppFrame({ children, glow }: { children: React.ReactNode; glow?: boolean }) {
     return (
-        <div className="p-4 pt-8">
-            {/* Fake header */}
-            <div className="text-[9px] text-text-muted mb-3 font-medium">Marketplace</div>
-
-            {/* Script card */}
-            <div className="rounded-lg border border-border-subtle bg-bg-card/50 p-3 mb-3">
-                <div className="flex items-start justify-between mb-2">
-                    <span className="text-[10px] font-semibold text-text-primary">{script.name}</span>
-                    <span className="text-[9px] font-bold text-accent-gold">{script.price}</span>
-                </div>
-                <span className="text-[8px] text-text-muted block mb-2">{script.author}</span>
-                <div className="flex items-center gap-0.5 mb-2">
-                    {[1, 2, 3, 4, 5].map((s) => (
-                        <Star key={s} size={7} className={s <= script.rating ? 'text-accent-gold fill-accent-gold' : 'text-border-subtle'} />
-                    ))}
-                </div>
-                <span className="text-[8px] px-1.5 py-0.5 rounded bg-bg-surface text-text-muted">{script.tag}</span>
+        <div
+            className={`relative rounded-lg border border-border-subtle w-[280px] h-[560px] overflow-hidden ${glow
+                ? 'shadow-[0_0_80px_rgba(174,164,128,0.15)] border-accent-gold/20'
+                : ''
+                }`}
+            style={{ background: 'linear-gradient(145deg, #0f1014, #0a0b0d)' }}
+        >
+            {/* Content area */}
+            <div className="relative h-full w-full">
+                {children}
             </div>
-
-            {/* Placeholder cards */}
-            {[1, 2, 3].map((i) => (
-                <div key={i} className="rounded-lg border border-border-subtle bg-bg-card/30 p-3 mb-2">
-                    <div className="h-2 w-20 rounded bg-bg-surface mb-2" />
-                    <div className="h-1.5 w-14 rounded bg-bg-surface/60 mb-2" />
-                    <div className="h-1.5 w-24 rounded bg-bg-surface/40" />
-                </div>
-            ))}
         </div>
     )
 }
@@ -261,11 +340,10 @@ function BrowseView({ isHovering }: { isHovering: boolean }) {
                 {['All', 'Gathering', 'Fishing'].map((cat, i) => (
                     <span
                         key={cat}
-                        className={`text-[8px] px-2 py-0.5 rounded-full border whitespace-nowrap ${
-                            i === 0
-                                ? 'border-accent-gold/40 text-accent-gold bg-accent-gold/5'
-                                : 'border-border-subtle text-text-muted'
-                        }`}
+                        className={`text-[8px] px-2 py-0.5 rounded-full border whitespace-nowrap ${i === 0
+                            ? 'border-accent-gold/40 text-accent-gold bg-accent-gold/5'
+                            : 'border-border-subtle text-text-muted'
+                            }`}
                     >
                         {cat}
                     </span>
@@ -392,16 +470,15 @@ function DetailView({ isPurchasing }: { isPurchasing: boolean }) {
 
             {/* Purchase button */}
             <motion.div
-                className={`w-full py-2.5 rounded-xl text-[11px] font-semibold text-center transition-colors duration-300 ${
-                    clicked ? 'bg-accent-green text-bg-primary' : 'text-bg-primary'
-                }`}
+                className={`w-full py-2.5 rounded-xl text-[11px] font-semibold text-center transition-colors duration-300 ${clicked ? 'bg-accent-green text-bg-primary' : 'text-bg-primary'
+                    }`}
                 style={!clicked ? { background: 'linear-gradient(135deg, #aea480, #d3c8a8)' } : undefined}
                 animate={
                     isPurchasing && !clicked
                         ? { scale: [1, 0.96, 1] }
                         : clicked
-                          ? { scale: [0.96, 1.02, 1] }
-                          : {}
+                            ? { scale: [0.96, 1.02, 1] }
+                            : {}
                 }
                 transition={{ duration: 0.3 }}
             >

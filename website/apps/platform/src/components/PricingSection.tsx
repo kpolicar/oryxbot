@@ -17,8 +17,8 @@ function PricingCard({ title, price, priceNote, features, note, ctaText, ctaLink
     return (
         <motion.div
             className={`rounded-2xl p-7 flex flex-col relative overflow-hidden ${highlighted
-                    ? 'glow-card'
-                    : 'glow-card'
+                ? 'glow-card'
+                : 'glow-card'
                 }`}
             style={highlighted ? {
                 borderColor: 'rgba(211, 200, 168, 0.2)',
@@ -70,8 +70,6 @@ function PricingCard({ title, price, priceNote, features, note, ctaText, ctaLink
 export function PricingSection() {
     return (
         <section id="pricing" className="py-28 px-6 relative">
-            <div className="absolute inset-0 pointer-events-none section-gradient" />
-
             <div className="max-w-3xl mx-auto relative">
                 <motion.div
                     className="text-center mb-14"
