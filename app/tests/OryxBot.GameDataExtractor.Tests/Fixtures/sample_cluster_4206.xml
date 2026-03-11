@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<cluster id="4206" displayname="@CLUSTER_4206" type="WORLD">
+  <exits>
+    <exit id="exit_south" targetcluster="4205" targetexitid="exit_north">
+      <position x="128.5" y="255.0" />
+    </exit>
+  </exits>
+</cluster>
