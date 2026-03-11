@@ -57,7 +57,7 @@ export default function Register() {
                                 animate={{ opacity: 1, y: 0 }}
                                 transition={{ duration: 0.3 }}
                             >
-                                <SignUp routing="hash" appearance={clerkAppearance} signInUrl="/login" afterSignUpUrl="/register/pending" />
+                                <SignUp routing="hash" appearance={clerkAppearance} signInUrl="/login" afterSignUpUrl="/register/pending" unsafeMetadata={{ role: selectedRole }} />
                             </motion.div>
                         ) : (
                             <div className="w-full rounded-xl border border-border-subtle bg-bg-card p-10 text-center text-text-muted text-sm">

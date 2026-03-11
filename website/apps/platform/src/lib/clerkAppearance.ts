@@ -1,4 +1,6 @@
-import type { Appearance } from '@clerk/clerk-react'
+import type { ClerkProviderProps } from '@clerk/clerk-react'
+
+type Appearance = NonNullable<ClerkProviderProps['appearance']>
 
 export const clerkAppearance: Appearance = {
     variables: {

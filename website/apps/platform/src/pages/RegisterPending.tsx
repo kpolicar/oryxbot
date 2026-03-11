@@ -1,8 +1,13 @@
 import { motion } from 'framer-motion'
 import { CheckCircle, ArrowRight } from 'lucide-react'
 import { Link } from 'react-router-dom'
+import { useEffect } from 'react'
+import { trackSignUp } from '../lib/analytics'
 
 export default function RegisterPending() {
+    useEffect(() => {
+        trackSignUp()
+    }, [])
     return (
         <div className="min-h-screen pt-24 pb-16 px-6 flex items-center justify-center">
             <motion.div

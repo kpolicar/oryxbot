@@ -103,7 +103,7 @@ export function PricingSection() {
                     />
                     <PricingCard
                         title="Developer"
-                        price="€10/mo*"
+                        price="€10/month*"
                         features={[
                             'Full SDK access',
                             'Publish scripts to Marketplace',
