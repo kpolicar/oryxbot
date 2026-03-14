@@ -1,199 +1,386 @@
-let network = null;
-let nodesData = new vis.DataSet([]);
-let edgesData = new vis.DataSet([]);
-let allNodes = [];
-let allEdges = [];
-let graphData = null;
+// Map configuration matching albionfreemarket's coordinate system
+const CONFIG = {
+    map: {
+        tilePath: 'data/tiles/maps/{z}/map_{x}_{y}.webp',
+        options: {
+            crs: L.CRS.Simple,
+            minZoom: 0,
+            maxZoom: 7,
+            zoomAnimationThreshold: 0
+        },
+        view: { center: [-180, 130], zoom: 1 },
+        tileLayer: {
+            tileSize: 256,
+            noWrap: true,
+            maxNativeZoom: 6,
+            minZoom: 0,
+            zoomOffset: 0
+        }
+    },
+    coordinates: {
+        xOffset: 128,
+        yOffset: -128,
+        scaleFactor: 200,
+        gameScale: { sourceRange: 800, targetRange: 256 }
+    },
+    minZoomForOverlays: 5,
+    maxConcurrentLoads: 8,
+    viewportPadding: 0.2
+};
 
-document.addEventListener('DOMContentLoaded', () => {
-    initApp();
-});
+// PvP category colors
+const PVP_COLORS = {
+    blue:   '#2196F3',
+    yellow: '#FFC107',
+    red:    '#f44336',
+    black:  '#9C27B0',
+    other:  '#888888'
+};
+
+// Coordinate transformer
+const CoordTransform = {
+    gameToMap(val) {
+        return val / CONFIG.coordinates.gameScale.sourceRange * CONFIG.coordinates.gameScale.targetRange;
+    },
+    applyOffsets([x, y]) {
+        return [x + CONFIG.coordinates.xOffset, y + CONFIG.coordinates.yOffset];
+    },
+    worldToMapCenter(worldmapposition) {
+        if (!worldmapposition) return null;
+        const mx = this.gameToMap(worldmapposition[0]);
+        const my = this.gameToMap(worldmapposition[1]);
+        const [x, y] = this.applyOffsets([mx, my]);
+        return { x, y };
+    }
+};
+
+let map = null;
+let markersLayer = null;
+let edgesLayer = null;
+let overlaysLayer = null;
+let graphData = null;
+let allClusters = [];      // marker objects
+let clusterDataMap = {};   // id -> { cluster, loc, mapCenter, marker }
+let activeOverlays = new Map(); // id -> imageOverlay
+let loadingOverlays = new Set();
+
+function getPvpColor(loc, cluster) {
+    const pvp = (loc && loc.pvpCategory) || '';
+    return PVP_COLORS[pvp] || PVP_COLORS.other;
+}
+
+document.addEventListener('DOMContentLoaded', () => initApp());
 
 async function initApp() {
     try {
-        const response = await fetch('data/world-graph.json?v=3');
-        if (!response.ok) {
-            throw new Error(`Failed to load data: ${response.statusText}`);
+        const [graphResp, locResp] = await Promise.all([
+            fetch('data/world-graph.json?v=3'),
+            fetch('data/albionLocations.json').catch(() => null)
+        ]);
+
+        if (!graphResp.ok) throw new Error(`Failed to load data: ${graphResp.statusText}`);
+        graphData = await graphResp.json();
+
+        let locations = null;
+        if (locResp && locResp.ok) {
+            locations = await locResp.json();
         }
-        graphData = await response.json();
-        
+
         document.getElementById('loading').style.display = 'none';
-        processData(graphData);
-        drawNetwork();
+        initMap();
+        processData(graphData, locations);
         setupEventListeners();
     } catch (error) {
-        document.getElementById('loading').innerText = 'Error: Data not found. Ensure --output is mapped to data/world-graph.json';
+        document.getElementById('loading').innerText = 'Error loading data: ' + error.message;
         console.error(error);
     }
 }
 
-function processData(data) {
+function initMap() {
+    map = L.map('map', {
+        ...CONFIG.map.options,
+        attributionControl: false,
+        zoomAnimation: true,
+        fadeAnimation: true,
+        markerZoomAnimation: true
+    }).setView(CONFIG.map.view.center, CONFIG.map.view.zoom);
+
+    L.tileLayer(CONFIG.map.tilePath, CONFIG.map.tileLayer).addTo(map);
+
+    edgesLayer = L.layerGroup().addTo(map);
+    overlaysLayer = L.layerGroup().addTo(map);
+    markersLayer = L.layerGroup().addTo(map);
+
+    map.on('zoomend moveend', () => {
+        updateMarkerSizes();
+        updateOverlays();
+    });
+}
+
+function processData(data, locations) {
     if (!data.clusters) return;
 
-    Object.values(data.clusters).forEach(c => {
-        let color = '#4ade80'; // WORLD
-        if (c.type === 'CITY') color = '#fbbf24';
-        else if (c.type === 'DUNGEON') color = '#9ca3af';
-
-        // Try to load a minimap tile image from the CDN based on the cluster's internal name.
-        // For example, internalName is something like "4210_WRL_MN_AUTO_T3_HER_ROY"
-        let imagePath = null;
-        if (c.internalName) {
-            imagePath = `https://cdn.albionfreemarket.com/AlbionWorld/map/images/${c.internalName}.webp`;
-        } else {
-            // Fallback to our local biome textures if internalName isn't present
-            let biomeImg = 'map_albion.png';
-            if (c.biome === 'ST') biomeImg = 'map_albion_steppe.png';
-            else if (c.biome === 'FR') biomeImg = 'map_albion_forest.png';
-            else if (c.biome === 'MN') biomeImg = 'map_albion_mountain.png';
-            else if (c.biome === 'SW') biomeImg = 'map_albion_swamp.png';
-            else if (c.biome === 'HL') biomeImg = 'map_albion_highlands.png';
-            imagePath = `data/tiles/${biomeImg}`;
-        }
-        
-        let node = {
-            id: c.id,
-            label: c.displayName || c.id,
-            title: `ID: ${c.id}<br>Type: ${c.type}<br>Tier: ${c.tier || 'N/A'}<br>Biome: ${c.biome || 'N/A'}<br>File: ${c.internalName || 'N/A'}<br>Coords: ${c.worldX}, ${c.worldY}`,
-            group: c.type,
-            color: { background: color, border: '#222' },
-            font: { color: '#fff' },
-            shape: 'image', // try loading image
-            image: imagePath,
-            brokenImage: `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="60" height="60"><rect width="60" height="60" fill="${encodeURIComponent(color)}" rx="8" stroke="%23222" stroke-width="2"/></svg>`,
-            size: 35 // larger size for images to create a tiled effect
-        };
-
-        if (c.worldX !== undefined && c.worldY !== undefined) {
-            node.x = c.worldX * 15;
-            node.y = -c.worldY * 15; 
-            allNodes.push(node);
-        }
-    });
-
-    if (data.edges) {
-        data.edges.forEach(e => {
-            allEdges.push({
-                from: e.fromClusterId,
-                to: e.toClusterId,
-                color: { color: '#444', highlight: '#fbbf24' }
-            });
+    const locLookup = new Map();
+    if (locations) {
+        locations.forEach(loc => {
+            if (loc.id) locLookup.set(loc.id, loc);
         });
     }
 
-    nodesData.add(allNodes);
-    edgesData.add(allEdges);
-}
+    Object.values(data.clusters).forEach(c => {
+        let mapCenter = null;
+        const loc = locLookup.get(c.id);
 
-function drawNetwork() {
-    const container = document.getElementById('network-container');
-    const data = {
-        nodes: nodesData,
-        edges: edgesData
-    };
-    const options = {
-        nodes: {
-            shape: 'dot',
-            size: 30, // Default for non-image nodes
-            borderWidth: 2,
-            shapeProperties: {
-                useBorderWithImage: true
-            }
-        },
-        edges: {
-            width: 1,
-            smooth: {
-                type: 'continuous'
-            }
-        },
-        physics: false,
-        interaction: {
-            hover: true,
-            tooltipDelay: 200
+        if (loc && loc.worldmapposition) {
+            const wmp = Array.isArray(loc.worldmapposition)
+                ? loc.worldmapposition
+                : [loc.worldmapposition.x, loc.worldmapposition.y];
+            mapCenter = CoordTransform.worldToMapCenter(wmp);
         }
-    };
 
-    network = new vis.Network(container, data, options);
+        if (!mapCenter && c.worldX !== undefined && c.worldY !== undefined) {
+            mapCenter = CoordTransform.worldToMapCenter([c.worldX, c.worldY]);
+        }
 
-    // Load background image
-    const bgImage = new Image();
-    bgImage.src = 'data/tiles/worldmap_upscaled.png';
+        if (!mapCenter) return;
 
-    // Hook into the canvas drawing to paint the map underneath nodes
-    network.on('beforeDrawing', function(ctx) {
-        if (!bgImage.complete) return;
+        const color = getPvpColor(loc, c);
+        const displayName = c.displayName || (loc && loc.displayName) || c.id;
+        const tierStr = c.tier || (loc && loc.tier) || '?';
 
-        // The image is 512x1024.
-        // Our nodes are scaled by a factor of 15 from their natural worldX and worldY coordinates.
-        // The game origin (0,0) represents the exact center of this image (256, 512 in pixel space).
-        
-        const scale = 15;
-        const mapWidth = 512 * scale; 
-        const mapHeight = 1024 * scale; 
-        
-        // Center the image around the origin 0,0
-        const offsetX = 0;
-        const offsetY = 0;
+        const marker = L.circleMarker([mapCenter.y, mapCenter.x], {
+            radius: 4,
+            color: '#000',
+            weight: 1,
+            opacity: 1,
+            fillColor: color,
+            fillOpacity: 0.9
+        });
 
-        ctx.drawImage(
-            bgImage,
-            offsetX - (mapWidth / 2),
-            offsetY - (mapHeight / 2),
-            mapWidth,
-            mapHeight
+        marker.bindTooltip(
+            `<b>${displayName}</b><br>T${tierStr} | ${(loc && loc.pvpCategory) || c.zone || '?'}`,
+            { direction: 'top', offset: [0, -5] }
         );
+
+        marker.on('click', () => showClusterInfo(c, loc));
+
+        marker._clusterData = c;
+        marker._locData = loc;
+        marker._mapCenter = mapCenter;
+        marker._displayName = displayName;
+
+        allClusters.push(marker);
+        markersLayer.addLayer(marker);
+
+        clusterDataMap[c.id] = { cluster: c, loc, mapCenter, marker };
     });
 
-    network.on('click', function(params) {
-        if (params.nodes.length > 0) {
-            const nodeId = params.nodes[0];
-            showClusterInfo(nodeId);
-        } else {
-            document.getElementById('infoPanel').classList.add('hidden');
-        }
-    });
+    // Draw edges
+    if (data.edges) {
+        data.edges.forEach(e => {
+            const from = clusterDataMap[e.fromClusterId];
+            const to = clusterDataMap[e.toClusterId];
+            if (from && to) {
+                const line = L.polyline(
+                    [[from.mapCenter.y, from.mapCenter.x],
+                     [to.mapCenter.y, to.mapCenter.x]],
+                    { color: '#555', weight: 1, opacity: 0.4 }
+                );
+                edgesLayer.addLayer(line);
+            }
+        });
+    }
+
+    updateMarkerSizes();
 }
 
-function showClusterInfo(clusterId) {
-    if (!graphData || !graphData.clusters || !graphData.clusters[clusterId]) return;
-    
-    const cluster = graphData.clusters[clusterId];
+function updateMarkerSizes() {
+    if (!map) return;
+    const zoom = map.getZoom();
+    const showOverlays = zoom >= CONFIG.minZoomForOverlays;
+
+    // Scale markers, hide them when overlays are visible
+    const radius = zoom < 2 ? 3 : zoom < 4 ? 5 : zoom < 6 ? 7 : 10;
+    allClusters.forEach(m => {
+        m.setRadius(radius);
+        // When overlays are active and this cluster has one loaded, reduce marker opacity
+        if (showOverlays && activeOverlays.has(m._clusterData.id)) {
+            m.setStyle({ fillOpacity: 0, opacity: 0 });
+        } else {
+            m.setStyle({ fillOpacity: 0.9, opacity: 1 });
+        }
+    });
+
+    // Show/hide edges
+    if (zoom >= 3) {
+        if (!map.hasLayer(edgesLayer)) map.addLayer(edgesLayer);
+    } else {
+        if (map.hasLayer(edgesLayer)) map.removeLayer(edgesLayer);
+    }
+}
+
+function updateOverlays() {
+    if (!map) return;
+    const zoom = map.getZoom();
+
+    if (zoom < CONFIG.minZoomForOverlays) {
+        // Remove all overlays when zoomed out
+        overlaysLayer.clearLayers();
+        activeOverlays.clear();
+        // Restore marker visibility
+        allClusters.forEach(m => m.setStyle({ fillOpacity: 0.9, opacity: 1 }));
+        return;
+    }
+
+    const bounds = map.getBounds().pad(CONFIG.viewportPadding);
+
+    // Remove overlays outside viewport
+    for (const [id, overlay] of activeOverlays) {
+        const data = clusterDataMap[id];
+        if (!data || !bounds.contains(L.latLng(data.mapCenter.y, data.mapCenter.x))) {
+            overlaysLayer.removeLayer(overlay);
+            activeOverlays.delete(id);
+            // Restore marker
+            if (data && data.marker) {
+                data.marker.setStyle({ fillOpacity: 0.9, opacity: 1 });
+            }
+        }
+    }
+
+    // Load overlays for visible clusters
+    const visible = allClusters.filter(m => {
+        if (!m._locData || !m._locData.imageFile) return false;
+        if (activeOverlays.has(m._clusterData.id)) return false;
+        if (loadingOverlays.has(m._clusterData.id)) return false;
+        return bounds.contains(L.latLng(m._mapCenter.y, m._mapCenter.x));
+    });
+
+    // Limit concurrent loads
+    const toLoad = visible.slice(0, CONFIG.maxConcurrentLoads - loadingOverlays.size);
+    toLoad.forEach(m => loadOverlay(m));
+}
+
+function loadOverlay(marker) {
+    const loc = marker._locData;
+    const id = marker._clusterData.id;
+    const mapCenter = marker._mapCenter;
+
+    if (!loc || !loc.imageFile) return;
+
+    loadingOverlays.add(id);
+
+    const webpName = loc.imageFile.replace('.png', '.webp');
+    const imgUrl = `data/tiles/images/${webpName}`;
+
+    const img = new Image();
+    img.onload = () => {
+        loadingOverlays.delete(id);
+
+        // Check we're still at the right zoom
+        if (map.getZoom() < CONFIG.minZoomForOverlays) return;
+
+        const w = img.naturalWidth / CONFIG.coordinates.scaleFactor;
+        const h = img.naturalHeight / CONFIG.coordinates.scaleFactor;
+
+        const overlayBounds = [
+            [mapCenter.y - h / 2, mapCenter.x - w / 2],
+            [mapCenter.y + h / 2, mapCenter.x + w / 2]
+        ];
+
+        const imageOverlay = L.imageOverlay(imgUrl, overlayBounds, {
+            interactive: true,
+            attribution: loc.displayName
+        });
+
+        imageOverlay.on('click', () => showClusterInfo(marker._clusterData, loc));
+
+        // Add label on top of overlay
+        const labelGroup = L.layerGroup();
+        labelGroup.addLayer(imageOverlay);
+
+        const pvpClass = `pvp-${loc.pvpCategory || 'other'}`;
+        const topLabel = L.marker([mapCenter.y + h / 2, mapCenter.x], {
+            icon: L.divIcon({
+                className: `map-label ${pvpClass}`,
+                html: `<div>${loc.displayName || id}</div>`,
+                iconSize: null
+            }),
+            interactive: false
+        });
+        labelGroup.addLayer(topLabel);
+
+        const tierLabel = L.marker([mapCenter.y - h / 2, mapCenter.x], {
+            icon: L.divIcon({
+                className: `map-label small ${pvpClass}`,
+                html: `<div>T${loc.tier || '?'}${loc.quality ? ' Q' + loc.quality : ''}</div>`,
+                iconSize: null
+            }),
+            interactive: false
+        });
+        labelGroup.addLayer(tierLabel);
+
+        overlaysLayer.addLayer(labelGroup);
+        activeOverlays.set(id, labelGroup);
+
+        // Hide the circle marker
+        marker.setStyle({ fillOpacity: 0, opacity: 0 });
+    };
+
+    img.onerror = () => {
+        loadingOverlays.delete(id);
+    };
+
+    img.src = imgUrl;
+}
+
+function showClusterInfo(cluster, loc) {
     const panel = document.getElementById('infoPanel');
     const details = document.getElementById('clusterDetails');
-    
+
+    const pvp = (loc && loc.pvpCategory) || cluster.zone || 'N/A';
+    const color = PVP_COLORS[pvp] || PVP_COLORS.other;
+
     panel.classList.remove('hidden');
     details.innerHTML = `
         <p><strong>ID:</strong> ${cluster.id}</p>
-        <p><strong>Name:</strong> ${cluster.displayName || 'Unknown'}</p>
-        <p><strong>Type:</strong> ${cluster.type}</p>
-        <p><strong>Tier:</strong> ${cluster.tier || 'N/A'}</p>
-        <p><strong>Biome:</strong> ${cluster.biome || 'N/A'}</p>
-        <p><strong>Zone:</strong> ${cluster.zone || 'N/A'}</p>
+        <p><strong>Name:</strong> ${cluster.displayName || (loc && loc.displayName) || 'Unknown'}</p>
+        <p><strong>Type:</strong> ${cluster.type || (loc && loc.type) || 'N/A'}</p>
+        <p><strong>Tier:</strong> ${cluster.tier || (loc && loc.tier) || 'N/A'}</p>
+        <p><strong>Biome:</strong> ${cluster.biome || (loc && loc.biome) || 'N/A'}</p>
+        <p><strong>PvP Zone:</strong> <span style="color:${color};font-weight:600">${pvp}</span></p>
+        ${loc ? `<p><strong>Category:</strong> ${loc.mapCategory || 'N/A'}</p>` : ''}
     `;
 }
 
 function setupEventListeners() {
-    // Search
-    document.getElementById('searchBtn').addEventListener('click', () => {
-        const term = document.getElementById('searchInput').value.toLowerCase();
-        if (!term) return;
-
-        const node = allNodes.find(n => n.id === term || n.label.toLowerCase().includes(term));
-        if (node) {
-            network.focus(node.id, {
-                scale: 1.5,
-                animation: { duration: 1000, easingFunction: 'easeInOutQuad' }
-            });
-            network.selectNodes([node.id]);
-            showClusterInfo(node.id);
-        }
+    const searchInput = document.getElementById('searchInput');
+    document.getElementById('searchBtn').addEventListener('click', doSearch);
+    searchInput.addEventListener('keydown', e => {
+        if (e.key === 'Enter') doSearch();
     });
 
-    // Filters
-    const filterIds = ['filterWorld', 'filterCity', 'filterDungeon'];
-    filterIds.forEach(id => {
+    ['filterWorld', 'filterCity', 'filterDungeon'].forEach(id => {
         document.getElementById(id).addEventListener('change', updateFilters);
     });
+}
+
+function doSearch() {
+    const term = document.getElementById('searchInput').value.toLowerCase().trim();
+    if (!term) return;
+
+    const match = allClusters.find(m =>
+        m._clusterData.id.toLowerCase() === term ||
+        m._displayName.toLowerCase().includes(term)
+    );
+
+    if (match) {
+        map.setView([match._mapCenter.y, match._mapCenter.x], 5, {
+            animate: true,
+            duration: 1
+        });
+        match.openTooltip();
+        showClusterInfo(match._clusterData, match._locData);
+    }
 }
 
 function updateFilters() {
@@ -201,22 +388,17 @@ function updateFilters() {
     const showCity = document.getElementById('filterCity').checked;
     const showDungeon = document.getElementById('filterDungeon').checked;
 
-    const filteredNodes = allNodes.filter(n => {
-        if (n.group === 'WORLD' && !showWorld) return false;
-        if (n.group === 'CITY' && !showCity) return false;
-        if (n.group === 'DUNGEON' && !showDungeon) return false;
-        return true;
+    allClusters.forEach(m => {
+        const type = m._clusterData.type;
+        let visible = true;
+        if (type === 'WORLD' && !showWorld) visible = false;
+        if (type === 'CITY' && !showCity) visible = false;
+        if (type === 'DUNGEON' && !showDungeon) visible = false;
+
+        if (visible && !markersLayer.hasLayer(m)) {
+            markersLayer.addLayer(m);
+        } else if (!visible && markersLayer.hasLayer(m)) {
+            markersLayer.removeLayer(m);
+        }
     });
-
-    const filteredIds = new Set(filteredNodes.map(n => n.id));
-    
-    const filteredEdges = allEdges.filter(e => 
-        filteredIds.has(e.from) && filteredIds.has(e.to)
-    );
-
-    nodesData.clear();
-    edgesData.clear();
-    
-    nodesData.add(filteredNodes);
-    edgesData.add(filteredEdges);
 }
