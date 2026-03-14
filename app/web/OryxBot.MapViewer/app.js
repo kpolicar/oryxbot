@@ -21,23 +21,35 @@ const CONFIG = {
         xOffset: 128,
         yOffset: -128,
         scaleFactor: 200,
-        gameScale: { sourceRange: 800, targetRange: 256 }
+        gameScale: { sourceRange: 800, targetRange: 256 },
+        rotation: { angle: -45, scaleAfterRotation: 0.7 },
+        exits: { radiusSmall: 5, radiusLarge: 10 }
     },
-    minZoomForOverlays: 5,
-    maxConcurrentLoads: 8,
-    viewportPadding: 0.2
+    minZoomForOverlays: 4,
+    maxConcurrentLoads: 20,
+    viewportPadding: 0.3
 };
 
-// PvP category colors
+// PvP category colors (matching albionfreemarket)
 const PVP_COLORS = {
-    blue:   '#2196F3',
-    yellow: '#FFC107',
-    red:    '#f44336',
-    black:  '#9C27B0',
+    blue:   '#3a86ff',
+    yellow: '#ffd60a',
+    red:    '#e63946',
+    black:  '#2d2d2d',
+    white:  '#ffffff',
+    green:  '#2a9d8f',
     other:  '#888888'
 };
 
-// Coordinate transformer
+// mapCategory -> pvp color key (for exit markers)
+const MAP_CATEGORY_PVP = {
+    arena: 'blue', corrupted: 'blue', dungeon: 'red', island: 'blue',
+    expedition: 'blue', hideout: 'blue', portalcity: 'white', hellden: 'blue',
+    startingcity: 'white', rest: 'white', city: 'white', startarea: 'blue',
+    debug_black: 'blue', openworld: 'blue', passage: 'green', roads: 'blue', other: 'blue'
+};
+
+// Coordinate transformer (matches albionfreemarket's CoordinatesTransformer)
 const CoordTransform = {
     gameToMap(val) {
         return val / CONFIG.coordinates.gameScale.sourceRange * CONFIG.coordinates.gameScale.targetRange;
@@ -51,6 +63,37 @@ const CoordTransform = {
         const my = this.gameToMap(worldmapposition[1]);
         const [x, y] = this.applyOffsets([mx, my]);
         return { x, y };
+    },
+    rotateAndScale([x, y]) {
+        const angle = CONFIG.coordinates.rotation.angle * Math.PI / 180;
+        const cos = Math.cos(angle);
+        const sin = Math.sin(angle);
+        const s = CONFIG.coordinates.rotation.scaleAfterRotation;
+        return [(x * cos - y * sin) * s, (x * sin + y * cos) * s];
+    },
+    // Convert a local minimap position to Leaflet map coordinates
+    // pos: {x, y} position on the minimap
+    // loc: location object with minimapBoundsMin/Max and mapCenter
+    // overlayW, overlayH: overlay dimensions on the map (img.naturalWidth/Height / scaleFactor)
+    localToMapCoords(pos, loc, overlayW, overlayH) {
+        if (!loc.mapCenter) return null;
+        const bMin = loc._boundsMin;
+        const bMax = loc._boundsMax;
+        if (!bMin || !bMax) return null;
+
+        const cx = (bMin.x + bMax.x) / 2;
+        const cy = (bMin.y + bMax.y) / 2;
+
+        let dx = pos.x - cx;
+        let dy = pos.y - cy;
+        [dx, dy] = this.rotateAndScale([dx, dy]);
+
+        const normX = (dx + cx - bMin.x) / (bMax.x - bMin.x);
+        const normY = (dy + cy - bMin.y) / (bMax.y - bMin.y);
+
+        const lat = loc.mapCenter.y - overlayH / 2 + normY * overlayH;
+        const lng = loc.mapCenter.x - overlayW / 2 + normX * overlayW;
+        return [lat, lng];
     }
 };
 
@@ -61,6 +104,7 @@ let overlaysLayer = null;
 let graphData = null;
 let allClusters = [];      // marker objects
 let clusterDataMap = {};   // id -> { cluster, loc, mapCenter, marker }
+let locLookup = new Map(); // id -> location object (from albionLocations.json)
 let activeOverlays = new Map(); // id -> imageOverlay
 let loadingOverlays = new Set();
 
@@ -120,10 +164,38 @@ function initMap() {
 function processData(data, locations) {
     if (!data.clusters) return;
 
-    const locLookup = new Map();
     if (locations) {
         locations.forEach(loc => {
             if (loc.id) locLookup.set(loc.id, loc);
+            // Normalize bounds to {x, y} objects
+            if (Array.isArray(loc.minimapBoundsMin)) {
+                loc._boundsMin = { x: loc.minimapBoundsMin[0], y: loc.minimapBoundsMin[1] };
+            } else if (loc.minimapBoundsMin) {
+                loc._boundsMin = loc.minimapBoundsMin;
+            }
+            if (Array.isArray(loc.minimapBoundsMax)) {
+                loc._boundsMax = { x: loc.minimapBoundsMax[0], y: loc.minimapBoundsMax[1] };
+            } else if (loc.minimapBoundsMax) {
+                loc._boundsMax = loc.minimapBoundsMax;
+            }
+            // Normalize exit positions to {x, y}
+            [...(loc.exits || []), ...(loc.portalExits || []), ...(loc.portalEntrances || [])].forEach(exit => {
+                if (Array.isArray(exit.position)) {
+                    exit.position = { x: exit.position[0], y: exit.position[1] };
+                }
+            });
+        });
+        // Pre-resolve target display names and categories for exits
+        locations.forEach(loc => {
+            [...(loc.exits || []), ...(loc.portalExits || []), ...(loc.portalEntrances || [])].forEach(exit => {
+                if (exit.targetLocationId) {
+                    const target = locLookup.get(exit.targetLocationId);
+                    if (target) {
+                        exit._targetDisplayName = target.displayName;
+                        exit._targetMapCategory = target.mapCategory;
+                    }
+                }
+            });
         });
     }
 
@@ -172,6 +244,8 @@ function processData(data, locations) {
         allClusters.push(marker);
         markersLayer.addLayer(marker);
 
+        // Store mapCenter on loc so localToMapCoords can find it
+        if (loc) loc.mapCenter = mapCenter;
         clusterDataMap[c.id] = { cluster: c, loc, mapCenter, marker };
     });
 
@@ -247,17 +321,24 @@ function updateOverlays() {
         }
     }
 
-    // Load overlays for visible clusters
+    // Load overlays for visible clusters, sorted by distance to viewport center
+    const center = map.getCenter();
     const visible = allClusters.filter(m => {
         if (!m._locData || !m._locData.imageFile) return false;
         if (activeOverlays.has(m._clusterData.id)) return false;
         if (loadingOverlays.has(m._clusterData.id)) return false;
         return bounds.contains(L.latLng(m._mapCenter.y, m._mapCenter.x));
+    }).sort((a, b) => {
+        const da = (a._mapCenter.y - center.lat) ** 2 + (a._mapCenter.x - center.lng) ** 2;
+        const db = (b._mapCenter.y - center.lat) ** 2 + (b._mapCenter.x - center.lng) ** 2;
+        return da - db;
     });
 
-    // Limit concurrent loads
-    const toLoad = visible.slice(0, CONFIG.maxConcurrentLoads - loadingOverlays.size);
-    toLoad.forEach(m => loadOverlay(m));
+    // Load up to maxConcurrentLoads at a time
+    const slots = CONFIG.maxConcurrentLoads - loadingOverlays.size;
+    if (slots > 0) {
+        visible.slice(0, slots).forEach(m => loadOverlay(m));
+    }
 }
 
 function loadOverlay(marker) {
@@ -294,10 +375,11 @@ function loadOverlay(marker) {
 
         imageOverlay.on('click', () => showClusterInfo(marker._clusterData, loc));
 
-        // Add label on top of overlay
+        // Build layer group with image, labels, and exit markers
         const labelGroup = L.layerGroup();
         labelGroup.addLayer(imageOverlay);
 
+        // Zone name label (top)
         const pvpClass = `pvp-${loc.pvpCategory || 'other'}`;
         const topLabel = L.marker([mapCenter.y + h / 2, mapCenter.x], {
             icon: L.divIcon({
@@ -309,6 +391,7 @@ function loadOverlay(marker) {
         });
         labelGroup.addLayer(topLabel);
 
+        // Tier label (bottom)
         const tierLabel = L.marker([mapCenter.y - h / 2, mapCenter.x], {
             icon: L.divIcon({
                 className: `map-label small ${pvpClass}`,
@@ -319,18 +402,68 @@ function loadOverlay(marker) {
         });
         labelGroup.addLayer(tierLabel);
 
+        // Exit markers (transitions to other zones/dungeons)
+        addExitMarkers(labelGroup, loc, w, h);
+
         overlaysLayer.addLayer(labelGroup);
         activeOverlays.set(id, labelGroup);
 
         // Hide the circle marker
         marker.setStyle({ fillOpacity: 0, opacity: 0 });
+
+        // Immediately kick off next queued loads
+        updateOverlays();
     };
 
     img.onerror = () => {
         loadingOverlays.delete(id);
+        // Still try to load remaining
+        updateOverlays();
     };
 
     img.src = imgUrl;
+}
+
+function lerp(a, b, zoom, minZoom, maxZoom) {
+    const t = (zoom - minZoom) / (maxZoom - minZoom);
+    return a + (b - a) * Math.max(0, Math.min(1, t));
+}
+
+function addExitMarkers(layerGroup, loc, overlayW, overlayH) {
+    const zoom = map.getZoom();
+    const radius = lerp(
+        CONFIG.coordinates.exits.radiusSmall,
+        CONFIG.coordinates.exits.radiusLarge,
+        zoom, CONFIG.minZoomForOverlays, CONFIG.map.options.maxZoom
+    );
+
+    const addMarker = (exit, fallbackName) => {
+        if (!exit.position || !exit.targetLocationId) return;
+
+        const coords = CoordTransform.localToMapCoords(exit.position, loc, overlayW, overlayH);
+        if (!coords || isNaN(coords[0]) || isNaN(coords[1])) return;
+
+        const targetCat = (exit._targetMapCategory || 'other').toLowerCase();
+        const pvpKey = MAP_CATEGORY_PVP[targetCat] || 'blue';
+        const fillColor = PVP_COLORS[pvpKey] || PVP_COLORS.other;
+        const displayName = exit._targetDisplayName || fallbackName;
+
+        const m = L.circleMarker(coords, {
+            radius: radius,
+            color: '#000',
+            weight: 1,
+            opacity: 1,
+            fillColor: fillColor,
+            fillOpacity: 0.9
+        });
+
+        m.bindTooltip(displayName, { direction: 'top', offset: [0, -5] });
+        layerGroup.addLayer(m);
+    };
+
+    (loc.exits || []).forEach(e => addMarker(e, 'Exit'));
+    (loc.portalExits || []).forEach(e => addMarker(e, 'Portal'));
+    (loc.portalEntrances || []).forEach(e => addMarker(e, 'Portal'));
 }
 
 function showClusterInfo(cluster, loc) {

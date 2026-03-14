@@ -1,10 +1,11 @@
 :root {
-    --bg-color: #121212;
-    --sidebar-bg: #1e1e1e;
-    --text-color: #e0e0e0;
-    --border-color: #333;
-    --accent: #4ade80;
-    --accent-hover: #22c55e;
+    --bg-color: #0a0b0d;
+    --sidebar-bg: #111318;
+    --text-color: #f5f5f7;
+    --text-secondary: #a1a1aa;
+    --border-color: rgba(255, 255, 255, 0.06);
+    --accent: #d3c8a8;
+    --accent-hover: #e4d8a8;
 }
 
 body, html {
@@ -43,7 +44,7 @@ h1 {
 h3 {
     font-size: 1rem;
     margin: 0 0 10px 0;
-    color: #aaa;
+    color: #6b6b76;
     text-transform: uppercase;
     letter-spacing: 0.05em;
 }
@@ -56,26 +57,27 @@ h3 {
 input[type="text"] {
     flex: 1;
     padding: 8px 12px;
-    border-radius: 4px;
-    border: 1px solid var(--border-color);
-    background: #2a2a2a;
-    color: #fff;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    background: #15171c;
+    color: #f5f5f7;
     font-size: 0.9rem;
 }
 
 button {
     padding: 8px 16px;
-    background-color: var(--accent);
-    color: #111;
+    background: linear-gradient(135deg, #aea480, #d3c8a8);
+    color: #0a0b0d;
     border: none;
-    border-radius: 4px;
+    border-radius: 8px;
     font-weight: 600;
     cursor: pointer;
-    transition: background-color 0.2s;
+    transition: all 0.2s;
 }
 
 button:hover {
-    background-color: var(--accent-hover);
+    background: linear-gradient(135deg, #c4b98e, #e4d8a8);
+    box-shadow: 0 4px 20px rgba(174, 164, 128, 0.2);
 }
 
 .filters {
@@ -90,14 +92,15 @@ button:hover {
     gap: 8px;
     font-size: 0.9rem;
     cursor: pointer;
+    color: var(--text-secondary);
 }
 
 #infoPanel {
     margin-top: auto;
-    background: #2a2a2a;
+    background: #15171c;
     padding: 15px;
-    border-radius: 8px;
-    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    border: 1px solid rgba(211, 200, 168, 0.12);
 }
 
 #infoPanel.hidden {
@@ -116,7 +119,7 @@ button:hover {
 #map-container {
     flex: 1;
     position: relative;
-    background-color: #000;
+    background-color: #0a0b0d;
 }
 
 #map {
