@@ -18,35 +18,6 @@ export function HeroSection() {
                     botCount={15}
                     style={{ width: '100%', height: '100%' }}
                 />
-                {/* Left fade gradient — blends map into dark bg so text is readable */}
-                <div
-                    className="absolute inset-0 pointer-events-none"
-                    style={{
-                        background: `linear-gradient(
-                            to right,
-                            #0a0b0d 0%,
-                            #0a0b0d 25%,
-                            rgba(10, 11, 13, 0.95) 35%,
-                            rgba(10, 11, 13, 0.7) 50%,
-                            rgba(10, 11, 13, 0.3) 65%,
-                            transparent 80%
-                        )`
-                    }}
-                />
-                {/* Top fade */}
-                <div
-                    className="absolute inset-x-0 top-0 h-32 pointer-events-none"
-                    style={{
-                        background: 'linear-gradient(to bottom, #0a0b0d, transparent)'
-                    }}
-                />
-                {/* Bottom fade */}
-                <div
-                    className="absolute inset-x-0 bottom-0 h-32 pointer-events-none"
-                    style={{
-                        background: 'linear-gradient(to top, #0a0b0d, transparent)'
-                    }}
-                />
             </div>
 
             {/* Hero Content — left-aligned */}
