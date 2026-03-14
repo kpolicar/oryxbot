@@ -1,22 +1,61 @@
 import { motion } from 'framer-motion'
 import { ButtonArrow } from '@shared/components/ButtonArrow'
 import { Link } from 'react-router-dom'
+import { AlbionMap } from './AlbionMap'
 
 export function HeroSection() {
     return (
-        <section className="relative min-h-screen flex items-center justify-center pt-24 pb-16 px-6 overflow-hidden">
-            {/* Animated Blob Gradients (background) */}
-            <div className="moving-gradient-wrapper">
-                <div className="blob bg-gold-400 w-[500px] h-[500px] animate-blob top-0 left-1/4" />
-                <div className="blob bg-gold-200 w-[400px] h-[400px] animate-blob animation-delay-2000 bottom-[-100px] right-1/4" />
-                <div className="blob bg-accent-gold w-[600px] h-[600px] animate-blob animation-delay-4000 top-1/2 left-1/2 -translate-x-1/2" />
+        <section className="relative min-h-screen flex items-center overflow-hidden">
+            {/* Albion Map Background — fills entire hero, Royal Continent docked right */}
+            <div className="absolute inset-0 z-0">
+                <AlbionMap
+                    zoom={3}
+                    center={[-195, 155]}
+                    interactive={false}
+                    showOverlays={false}
+                    showMarkers={false}
+                    showEdges={false}
+                    botCount={15}
+                    style={{ width: '100%', height: '100%' }}
+                />
+                {/* Left fade gradient — blends map into dark bg so text is readable */}
+                <div
+                    className="absolute inset-0 pointer-events-none"
+                    style={{
+                        background: `linear-gradient(
+                            to right,
+                            #0a0b0d 0%,
+                            #0a0b0d 25%,
+                            rgba(10, 11, 13, 0.95) 35%,
+                            rgba(10, 11, 13, 0.7) 50%,
+                            rgba(10, 11, 13, 0.3) 65%,
+                            transparent 80%
+                        )`
+                    }}
+                />
+                {/* Top fade */}
+                <div
+                    className="absolute inset-x-0 top-0 h-32 pointer-events-none"
+                    style={{
+                        background: 'linear-gradient(to bottom, #0a0b0d, transparent)'
+                    }}
+                />
+                {/* Bottom fade */}
+                <div
+                    className="absolute inset-x-0 bottom-0 h-32 pointer-events-none"
+                    style={{
+                        background: 'linear-gradient(to top, #0a0b0d, transparent)'
+                    }}
+                />
             </div>
 
-            <div className="max-w-4xl mx-auto relative z-10 text-center">
+            {/* Hero Content — left-aligned */}
+            <div className="relative z-10 w-full max-w-7xl mx-auto px-6 md:px-12 pt-24 pb-16">
                 <motion.div
-                    initial={{ opacity: 0, y: 30 }}
-                    animate={{ opacity: 1, y: 0 }}
+                    initial={{ opacity: 0, x: -30 }}
+                    animate={{ opacity: 1, x: 0 }}
                     transition={{ duration: 0.6 }}
+                    className="max-w-xl"
                 >
                     <span className="inline-block py-1 px-3 rounded-full border border-border-subtle bg-bg-card/50 text-xs font-medium text-gold-300 mb-6 backdrop-blur-sm shadow-sm">
                         OryxBot Platform
@@ -27,11 +66,11 @@ export function HeroSection() {
                         built for <span className="text-gradient-gold">Albion.</span>
                     </h1>
 
-                    <p className="text-lg md:text-xl text-text-secondary max-w-2xl mx-auto mb-10 leading-relaxed">
+                    <p className="text-lg md:text-xl text-text-secondary max-w-lg mb-10 leading-relaxed">
                         Pilot your character natively without client injection. Use the community scripts or write your own logic using our Python SDK.
                     </p>
 
-                    <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+                    <div className="flex flex-col sm:flex-row items-start gap-4">
                         <Link to="/register" className="btn-gold justify-center w-full sm:w-auto h-12 px-8 text-base group">
                             Get Started
                             <ButtonArrow />

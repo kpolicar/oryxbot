@@ -216,3 +216,36 @@ body {
     opacity: 0.15;
     mix-blend-mode: screen;
 }
+
+/* ── Albion Map ── */
+
+.leaflet-container {
+    background-color: #30312a !important;
+}
+
+.oryxbot-marker {
+    filter: drop-shadow(0 2px 6px rgba(211, 200, 168, 0.4));
+    transition: filter 0.3s;
+}
+
+.map-label {
+    font-family: 'Inter', system-ui, sans-serif;
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-align: center;
+    white-space: nowrap;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
+    pointer-events: none;
+}
+
+.map-label.small {
+    font-size: 0.6rem;
+    font-weight: 400;
+    opacity: 0.7;
+}
+
+.map-label.pvp-blue { color: #3a86ff; }
+.map-label.pvp-yellow { color: #ffd60a; }
+.map-label.pvp-red { color: #e63946; }
+.map-label.pvp-black { color: #aaa; }
+.map-label.pvp-other { color: #888; }

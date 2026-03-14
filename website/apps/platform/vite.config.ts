@@ -14,4 +14,7 @@ export default defineConfig({
             '@shared': path.resolve(__dirname, '../../packages/shared'),
         },
     },
+    server: {
+        host: '0.0.0.0',
+    },
 })
