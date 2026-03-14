@@ -115,6 +115,35 @@ function drawNetwork() {
 
     network = new vis.Network(container, data, options);
 
+    // Load background image
+    const bgImage = new Image();
+    bgImage.src = 'data/tiles/worldmap_upscaled.png';
+
+    // Hook into the canvas drawing to paint the map underneath nodes
+    network.on('beforeDrawing', function(ctx) {
+        if (!bgImage.complete) return;
+
+        // The image is 512x1024.
+        // Our nodes are scaled by a factor of 15 from their natural worldX and worldY coordinates.
+        // The game origin (0,0) represents the exact center of this image (256, 512 in pixel space).
+        
+        const scale = 15;
+        const mapWidth = 512 * scale; 
+        const mapHeight = 1024 * scale; 
+        
+        // Center the image around the origin 0,0
+        const offsetX = 0;
+        const offsetY = 0;
+
+        ctx.drawImage(
+            bgImage,
+            offsetX - (mapWidth / 2),
+            offsetY - (mapHeight / 2),
+            mapWidth,
+            mapHeight
+        );
+    });
+
     network.on('click', function(params) {
         if (params.nodes.length > 0) {
             const nodeId = params.nodes[0];
