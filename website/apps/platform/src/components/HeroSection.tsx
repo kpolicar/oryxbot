@@ -10,7 +10,7 @@ export function HeroSection() {
             <div className="absolute inset-0 z-0">
                 <AlbionMap
                     zoom={3}
-                    center={[-195, 155]}
+                    center={[-210, 90]}
                     interactive={false}
                     showOverlays={false}
                     showMarkers={false}
