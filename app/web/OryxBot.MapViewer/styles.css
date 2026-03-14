@@ -131,6 +131,15 @@ button:hover {
     background-color: #30312a !important;
 }
 
+.oryxbot-marker {
+    filter: drop-shadow(0 2px 6px rgba(211, 200, 168, 0.4));
+    transition: filter 0.3s;
+}
+
+.oryxbot-marker:hover {
+    filter: drop-shadow(0 2px 10px rgba(211, 200, 168, 0.7));
+}
+
 #loading {
     position: absolute;
     top: 50%;

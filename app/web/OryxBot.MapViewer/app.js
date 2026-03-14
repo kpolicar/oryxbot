@@ -97,16 +97,34 @@ const CoordTransform = {
     }
 };
 
+// OryxBot icon as data URI (favicon + pin stem with subtle dark outline)
+const ORYXBOT_ICON_SVG = `<svg xmlns="http://www.w3.org/2000/svg" width="32" height="44" viewBox="0 0 32 44">
+  <line x1="16" y1="30" x2="16" y2="44" stroke="#1a1b17" stroke-width="4" stroke-linecap="round"/>
+  <line x1="16" y1="30" x2="16" y2="44" stroke="#d3c8a8" stroke-width="2" stroke-linecap="round"/>
+  <circle cx="16" cy="30" r="4" fill="#1a1b17"/>
+  <circle cx="16" cy="30" r="2.5" fill="#d3c8a8"/>
+  <svg x="2" y="0" width="28" height="28" viewBox="0 0 700 654">
+    <g transform="translate(0,654) scale(0.1,-0.1)" fill="#d3c8a8" stroke="#1a1b17" stroke-width="120">
+      <path d="M2380 6331 c-41 -5 -95 -12 -120 -16 l-45 -8 95 -24 c589 -148 1015 -364 1300 -659 105 -108 156 -173 225 -288 39 -64 54 -80 108 -110 306 -172 452 -498 417 -931 -14 -168 -42 -305 -62 -305 -8 0 -9 26 -4 88 14 183 -27 461 -94 641 -55 149 -145 292 -243 384 -42 39 -57 45 -57 24 0 -32 -228 -616 -281 -718 -62 -119 -155 -213 -279 -281 -73 -40 -165 -74 -324 -118 -405 -113 -699 -281 -978 -556 -179 -177 -306 -352 -413 -569 -146 -297 -205 -554 -205 -892 0 -114 -4 -183 -10 -183 -13 0 -50 60 -118 193 -328 640 -389 1430 -166 2130 47 148 134 343 217 490 358 630 974 1070 1632 1166 l120 18 -104 52 c-174 88 -800 212 -561 213 -56 1 -366 -153 -551 -274 -673 -440 -1138 -1134 -1293 -1933 -42 -214 -50 -316 -50 -595 0 -301 12 -423 64 -672 123 -583 393 -1095 799 -1510 393 -404 806 -653 1311 -792 463 -128 997 -138 1465 -27 1091 259 1937 1109 2214 2226 64 256 91 488 91 775 0 495 -101 933 -314 1360 -161 322 -343 569 -608 826 -396 381 -893 646 -1428 759 -103 21 -414 65 -459 65 -9 0 29 -24 84 -53 109 -58 158 -89 280 -181 89 -67 271 -241 325 -310 25 -32 51 -51 90 -67 458 -188 856 -514 1134 -928 448 -668 560 -1555 296 -2351 -178 -539 -492 -977 -932 -1301 -102 -75 -271 -179 -291 -179 -7 0 -42 26 -77 59 -98 88 -200 150 -465 283 -389 196 -515 270 -598 351 -68 67 -87 108 -87 189 0 50 7 77 31 128 61 130 149 191 289 198 213 11 397 -89 660 -357 126 -128 156 -153 226 -189 106 -54 178 -72 289 -72 200 0 355 81 458 238 54 83 74 137 86 227 23 185 -40 347 -194 800 -213 212 -300 341 -345 511 -24 94 -27 253 -6 335 67 257 58 445 -31 627 -25 50 -49 92 -54 92 -5 0 -16 -15 -25 -32 -24 -46 -74 -118 -82 -118 -4 0 -7 125 -7 278 0 222 -4 299 -18 385 -166 986 -796 1627 -1742 1772 -115 18 -474 27 -585 16z m2065 -2991 c22 -16 60 -49 84 -75 l43 -47 -6 -81 c-6 -71 -4 -87 14 -122 11 -21 20 -41 20 -44 0 -2 -25 -1 -55 2 -97 10 -176 88 -214 211 -20 67 -37 209 -26 226 7 11 58 -15 140 -70z"/>
+    </g>
+  </svg>
+</svg>`;
+
+const ORYXBOT_ICON_URL = 'data:image/svg+xml;base64,' + btoa(ORYXBOT_ICON_SVG);
+
 let map = null;
 let markersLayer = null;
 let edgesLayer = null;
 let overlaysLayer = null;
+let botsLayer = null;
 let graphData = null;
 let allClusters = [];      // marker objects
 let clusterDataMap = {};   // id -> { cluster, loc, mapCenter, marker }
 let locLookup = new Map(); // id -> location object (from albionLocations.json)
 let activeOverlays = new Map(); // id -> imageOverlay
 let loadingOverlays = new Set();
+let bots = [];             // array of bot state objects
+let botsAnimating = false;
 
 function getPvpColor(loc, cluster) {
     const pvp = (loc && loc.pvpCategory) || '';
@@ -134,6 +152,7 @@ async function initApp() {
         initMap();
         processData(graphData, locations);
         setupEventListeners();
+        initBots(15);
     } catch (error) {
         document.getElementById('loading').innerText = 'Error loading data: ' + error.message;
         console.error(error);
@@ -154,6 +173,7 @@ function initMap() {
     edgesLayer = L.layerGroup().addTo(map);
     overlaysLayer = L.layerGroup().addTo(map);
     markersLayer = L.layerGroup().addTo(map);
+    botsLayer = L.layerGroup().addTo(map);
 
     map.on('zoomend moveend', () => {
         updateMarkerSizes();
@@ -492,7 +512,7 @@ function setupEventListeners() {
         if (e.key === 'Enter') doSearch();
     });
 
-    ['filterWorld', 'filterCity', 'filterDungeon'].forEach(id => {
+    ['filterWorld', 'filterCity', 'filterDungeon', 'filterBots'].forEach(id => {
         document.getElementById(id).addEventListener('change', updateFilters);
     });
 }
@@ -520,6 +540,7 @@ function updateFilters() {
     const showWorld = document.getElementById('filterWorld').checked;
     const showCity = document.getElementById('filterCity').checked;
     const showDungeon = document.getElementById('filterDungeon').checked;
+    const showBots = document.getElementById('filterBots').checked;
 
     allClusters.forEach(m => {
         const type = m._clusterData.type;
@@ -534,4 +555,174 @@ function updateFilters() {
             markersLayer.removeLayer(m);
         }
     });
+
+    // Toggle bot layer
+    if (showBots && !map.hasLayer(botsLayer)) {
+        map.addLayer(botsLayer);
+    } else if (!showBots && map.hasLayer(botsLayer)) {
+        map.removeLayer(botsLayer);
+    }
+}
+
+// ─── OryxBot Roaming System ───
+
+function buildAdjacency() {
+    const adj = {};
+    if (!graphData || !graphData.edges) return adj;
+    graphData.edges.forEach(e => {
+        const from = e.fromClusterId;
+        const to = e.toClusterId;
+        if (clusterDataMap[from] && clusterDataMap[to]) {
+            if (!adj[from]) adj[from] = [];
+            if (!adj[to]) adj[to] = [];
+            adj[from].push(to);
+            adj[to].push(from);
+        }
+    });
+    return adj;
+}
+
+function getRoyalNodes(adj) {
+    // Royal Continent is the lower/southern portion of the map (more negative y)
+    // Exclude dungeon/island/expedition interior types that aren't on the world map
+    const excludeTypes = new Set(['DNG','ISL','EXP','TUNNEL_BLACK_LOW','TUNNEL_HIDEOUT',
+        'TUNNEL_ROYAL','TUNNEL_LOW','TUNNEL_BLACK_MEDIUM','TUNNEL_HIDEOUT_DEEP',
+        'TUNNEL_MEDIUM','TUNNEL_DEEP_RAID','TUNNEL_DEEP','TUNNEL_HIGH','TUNNEL_BLACK_HIGH',
+        'ARENA_STANDARD','ARENA_CUSTOM','ARENA_CRYSTAL','ARENA_CRYSTAL_NONLETHAL','ARENA_CRYSTAL_20VS20',
+        'HIDEOUT','HDO','HEL','HBS','COR','PGU','DBG','STT','TUTORIAL','SHOWROOMISLAND',
+        'PLAYERISLAND','GUILDISLAND']);
+    return Object.keys(adj).filter(id => {
+        const d = clusterDataMap[id];
+        if (!d || !d.mapCenter) return false;
+        if (excludeTypes.has(d.cluster.type)) return false;
+        return d.mapCenter.y < -130;
+    });
+}
+
+function pickStartNodes(royalNodes, count) {
+    // Uniformly distribute start positions across the Royal Continent
+    if (royalNodes.length <= count) return royalNodes.slice();
+
+    // Sort by position to spread them out, then pick evenly spaced
+    const sorted = royalNodes.slice().sort((a, b) => {
+        const da = clusterDataMap[a].mapCenter;
+        const db = clusterDataMap[b].mapCenter;
+        return (da.x + da.y * 1000) - (db.x + db.y * 1000);
+    });
+
+    const picks = [];
+    const step = sorted.length / count;
+    for (let i = 0; i < count; i++) {
+        picks.push(sorted[Math.floor(i * step)]);
+    }
+    return picks;
+}
+
+function initBots(count) {
+    const adj = buildAdjacency();
+    const royalNodes = getRoyalNodes(adj);
+
+    if (royalNodes.length < 2) return;
+
+    const startNodes = pickStartNodes(royalNodes, count);
+    const botIcon = L.icon({
+        iconUrl: ORYXBOT_ICON_URL,
+        iconSize: [32, 44],
+        iconAnchor: [16, 44],
+        className: 'oryxbot-marker'
+    });
+
+    startNodes.forEach(nodeId => {
+        const pos = clusterDataMap[nodeId].mapCenter;
+        const marker = L.marker([pos.y, pos.x], {
+            icon: botIcon,
+            interactive: true,
+            zIndexOffset: 1000
+        });
+        marker.bindTooltip('OryxBot', { direction: 'top', offset: [0, -46] });
+        botsLayer.addLayer(marker);
+
+        bots.push({
+            marker,
+            currentNode: nodeId,
+            prevNode: null,
+            targetNode: null,
+            fromPos: { lat: pos.y, lng: pos.x },
+            toPos: null,
+            startTime: 0,
+            duration: 0,
+            adj,
+            royalNodes: new Set(royalNodes)
+        });
+    });
+
+    // Start all bots with a random initial delay
+    bots.forEach(bot => {
+        setTimeout(() => pickNextAndAnimate(bot), Math.random() * 3000);
+    });
+
+    // Start animation loop
+    if (!botsAnimating) {
+        botsAnimating = true;
+        requestAnimationFrame(animateBots);
+    }
+}
+
+function pickNextNode(bot) {
+    const neighbors = bot.adj[bot.currentNode];
+    if (!neighbors || neighbors.length === 0) return null;
+
+    // Filter to royal nodes, prefer not backtracking
+    let candidates = neighbors.filter(n => bot.royalNodes.has(n) && n !== bot.prevNode);
+    if (candidates.length === 0) {
+        candidates = neighbors.filter(n => bot.royalNodes.has(n));
+    }
+    if (candidates.length === 0) {
+        candidates = neighbors.filter(n => n !== bot.prevNode);
+    }
+    if (candidates.length === 0) {
+        candidates = neighbors;
+    }
+
+    return candidates[Math.floor(Math.random() * candidates.length)];
+}
+
+function pickNextAndAnimate(bot) {
+    const nextId = pickNextNode(bot);
+    if (!nextId) return;
+
+    const nextPos = clusterDataMap[nextId].mapCenter;
+    bot.targetNode = nextId;
+    bot.fromPos = bot.marker.getLatLng();
+    bot.toPos = L.latLng(nextPos.y, nextPos.x);
+    bot.startTime = performance.now();
+    // 7-12 seconds per hop
+    bot.duration = 7000 + Math.random() * 5000;
+}
+
+function animateBots(now) {
+    bots.forEach(bot => {
+        if (!bot.toPos || !bot.startTime) return;
+
+        let t = (now - bot.startTime) / bot.duration;
+        if (t >= 1) {
+            t = 1;
+            bot.marker.setLatLng(bot.toPos);
+            bot.prevNode = bot.currentNode;
+            bot.currentNode = bot.targetNode;
+            bot.targetNode = null;
+            bot.toPos = null;
+            // Pick next hop
+            setTimeout(() => pickNextAndAnimate(bot), 500 + Math.random() * 1500);
+            return;
+        }
+
+        // Ease in-out for smooth movement
+        const ease = t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
+        const lat = bot.fromPos.lat + (bot.toPos.lat - bot.fromPos.lat) * ease;
+        const lng = bot.fromPos.lng + (bot.toPos.lng - bot.fromPos.lng) * ease;
+        bot.marker.setLatLng([lat, lng]);
+    });
+
+    requestAnimationFrame(animateBots);
 }
