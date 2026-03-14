@@ -70,7 +70,36 @@ importers:
         specifier: ^6.2.0
         version: 6.4.1(jiti@2.6.1)(lightningcss@1.31.1)
 
-  packages/shared: {}
+  packages/shared:
+    dependencies:
+      framer-motion:
+        specifier: ^11.18.0
+        version: 11.18.2(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
+      lucide-react:
+        specifier: ^0.474.0
+        version: 0.474.0(react@19.2.4)
+      prismjs:
+        specifier: ^1.29.0
+        version: 1.30.0
+      react:
+        specifier: ^19.0.0
+        version: 19.2.4
+      react-dom:
+        specifier: ^19.0.0
+        version: 19.2.4(react@19.2.4)
+      react-router-dom:
+        specifier: ^7.3.0
+        version: 7.13.1(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
+    devDependencies:
+      '@types/prismjs':
+        specifier: ^1.26.5
+        version: 1.26.6
+      '@types/react':
+        specifier: ^19.0.0
+        version: 19.2.14
+      '@types/react-dom':
+        specifier: ^19.0.0
+        version: 19.2.3(@types/react@19.2.14)
 
 packages:
 

@@ -13,8 +13,8 @@ export function HeroSection() {
                     center={[-210, 90]}
                     interactive={false}
                     showOverlays={false}
-                    showMarkers={false}
-                    showEdges={false}
+                    showMarkers={true}
+                    showEdges={true}
                     botCount={15}
                     style={{ width: '100%', height: '100%' }}
                 />
