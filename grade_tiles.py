@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""Apply OryxBot color grading to all worldmap tiles."""
+"""Apply OryxBot color grading to all worldmap tiles.
+Two-pass: first compute global mean, then grade with fixed contrast center."""
 
 import os
-import sys
 import time
 import concurrent.futures
 from PIL import Image
@@ -21,38 +21,57 @@ ZOOM_LEVELS = {
 }
 
 
-def grade_tile(arr):
-    """Apply OryxBot premium dark-gold color grading."""
+def pre_grade(arr):
+    """Apply darkening and gold warmth only (before contrast), return float32 array."""
     arr = arr.astype(np.float32)
-    brightness = arr.mean(axis=2)
+    arr *= 0.58
+    norm = np.clip(arr / 150.0, 0, 1)
+    arr[:, :, 0] += norm[:, :, 0] * 30
+    arr[:, :, 1] += norm[:, :, 1] * 16
+    arr[:, :, 2] -= norm[:, :, 2] * 22
+    return arr
 
-    # Crush dark areas (ocean) to near-black #0a0b0d
-    dark_mask = np.clip(1.0 - brightness / 120.0, 0, 1) ** 1.2
-    dark_mask3 = dark_mask[:, :, np.newaxis]
-    target_dark = np.array([10, 11, 13], dtype=np.float32)
-    arr = arr * (1 - dark_mask3 * 0.92) + target_dark * dark_mask3 * 0.92
 
-    # Darken land
+def compute_tile_stats(args):
+    """Pass 1: compute sum and count of pre-graded pixel values."""
+    z, x, y = args
+    path = os.path.join(TILES_DIR, str(z), f"map_{x}_{y}.webp")
+    if not os.path.exists(path):
+        return 0.0, 0
+
+    try:
+        img = Image.open(path).convert("RGB")
+        arr = np.array(img)
+        pre = pre_grade(arr)
+        return float(pre.sum()), pre.size  # size = H*W*3
+    except Exception:
+        return 0.0, 0
+
+
+def grade_tile(arr, global_mean):
+    """Apply full OryxBot color grading with fixed global contrast center."""
+    arr = arr.astype(np.float32)
+
+    # Darken
     arr *= 0.58
 
-    # Gold warmth on visible land
+    # Gold warmth
     norm = np.clip(arr / 150.0, 0, 1)
     arr[:, :, 0] += norm[:, :, 0] * 30
     arr[:, :, 1] += norm[:, :, 1] * 16
     arr[:, :, 2] -= norm[:, :, 2] * 22
 
-    # Contrast boost
-    mean = arr.mean()
-    arr = (arr - mean) * 1.25 + mean
+    # Contrast boost with FIXED global mean
+    arr = (arr - global_mean) * 1.25 + global_mean
 
-    # Desaturate for muted premium feel
+    # Desaturate
     gray = arr.mean(axis=2, keepdims=True)
     arr = arr * 0.70 + gray * 0.30
 
     return np.clip(arr, 0, 255).astype(np.uint8)
 
 
-def process_tile(args):
+def process_tile(args, global_mean):
     z, x, y = args
     path = os.path.join(TILES_DIR, str(z), f"map_{x}_{y}.webp")
     if not os.path.exists(path):
@@ -62,13 +81,7 @@ def process_tile(args):
         img = Image.open(path).convert("RGB")
         arr = np.array(img)
 
-        # Skip fully uniform tiles (blank/ocean) - just darken them
-        if arr.std() < 2:
-            dark = Image.new("RGB", img.size, (10, 11, 13))
-            dark.save(path, "WEBP", quality=85)
-            return "BLANK"
-
-        graded = Image.fromarray(grade_tile(arr))
+        graded = Image.fromarray(grade_tile(arr, global_mean))
         graded.save(path, "WEBP", quality=85)
         return "OK"
     except Exception as e:
@@ -83,18 +96,37 @@ def main():
                 tasks.append((z, x, y))
 
     total = len(tasks)
-    print(f"Grading {total} tiles...")
+
+    # Pass 1: compute global mean from the highest zoom level only (z=6, most tiles)
+    # to save time. Use z=4 as a good balance of coverage and speed.
+    print("Pass 1: Computing global mean from z=4 tiles...")
+    z4_tasks = [(z, x, y) for z, x, y in tasks if z == 4]
     start = time.time()
-    ok = blank = fail = miss = 0
+    total_sum = 0.0
+    total_count = 0
 
     with concurrent.futures.ThreadPoolExecutor(max_workers=8) as executor:
-        futures = {executor.submit(process_tile, t): t for t in tasks}
+        futures = [executor.submit(compute_tile_stats, t) for t in z4_tasks]
+        for f in concurrent.futures.as_completed(futures):
+            s, c = f.result()
+            total_sum += s
+            total_count += c
+
+    global_mean = total_sum / total_count if total_count > 0 else 60.0
+    elapsed = time.time() - start
+    print(f"  Global mean: {global_mean:.2f} (from {len(z4_tasks)} z4 tiles in {elapsed:.1f}s)")
+
+    # Pass 2: grade all tiles with fixed global mean
+    print(f"\nPass 2: Grading {total} tiles with global_mean={global_mean:.2f}...")
+    start = time.time()
+    ok = fail = miss = 0
+
+    with concurrent.futures.ThreadPoolExecutor(max_workers=8) as executor:
+        futures = {executor.submit(process_tile, t, global_mean): t for t in tasks}
         for i, future in enumerate(concurrent.futures.as_completed(futures), 1):
             result = future.result()
             if result == "OK":
                 ok += 1
-            elif result == "BLANK":
-                blank += 1
             elif result == "MISS":
                 miss += 1
             else:
@@ -102,10 +134,10 @@ def main():
                 print(f"  {futures[future]}: {result}")
             if i % 500 == 0 or i == total:
                 elapsed = time.time() - start
-                print(f"  Progress: {i}/{total} ({ok} graded, {blank} blank, {fail} failed) [{elapsed:.1f}s]")
+                print(f"  Progress: {i}/{total} ({ok} graded, {fail} failed) [{elapsed:.1f}s]")
 
     elapsed = time.time() - start
-    print(f"\nDone: {ok} graded, {blank} blank, {miss} missing, {fail} failed in {elapsed:.1f}s")
+    print(f"\nDone: {ok} graded, {miss} missing, {fail} failed in {elapsed:.1f}s")
 
 
 if __name__ == "__main__":

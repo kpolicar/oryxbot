@@ -119,12 +119,16 @@ button:hover {
 #map-container {
     flex: 1;
     position: relative;
-    background-color: #0a0b0d;
+    background-color: #30312a;
 }
 
 #map {
     height: 100%;
     width: 100%;
+}
+
+.leaflet-container {
+    background-color: #30312a !important;
 }
 
 #loading {
