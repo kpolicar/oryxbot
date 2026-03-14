@@ -1,15 +1,17 @@
 import { Routes, Route, useLocation } from 'react-router-dom'
-import { useEffect } from 'react'
+import { Suspense, lazy, useEffect } from 'react'
 import { Navbar } from '@shared/components/Navbar'
 import { trackPageview } from './lib/analytics'
 import { Footer } from '@shared/components/Footer'
-import Landing from './pages/Landing'
-import Marketplace from './pages/Marketplace'
-import Docs from './pages/Docs'
-import Register from './pages/Register'
-import RegisterPending from './pages/RegisterPending'
-import Login from './pages/Login'
-import Pilot from './pages/Pilot'
+
+const Landing = lazy(() => import('./pages/Landing'))
+const Marketplace = lazy(() => import('./pages/Marketplace'))
+const Docs = lazy(() => import('./pages/Docs'))
+const ClerkLayout = lazy(() => import('./components/ClerkLayout'))
+const Register = lazy(() => import('./pages/Register'))
+const RegisterPending = lazy(() => import('./pages/RegisterPending'))
+const Login = lazy(() => import('./pages/Login'))
+const Pilot = lazy(() => import('./pages/Pilot'))
 
 function ScrollToHash() {
     const location = useLocation()
@@ -34,15 +36,19 @@ export default function App() {
             <Navbar />
             <ScrollToHash />
             <main className="flex-1">
-                <Routes>
-                    <Route path="/" element={<Landing />} />
-                    <Route path="/marketplace" element={<Marketplace />} />
-                    <Route path="/docs" element={<Docs />} />
-                    <Route path="/register" element={<Register />} />
-                    <Route path="/register/pending" element={<RegisterPending />} />
-                    <Route path="/login" element={<Login />} />
-                    <Route path="/pilot" element={<Pilot />} />
-                </Routes>
+                <Suspense fallback={null}>
+                    <Routes>
+                        <Route path="/" element={<Landing />} />
+                        <Route path="/marketplace" element={<Marketplace />} />
+                        <Route path="/docs" element={<Docs />} />
+                        <Route element={<ClerkLayout />}>
+                            <Route path="/register" element={<Register />} />
+                            <Route path="/register/pending" element={<RegisterPending />} />
+                            <Route path="/login" element={<Login />} />
+                        </Route>
+                        <Route path="/pilot" element={<Pilot />} />
+                    </Routes>
+                </Suspense>
             </main>
             <Footer />
         </div>

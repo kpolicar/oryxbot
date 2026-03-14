@@ -14,6 +14,18 @@ export default defineConfig({
             '@shared': path.resolve(__dirname, '../../packages/shared'),
         },
     },
+    build: {
+        rollupOptions: {
+            output: {
+                manualChunks: {
+                    'vendor-react': ['react', 'react-dom', 'react-router-dom'],
+                    'vendor-clerk': ['@clerk/clerk-react'],
+                    'vendor-motion': ['framer-motion'],
+                    'vendor-leaflet': ['leaflet'],
+                },
+            },
+        },
+    },
     server: {
         host: '0.0.0.0',
     },
