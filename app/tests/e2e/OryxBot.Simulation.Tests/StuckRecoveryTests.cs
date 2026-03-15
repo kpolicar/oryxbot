@@ -32,7 +32,7 @@ public class StuckRecoveryTests
                 .WithRoute(RouteFixtures.StraightLine(100f, 10))
                 .WithProfile<PerfectProfile>()
                 .StartingAt(new Position(0, 0))
-                .WithObstacle(new WallObstacle(20, -5, 21, 5)) // Wall at x=20
+                .WithObstacle(new WallObstacle(20, -2, 22, 2)) // Rock at x=20
                 .WithSeed(42)
                 .WithMaxTicks(500),
             nameof(WallBlocksMovement_UnstickingTriggered));
@@ -103,5 +103,32 @@ public class StuckRecoveryTests
 
         // Since we start in a cluster, RecentlyChangedCluster is initially true
         recording.Frames.Count.Should().BeGreaterThan(0);
+    }
+
+    [Fact]
+    public async Task LargerObstacle_FirstAttemptFails_SecondSucceeds()
+    {
+        // Obstacle tall enough that the base radius arc (r=3, ~5.5 unit height) can't clear it,
+        // but the escalated radius arc (r=5, ~9 unit height) can
+        var recording = await RunAndSave(
+            new SimulatorBuilder()
+                .WithRoute(RouteFixtures.StraightLine(100f, 10))
+                .WithProfile<PerfectProfile>()
+                .StartingAt(new Position(0, 0))
+                .WithObstacle(new WallObstacle(20, -6, 23, 6))
+                .WithSeed(42)
+                .WithMaxTicks(1000),
+            nameof(LargerObstacle_FirstAttemptFails_SecondSucceeds));
+
+        var states = recording.StateSequence().ToList();
+
+        // Should enter Unsticking at least twice (first attempt fails, second succeeds)
+        var unstickCount = states.Count(s => s == NavigationStateName.Unsticking);
+        unstickCount.Should().BeGreaterThanOrEqualTo(2,
+            "first attempt should fail due to obstacle size, second should succeed with larger assumed radius");
+
+        // Should eventually return to FollowingRoute after the second unstick
+        states.Last().Should().Be(NavigationStateName.FollowingRoute,
+            "bot should resume route after clearing the obstacle on second attempt");
     }
 }

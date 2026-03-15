@@ -1,3 +1,4 @@
+using System.Numerics;
 using OryxBot.Core.Models;
 using OryxBot.Pilot;
 using OryxBot.Routes.Models;
@@ -9,6 +10,8 @@ public class SimulationRecorder
     private readonly List<SimulationFrame> _frames = [];
     private readonly List<SimulationEvent> _events = [];
     private readonly List<SimulationLog> _logs = [];
+    private readonly List<RecordedObstacleHit> _obstacleHits = [];
+    private readonly List<RecordedObstacle> _obstacles = [];
     private readonly SimulationMetadata _metadata;
     private readonly IReadOnlyList<Waypoint> _routeWaypoints;
     private NavigationStateName? _lastState;
@@ -19,6 +22,12 @@ public class SimulationRecorder
             testName, profile, routeName, seed, startCluster,
             DateTimeOffset.UtcNow, 0, 0, []);
         _routeWaypoints = routeWaypoints;
+    }
+
+    public void AddObstacles(IEnumerable<Obstacles.Obstacle> obstacles)
+    {
+        foreach (var o in obstacles)
+            _obstacles.Add(o.ToRecorded());
     }
 
     public void RecordFrame(int tick, double timeMs, string clusterId, Position position,
@@ -38,6 +47,12 @@ public class SimulationRecorder
     {
         _events.Add(new SimulationEvent(tick, timeMs, type, data ?? []));
         Log(tick, timeMs, "Info", $"Event: {type}");
+    }
+
+    public void RecordObstacleHit(int tick, double timeMs, string clusterId, Position position, Vector2 direction)
+    {
+        _obstacleHits.Add(new RecordedObstacleHit(tick, timeMs, clusterId, position, direction.X, direction.Y));
+        Log(tick, timeMs, "Info", $"Obstacle hit at {position} heading ({direction.X:F1}, {direction.Y:F1})");
     }
 
     public void Log(int tick, double timeMs, string level, string message)
@@ -61,6 +76,6 @@ public class SimulationRecorder
             DurationMs = lastFrame?.TimeMs ?? 0,
             StateDistribution = stateDistribution
         };
-        return new SimulationRecording(metadata, _frames, _events, _logs, _routeWaypoints);
+        return new SimulationRecording(metadata, _frames, _events, _logs, _routeWaypoints, _obstacleHits, _obstacles);
     }
 }

@@ -10,7 +10,7 @@ namespace OryxBot.Pilot.States;
 public class FollowingRouteState(IOptions<NavigationOptions> options) : INavigationState
 {
     private readonly NavigationOptions _options = options.Value;
-    private DateTimeOffset _lastMovingTime;
+    private DateTimeOffset _lastMovingTime = DateTimeOffset.MaxValue;
 
     public NavigationStateName Name => NavigationStateName.FollowingRoute;
 

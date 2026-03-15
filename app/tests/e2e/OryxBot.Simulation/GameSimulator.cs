@@ -23,9 +23,11 @@ public class GameSimulator
     private readonly SimulationRecorder _recorder;
     private readonly FakeTimeProvider _timeProvider;
     private readonly List<Obstacle> _obstacles;
+    private readonly IObstacleMap _obstacleMap;
     private readonly Random _rng;
     private readonly int _maxTicks;
     private readonly DisplayOptions _displayOptions;
+    private TimeSpan _currentInterval;
 
     private Position _actualPosition;
     private string _currentCluster;
@@ -48,6 +50,7 @@ public class GameSimulator
         FakeTimeProvider timeProvider,
         DisplayOptions displayOptions,
         List<Obstacle> obstacles,
+        IObstacleMap obstacleMap,
         Position startPosition,
         string startCluster,
         int seed,
@@ -62,6 +65,7 @@ public class GameSimulator
         _timeProvider = timeProvider;
         _displayOptions = displayOptions;
         _obstacles = obstacles;
+        _obstacleMap = obstacleMap;
         _actualPosition = startPosition;
         _currentCluster = startCluster;
         _speed = 7.0f;
@@ -80,10 +84,12 @@ public class GameSimulator
         for (var tick = 0; tick < _maxTicks && !IsComplete && !HasFailed; tick++)
         {
             var interval = _profile.NextPacketInterval(_rng);
+            _currentInterval = interval;
             _timeProvider.Advance(interval);
 
             var elapsed = _timeProvider.GetUtcNow() - startTime;
             var tickContext = new TickContext(interval, tick, _timeProvider.GetUtcNow());
+            var obstacleHitsBefore = _obstacleMap.GetAllHits().Count;
 
             // Simulate cluster change when in Transitioning state
             if (_controller.CurrentStateName == NavigationStateName.Transitioning && _pendingCluster is null)
@@ -95,8 +101,7 @@ public class GameSimulator
                     // Find arrival position: first MoveWaypoint after the portal
                     _pendingArrival = FindArrivalPosition();
                     var delay = _profile.ClusterChangeDelay(_rng);
-                    var tickInterval = _profile.NextPacketInterval(_rng);
-                    _clusterChangeCountdown = Math.Max(1, (int)(delay.TotalMilliseconds / tickInterval.TotalMilliseconds));
+                    _clusterChangeCountdown = Math.Max(1, (int)(delay.TotalMilliseconds / _currentInterval.TotalMilliseconds));
                 }
             }
 
@@ -116,6 +121,15 @@ public class GameSimulator
 
             var decision = _controller.Evaluate(_cursor, _tracker, tickContext);
             await _controller.ExecuteAsync(decision, _gameController, ct);
+
+            // Record any new obstacle hits discovered this tick
+            var allHits = _obstacleMap.GetAllHits();
+            for (var h = obstacleHitsBefore; h < allHits.Count; h++)
+            {
+                var hit = allHits[h];
+                _recorder.RecordObstacleHit(tick, elapsed.TotalMilliseconds,
+                    hit.ClusterId, hit.Position, hit.BlockedDirection);
+            }
 
             // Record frame
             _recorder.RecordFrame(
@@ -175,10 +189,9 @@ public class GameSimulator
         // Apply profile drift
         direction = _profile.ApplyDirectionDrift(direction, _rng);
 
-        // Calculate speed and displacement
+        // Calculate speed and displacement using the current tick's interval
         _speed = _profile.CalculateSpeed(_speed, _rng);
-        var interval = _profile.NextPacketInterval(_rng);
-        var displacement = direction * _speed * (float)interval.TotalSeconds;
+        var displacement = direction * _speed * (float)_currentInterval.TotalSeconds;
 
         var candidate = _actualPosition + displacement;
 
@@ -189,7 +202,7 @@ public class GameSimulator
         _actualPosition = candidate;
 
         // Record tick for assertions
-        TickHistory.Add(new SimulatedTick(_actualPosition, direction, _speed, interval));
+        TickHistory.Add(new SimulatedTick(_actualPosition, direction, _speed, _currentInterval));
 
         // Feed back to character tracker
         _tracker.UpdatePosition(_actualPosition);

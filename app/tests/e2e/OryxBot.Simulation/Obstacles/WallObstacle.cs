@@ -37,4 +37,7 @@ public class WallObstacle : Obstacle
                 : new Position(_x2 + 0.1f, candidate.Y);
         }
     }
+
+    public override Recording.RecordedObstacle ToRecorded() =>
+        new("wall", _x1, _y1, _x2, _y2);
 }

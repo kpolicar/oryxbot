@@ -13,6 +13,8 @@ public static class ServiceCollectionExtensions
         services.AddSingleton<PositionPredictor>();
         services.AddSingleton<CharacterTracker>();
         services.AddSingleton<ICharacterTracker>(sp => sp.GetRequiredService<CharacterTracker>());
+        services.AddSingleton<ObstacleMap>();
+        services.AddSingleton<IObstacleMap>(sp => sp.GetRequiredService<ObstacleMap>());
         return services;
     }
 }

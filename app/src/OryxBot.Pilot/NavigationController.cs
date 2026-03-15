@@ -17,10 +17,19 @@ public class NavigationController
     {
         _states = states.ToDictionary(s => s.Name);
         _currentState = _states[NavigationStateName.FollowingRoute];
+        // Note: OnEnter for initial state is called on first Evaluate via _needsInitialOnEnter
     }
+
+    private bool _needsInitialOnEnter = true;
 
     public NavigationDecision Evaluate(RouteCursor cursor, ICharacterTracker tracker, TickContext tick)
     {
+        if (_needsInitialOnEnter)
+        {
+            _needsInitialOnEnter = false;
+            _currentState.OnEnter(tick);
+        }
+
         if (tracker.IsDead)
             return TransitionTo(NavigationStateName.Killed, tick, "Character died");
 

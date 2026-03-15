@@ -9,7 +9,9 @@ public record SimulationRecording(
     IReadOnlyList<SimulationFrame> Frames,
     IReadOnlyList<SimulationEvent> Events,
     IReadOnlyList<SimulationLog> Logs,
-    IReadOnlyList<Waypoint> RouteWaypoints);
+    IReadOnlyList<Waypoint> RouteWaypoints,
+    IReadOnlyList<RecordedObstacleHit> ObstacleHits,
+    IReadOnlyList<RecordedObstacle> Obstacles);
 
 public record SimulationMetadata(
     string TestName,
@@ -42,3 +44,18 @@ public record SimulationLog(
     double TimeMs,
     string Level,
     string Message);
+
+public record RecordedObstacleHit(
+    int Tick,
+    double TimeMs,
+    string ClusterId,
+    Position Position,
+    float DirectionX,
+    float DirectionY);
+
+public record RecordedObstacle(
+    string Type,
+    float X1,
+    float Y1,
+    float X2,
+    float Y2);

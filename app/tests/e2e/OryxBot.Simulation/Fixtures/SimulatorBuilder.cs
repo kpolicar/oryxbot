@@ -1,5 +1,6 @@
 using Microsoft.Extensions.Options;
 using Microsoft.Extensions.Time.Testing;
+using OryxBot.Core.Abstractions;
 using OryxBot.Core.Configuration;
 using OryxBot.Core.Events;
 using OryxBot.Core.Models;
@@ -56,12 +57,13 @@ public class SimulatorBuilder
 
         // Pilot components
         var obstacleDetector = new ObstacleDetector(timeProvider, navOptionsWrapper);
+        var obstacleMap = new ObstacleMap();
 
         var states = new INavigationState[]
         {
             new FollowingRouteState(navOptionsWrapper),
             new CorrectingCourseState(navOptionsWrapper),
-            new UnstickingState(obstacleDetector, navOptionsWrapper),
+            new UnstickingState(obstacleDetector, navOptionsWrapper, obstacleMap),
             new TransitioningState(navOptionsWrapper),
             new EvadingState(),
             new LostState(),
@@ -75,6 +77,7 @@ public class SimulatorBuilder
         // Recording
         var recorder = new SimulationRecorder(
             _testName, _profile.Name, route.Metadata.Name, _seed, _startCluster, route.Waypoints);
+        recorder.AddObstacles(_obstacles);
 
         // Coordinate translator
         var coordinateTranslator = new CoordinateTranslator(displayOptionsWrapper, navOptionsWrapper);
@@ -84,7 +87,7 @@ public class SimulatorBuilder
             _profile, controller, cursor, tracker,
             null!, // GameController set below
             recorder, timeProvider, displayOptions,
-            _obstacles, _startPosition, _startCluster, _seed, _maxTicks);
+            _obstacles, obstacleMap, _startPosition, _startCluster, _seed, _maxTicks);
 
         // Input capture → feeds back to simulator
         var inputCapture = new SimulatedInputCapture(simulator);

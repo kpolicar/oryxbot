@@ -570,8 +570,11 @@ const Replay = {
     lastTickTime: null,
     botMarker: null,
     routeLayer: null,
+    obstacleLayer: null,
     targetMarker: null,
     stateCounts: {},
+    obstacleHits: [],
+    shownObstacleCount: 0,
 
     STATE_COLORS: {
         followingRoute: '#2a9d8f',
@@ -612,6 +615,8 @@ const Replay = {
         this.logs = this.recording.logs || [];
         this.events = this.recording.events || [];
         this.routeWaypoints = this.recording.routeWaypoints || [];
+        this.obstacleHits = this.recording.obstacleHits || [];
+        this.shownObstacleCount = 0;
 
         if (this.frames.length === 0) {
             alert('Recording has no frames.');
@@ -629,6 +634,7 @@ const Replay = {
         const clusterIds = [...new Set(this.frames.map(f => f.clusterId).filter(Boolean))];
         this.ensureOverlays(clusterIds).then(() => {
             this.setupRouteLayer();
+            this.setupObstacleLayer();
         });
 
         this.setupBotMarker();
@@ -731,6 +737,103 @@ const Replay = {
         });
     },
 
+    setupObstacleLayer() {
+        if (this.obstacleLayer) {
+            map.removeLayer(this.obstacleLayer);
+        }
+        this.obstacleLayer = L.layerGroup().addTo(map);
+        this.shownObstacleCount = 0;
+
+        // Draw obstacle geometry (static, always visible)
+        const obstacles = this.recording?.obstacles || [];
+        if (obstacles.length === 0) return;
+
+        // Obstacles live in the start cluster
+        const clusterId = this.recording?.metadata?.startCluster || this.frames[0]?.clusterId;
+        const data = clusterDataMap[clusterId];
+        if (!data || !data.loc) return;
+        const dims = this.getOverlayDims(data);
+
+        obstacles.forEach(obs => {
+            // Convert the 4 corners of the obstacle rectangle to map coordinates
+            const corners = [
+                { x: obs.x1, y: obs.y1 },
+                { x: obs.x2, y: obs.y1 },
+                { x: obs.x2, y: obs.y2 },
+                { x: obs.x1, y: obs.y2 }
+            ];
+            const mapCorners = corners.map(c =>
+                CoordTransform.localToMapCoords(c, data.loc, dims.w, dims.h)
+            ).filter(c => c && !isNaN(c[0]) && !isNaN(c[1]));
+
+            if (mapCorners.length === 4) {
+                L.polygon(mapCorners, {
+                    color: '#e63946',
+                    weight: 1.5,
+                    opacity: 0.8,
+                    fillColor: '#e63946',
+                    fillOpacity: 0.25,
+                    dashArray: '4 3'
+                }).addTo(this.obstacleLayer)
+                  .bindTooltip(`Obstacle (${obs.type})`, { direction: 'top' });
+            }
+        });
+    },
+
+    updateObstacleHits() {
+        if (!this.obstacleLayer || this.obstacleHits.length === 0) return;
+
+        const currentFrame = this.frames[this.currentFrameIndex];
+        if (!currentFrame) return;
+        const currentTick = currentFrame.tick;
+
+        // If we seeked backward, rebuild
+        if (this.shownObstacleCount > 0) {
+            const lastShownTick = this.obstacleHits[this.shownObstacleCount - 1]?.tick ?? -1;
+            if (currentTick < lastShownTick) {
+                this.obstacleLayer.clearLayers();
+                this.shownObstacleCount = 0;
+            }
+        }
+
+        // Add new hits up to current tick
+        while (this.shownObstacleCount < this.obstacleHits.length) {
+            const hit = this.obstacleHits[this.shownObstacleCount];
+            if (hit.tick > currentTick) break;
+
+            const data = clusterDataMap[hit.clusterId];
+            if (data && data.loc) {
+                const dims = this.getOverlayDims(data);
+                const pos = { x: hit.position.x, y: hit.position.y };
+                const coords = CoordTransform.localToMapCoords(pos, data.loc, dims.w, dims.h);
+                if (coords && !isNaN(coords[0]) && !isNaN(coords[1])) {
+                    // Draw X marker at obstacle hit
+                    L.circleMarker(coords, {
+                        radius: 5,
+                        color: '#e63946',
+                        fillColor: '#e63946',
+                        fillOpacity: 0.7,
+                        weight: 2
+                    }).addTo(this.obstacleLayer)
+                     .bindTooltip(`Obstacle hit (tick ${hit.tick})`, { direction: 'top' });
+
+                    // Draw short direction line
+                    const dirLen = 0.003; // small offset in map coords
+                    const endCoords = [
+                        coords[0] + hit.directionY * dirLen,
+                        coords[1] + hit.directionX * dirLen
+                    ];
+                    L.polyline([coords, endCoords], {
+                        color: '#e63946',
+                        weight: 2,
+                        opacity: 0.8
+                    }).addTo(this.obstacleLayer);
+                }
+            }
+            this.shownObstacleCount++;
+        }
+    },
+
     setupBotMarker() {
         if (this.botMarker) {
             map.removeLayer(this.botMarker);
@@ -805,6 +908,7 @@ const Replay = {
         this.updateSlider();
         this.updateLogs();
         this.updateStateBreakdown();
+        this.updateObstacleHits();
     },
 
     renderFrame(frame) {
@@ -997,6 +1101,7 @@ const Replay = {
                 this.updateSlider();
                 this.updateLogs();
                 this.updateStateBreakdown();
+                this.updateObstacleHits();
                 this.pause();
                 return;
             }
@@ -1014,6 +1119,7 @@ const Replay = {
         this.updateSlider();
         this.updateLogs();
         this.updateStateBreakdown();
+        this.updateObstacleHits();
 
         this.animFrameId = requestAnimationFrame(t => this.playbackLoop(t));
     },
@@ -1040,6 +1146,12 @@ const Replay = {
             map.removeLayer(this.routeLayer);
             this.routeLayer = null;
         }
+        if (this.obstacleLayer) {
+            map.removeLayer(this.obstacleLayer);
+            this.obstacleLayer = null;
+        }
+        this.obstacleHits = [];
+        this.shownObstacleCount = 0;
 
         document.getElementById('replayControls').classList.add('hidden');
         document.getElementById('replayLogPanel').innerHTML = '';

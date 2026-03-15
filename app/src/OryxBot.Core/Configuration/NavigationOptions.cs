@@ -4,9 +4,12 @@ public class NavigationOptions
 {
     public float ArrivalDistance { get; set; } = 2.0f;
     public TimeSpan IdleTimeout { get; set; } = TimeSpan.FromMilliseconds(1300);
-    public float UnstickRotationNormal { get; set; } = -2f * MathF.PI / 3f;
-    public float UnstickRotationPostCluster { get; set; } = -MathF.PI / 3f;
-    public TimeSpan UnstickHoldDuration { get; set; } = TimeSpan.FromMilliseconds(1500);
+    public TimeSpan UnstickBackupDuration { get; set; } = TimeSpan.FromMilliseconds(700);
+    public TimeSpan UnstickCircleDuration { get; set; } = TimeSpan.FromMilliseconds(2500);
+    public TimeSpan UnstickProbeDuration { get; set; } = TimeSpan.FromMilliseconds(500);
+    public int UnstickMaxCircleFlips { get; set; } = 1;
+    public float AssumedObstacleRadius { get; set; } = 3.0f;
+    public float ObstacleRadiusGrowth { get; set; } = 2.0f;
     public int MaxStuckAttempts { get; set; } = 5;
     public TimeSpan StuckWindow { get; set; } = TimeSpan.FromSeconds(30);
     public float CorrectionEnterThreshold { get; set; } = 20.0f;
