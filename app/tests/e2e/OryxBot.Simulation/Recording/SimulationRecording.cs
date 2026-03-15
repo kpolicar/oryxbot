@@ -19,7 +19,8 @@ public record SimulationMetadata(
     string StartCluster,
     DateTimeOffset RecordedAt,
     int TotalTicks,
-    double DurationMs);
+    double DurationMs,
+    Dictionary<string, double> StateDistribution);
 
 public record SimulationFrame(
     int Tick,

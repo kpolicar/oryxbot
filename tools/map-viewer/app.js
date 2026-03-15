@@ -5,7 +5,7 @@ const CONFIG = {
         options: {
             crs: L.CRS.Simple,
             minZoom: 0,
-            maxZoom: 7,
+            maxZoom: 12,
             zoomAnimationThreshold: 0
         },
         view: { center: [-180, 130], zoom: 1 },
@@ -571,6 +571,7 @@ const Replay = {
     botMarker: null,
     routeLayer: null,
     targetMarker: null,
+    stateCounts: {},
 
     STATE_COLORS: {
         followingRoute: '#2a9d8f',
@@ -624,31 +625,43 @@ const Replay = {
         document.getElementById('replayProfile').textContent = meta.profile || '';
         document.getElementById('replayTotalTicks').textContent = this.frames.length - 1;
 
-        // Force-load overlays for all clusters in the recording
+        // Force-load overlays for all clusters in the recording, then draw route
         const clusterIds = [...new Set(this.frames.map(f => f.clusterId).filter(Boolean))];
-        this.ensureOverlays(clusterIds);
+        this.ensureOverlays(clusterIds).then(() => {
+            this.setupRouteLayer();
+        });
 
-        this.setupRouteLayer();
         this.setupBotMarker();
         this.seekTo(0);
 
-        // Pan to first frame's cluster
-        this.panToFrame(this.frames[0]);
+        // Pan to first frame's cluster center
+        this.panToCluster(this.frames[0].clusterId);
     },
 
     ensureOverlays(clusterIds) {
-        clusterIds.forEach(id => {
+        const promises = clusterIds.map(id => {
             const data = clusterDataMap[id];
-            if (!data || !data.loc || !data.loc.imageFile) return;
-            if (activeOverlays.has(id) || loadingOverlays.has(id)) return;
-            // Force load by creating a fake marker object
-            loadOverlay({
-                _locData: data.loc,
-                _clusterData: data.cluster,
-                _mapCenter: data.mapCenter,
-                setStyle() {}
+            if (!data || !data.loc || !data.loc.imageFile) return Promise.resolve();
+            // Already loaded with dimensions
+            if (data.loc._overlayW && data.loc._overlayH) return Promise.resolve();
+            if (!activeOverlays.has(id) && !loadingOverlays.has(id)) {
+                loadOverlay({
+                    _locData: data.loc,
+                    _clusterData: data.cluster,
+                    _mapCenter: data.mapCenter,
+                    setStyle() {}
+                });
+            }
+            // Wait for dimensions to be set
+            return new Promise(resolve => {
+                const check = () => {
+                    if (data.loc._overlayW && data.loc._overlayH) resolve();
+                    else setTimeout(check, 50);
+                };
+                check();
             });
         });
+        return Promise.all(promises);
     },
 
     setupRouteLayer() {
@@ -659,46 +672,62 @@ const Replay = {
 
         if (this.routeWaypoints.length === 0) return;
 
-        // Group waypoints by cluster (use first frame's cluster as default)
-        // For single-cluster routes, draw them all on that cluster
-        const defaultCluster = this.frames[0]?.clusterId;
-        if (!defaultCluster) return;
+        // Split waypoints into per-cluster segments using portal waypoints as delimiters
+        const segments = [];
+        let currentCluster = this.frames[0]?.clusterId;
+        let currentWps = [];
 
-        const data = clusterDataMap[defaultCluster];
-        if (!data || !data.loc) return;
-
-        const loc = data.loc;
-        const dims = this.getOverlayDims(data);
-
-        const points = [];
         this.routeWaypoints.forEach(wp => {
-            if (wp.type === 'portal') return; // skip portal waypoints for drawing
-            const coords = CoordTransform.localToMapCoords(
-                { x: wp.x, y: wp.y }, loc, dims.w, dims.h
-            );
-            if (coords && !isNaN(coords[0]) && !isNaN(coords[1])) {
-                points.push(coords);
+            if (wp.type === 'portal') {
+                // Flush current segment
+                if (currentWps.length > 0 && currentCluster) {
+                    segments.push({ clusterId: currentCluster, waypoints: currentWps });
+                }
+                currentCluster = wp.clusterName;
+                currentWps = [];
+            } else {
+                currentWps.push(wp);
             }
         });
-
-        if (points.length > 1) {
-            L.polyline(points, {
-                color: '#d3c8a8',
-                weight: 2,
-                opacity: 0.5,
-                dashArray: '6 4'
-            }).addTo(this.routeLayer);
+        // Flush last segment
+        if (currentWps.length > 0 && currentCluster) {
+            segments.push({ clusterId: currentCluster, waypoints: currentWps });
         }
 
-        // Draw waypoint dots
-        points.forEach((p, i) => {
-            L.circleMarker(p, {
-                radius: 3,
-                color: '#d3c8a8',
-                fillColor: '#d3c8a8',
-                fillOpacity: 0.7,
-                weight: 1
-            }).addTo(this.routeLayer);
+        // Draw each segment on its own cluster's minimap
+        segments.forEach(seg => {
+            const data = clusterDataMap[seg.clusterId];
+            if (!data || !data.loc) return;
+
+            const dims = this.getOverlayDims(data);
+            const points = [];
+            seg.waypoints.forEach(wp => {
+                const coords = CoordTransform.localToMapCoords(
+                    { x: wp.x, y: wp.y }, data.loc, dims.w, dims.h
+                );
+                if (coords && !isNaN(coords[0]) && !isNaN(coords[1])) {
+                    points.push(coords);
+                }
+            });
+
+            if (points.length > 1) {
+                L.polyline(points, {
+                    color: '#d3c8a8',
+                    weight: 2,
+                    opacity: 0.5,
+                    dashArray: '6 4'
+                }).addTo(this.routeLayer);
+            }
+
+            points.forEach(p => {
+                L.circleMarker(p, {
+                    radius: 3,
+                    color: '#d3c8a8',
+                    fillColor: '#d3c8a8',
+                    fillOpacity: 0.7,
+                    weight: 1
+                }).addTo(this.routeLayer);
+            });
         });
     },
 
@@ -775,6 +804,7 @@ const Replay = {
         this.renderFrame(this.frames[index]);
         this.updateSlider();
         this.updateLogs();
+        this.updateStateBreakdown();
     },
 
     renderFrame(frame) {
@@ -847,17 +877,52 @@ const Replay = {
         panel.scrollTop = panel.scrollHeight;
     },
 
+    updateStateBreakdown() {
+        const panel = document.getElementById('replayStateBreakdown');
+        const end = this.currentFrameIndex + 1;
+
+        // Count states up to current frame
+        const counts = {};
+        for (let i = 0; i < end; i++) {
+            const s = this.frames[i].state;
+            counts[s] = (counts[s] || 0) + 1;
+        }
+
+        // All states from metadata distribution (ensures all states always visible)
+        const allStates = Object.keys(this.recording?.metadata?.stateDistribution || {});
+        // Also include any states seen in counts (fallback if no metadata)
+        Object.keys(counts).forEach(s => { if (!allStates.includes(s)) allStates.push(s); });
+
+        // Sort by final distribution percentage descending
+        const finalDist = this.recording?.metadata?.stateDistribution || {};
+        allStates.sort((a, b) => (finalDist[b] || 0) - (finalDist[a] || 0));
+
+        panel.innerHTML = allStates.map(state => {
+            const count = counts[state] || 0;
+            const pct = end > 0 ? ((count / end) * 100).toFixed(1) : '0.0';
+            const color = this.STATE_COLORS[state] || '#888';
+            return `<div class="state-bar-row">` +
+                `<span class="state-bar-label" style="color:${color}">${state}</span>` +
+                `<div class="state-bar-track"><div class="state-bar-fill" style="width:${pct}%;background:${color}"></div></div>` +
+                `<span class="state-bar-pct">${pct}%</span></div>`;
+        }).join('');
+    },
+
     escapeHtml(str) {
         const div = document.createElement('div');
         div.textContent = str;
         return div.innerHTML;
     },
 
-    panToFrame(frame) {
-        const coords = this.frameToMapCoords(frame);
-        if (coords) {
-            map.setView(coords, Math.max(map.getZoom(), 7), { animate: true });
+    panToCluster(clusterId) {
+        const data = clusterDataMap[clusterId];
+        if (data && data.mapCenter) {
+            map.setView([data.mapCenter.y, data.mapCenter.x], Math.max(map.getZoom(), 8), { animate: true });
         }
+    },
+
+    panToFrame(frame) {
+        this.panToCluster(frame.clusterId);
     },
 
     togglePlay() {
@@ -931,6 +996,7 @@ const Replay = {
                 this.renderFrame(this.frames[this.currentFrameIndex]);
                 this.updateSlider();
                 this.updateLogs();
+                this.updateStateBreakdown();
                 this.pause();
                 return;
             }
@@ -947,6 +1013,7 @@ const Replay = {
         this.renderFrame(this.frames[this.currentFrameIndex]);
         this.updateSlider();
         this.updateLogs();
+        this.updateStateBreakdown();
 
         this.animFrameId = requestAnimationFrame(t => this.playbackLoop(t));
     },

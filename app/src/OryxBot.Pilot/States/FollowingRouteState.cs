@@ -67,15 +67,30 @@ public class FollowingRouteState(IOptions<NavigationOptions> options) : INavigat
     private static float ComputeMinDeviation(RouteCursor cursor, Position pos)
     {
         var bestDist = float.MaxValue;
-        for (var offset = 0; offset <= 3; offset++)
+
+        // Collect upcoming move waypoints for segment distance checks
+        var waypoints = new List<Position>();
+        for (var offset = 0; offset <= 5; offset++)
         {
             if (cursor.Peek(offset) is MoveWaypoint wp)
-            {
-                var dist = Position.Distance(pos, new Position(wp.X, wp.Y));
-                if (dist < bestDist) bestDist = dist;
-            }
+                waypoints.Add(new Position(wp.X, wp.Y));
             else break;
         }
+
+        // Check distance to each segment between consecutive waypoints
+        for (var i = 0; i < waypoints.Count - 1; i++)
+        {
+            var dist = Position.DistanceToSegment(pos, waypoints[i], waypoints[i + 1]);
+            if (dist < bestDist) bestDist = dist;
+        }
+
+        // Also check distance to first waypoint (in case we're behind it)
+        if (waypoints.Count > 0)
+        {
+            var dist = Position.Distance(pos, waypoints[0]);
+            if (dist < bestDist) bestDist = dist;
+        }
+
         return bestDist;
     }
 }

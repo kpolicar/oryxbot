@@ -4,7 +4,7 @@ namespace OryxBot.Simulation.Fixtures;
 
 public static class RouteFixtures
 {
-    public static Route StraightLine(float length = 100f, int waypoints = 10)
+    public static Route StraightLine(float length = 100f, int waypoints = 50)
     {
         var spacing = length / waypoints;
         var wps = Enumerable.Range(0, waypoints)
@@ -13,14 +13,20 @@ public static class RouteFixtures
         return new Route(new RouteMetadata("StraightLine", DateTimeOffset.UtcNow), wps);
     }
 
-    public static Route ZigZag(int segments = 5, float segmentLength = 20f)
+    public static Route ZigZag(int segments = 5, float segmentLength = 20f, float spacing = 2f)
     {
         var wps = new List<Waypoint>();
+        float prevX = 0, prevY = 0;
         for (var i = 0; i < segments; i++)
         {
             var x = i * segmentLength;
             var y = (i % 2 == 0) ? 0f : segmentLength;
-            wps.Add(new MoveWaypoint(x, y));
+            if (i > 0)
+                AddInterpolated(wps, prevX, prevY, x, y, spacing);
+            else
+                wps.Add(new MoveWaypoint(x, y));
+            prevX = x;
+            prevY = y;
         }
         return new Route(new RouteMetadata("ZigZag", DateTimeOffset.UtcNow), wps);
     }
@@ -47,15 +53,15 @@ public static class RouteFixtures
         var wps = new List<Waypoint>();
 
         // Cluster 0208: center (0,0) → exit toward 0218 at (-373.5, 59.5)
-        AddInterpolated(wps, 0, 0, -373.5f, 59.5f, spacing: 20f);
+        AddInterpolated(wps, 0, 0, -373.5f, 59.5f, spacing: 2f);
         wps.Add(new PortalWaypoint("0218"));
 
         // Cluster 0218: entrance from 0208 (373.5, -69.5) → exit toward 0207 (170.5, 380.5)
-        AddInterpolated(wps, 373.5f, -69.5f, 170.5f, 380.5f, spacing: 20f);
+        AddInterpolated(wps, 373.5f, -69.5f, 170.5f, 380.5f, spacing: 2f);
         wps.Add(new PortalWaypoint("0207"));
 
         // Cluster 0207: entrance from 0218 (149.5, -380.5) → center (0, 0)
-        AddInterpolated(wps, 149.5f, -380.5f, 0, 0, spacing: 20f);
+        AddInterpolated(wps, 149.5f, -380.5f, 0, 0, spacing: 2f);
 
         return new Route(new RouteMetadata("MultiCluster", DateTimeOffset.UtcNow), wps);
     }

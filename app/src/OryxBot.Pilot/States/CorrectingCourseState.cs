@@ -65,19 +65,35 @@ public class CorrectingCourseState(IOptions<NavigationOptions> options) : INavig
         Position? bestTarget = null;
         var bestDist = float.MaxValue;
 
-        for (var offset = 0; offset <= 3; offset++)
+        // Collect upcoming waypoints
+        var waypoints = new List<(Position Pos, int Offset)>();
+        for (var offset = 0; offset <= 5; offset++)
         {
             if (cursor.Peek(offset) is MoveWaypoint wp)
-            {
-                var target = new Position(wp.X, wp.Y);
-                var dist = Position.Distance(pos, target);
-                if (dist < bestDist)
-                {
-                    bestDist = dist;
-                    bestTarget = target;
-                }
-            }
+                waypoints.Add((new Position(wp.X, wp.Y), offset));
             else break;
+        }
+
+        // Check segment distances — target the endpoint of the closest segment
+        for (var i = 0; i < waypoints.Count - 1; i++)
+        {
+            var dist = Position.DistanceToSegment(pos, waypoints[i].Pos, waypoints[i + 1].Pos);
+            if (dist < bestDist)
+            {
+                bestDist = dist;
+                bestTarget = waypoints[i + 1].Pos;
+            }
+        }
+
+        // Also check distance to first waypoint
+        if (waypoints.Count > 0)
+        {
+            var dist = Position.Distance(pos, waypoints[0].Pos);
+            if (dist < bestDist)
+            {
+                bestDist = dist;
+                bestTarget = waypoints[0].Pos;
+            }
         }
 
         return (bestTarget, bestDist);

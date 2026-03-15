@@ -335,6 +335,48 @@ button:hover {
     font-variant-numeric: tabular-nums;
 }
 
+.replay-state-breakdown {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    margin: 6px 0;
+    font-size: 0.75rem;
+}
+
+.state-bar-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.state-bar-label {
+    width: 100px;
+    text-align: right;
+    flex-shrink: 0;
+    font-weight: 500;
+}
+
+.state-bar-track {
+    flex: 1;
+    height: 6px;
+    background: rgba(255, 255, 255, 0.06);
+    border-radius: 3px;
+    overflow: hidden;
+}
+
+.state-bar-fill {
+    height: 100%;
+    border-radius: 3px;
+    transition: width 0.15s;
+}
+
+.state-bar-pct {
+    width: 42px;
+    text-align: right;
+    color: var(--text-secondary);
+    font-variant-numeric: tabular-nums;
+}
+
 .replay-log-panel {
     max-height: 200px;
     overflow-y: auto;

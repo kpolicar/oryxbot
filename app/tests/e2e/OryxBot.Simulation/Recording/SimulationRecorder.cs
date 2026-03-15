@@ -17,7 +17,7 @@ public class SimulationRecorder
     {
         _metadata = new SimulationMetadata(
             testName, profile, routeName, seed, startCluster,
-            DateTimeOffset.UtcNow, 0, 0);
+            DateTimeOffset.UtcNow, 0, 0, []);
         _routeWaypoints = routeWaypoints;
     }
 
@@ -48,10 +48,18 @@ public class SimulationRecorder
     public SimulationRecording ToRecording()
     {
         var lastFrame = _frames.Count > 0 ? _frames[^1] : null;
+        var total = (double)_frames.Count;
+        var stateDistribution = _frames
+            .GroupBy(f => f.State)
+            .ToDictionary(
+                g => char.ToLowerInvariant(g.Key.ToString()[0]) + g.Key.ToString()[1..],
+                g => total > 0 ? Math.Round(g.Count() / total * 100, 1) : 0);
+
         var metadata = _metadata with
         {
             TotalTicks = _frames.Count,
-            DurationMs = lastFrame?.TimeMs ?? 0
+            DurationMs = lastFrame?.TimeMs ?? 0,
+            StateDistribution = stateDistribution
         };
         return new SimulationRecording(metadata, _frames, _events, _logs, _routeWaypoints);
     }
