@@ -116,15 +116,12 @@ let map = null;
 let markersLayer = null;
 let edgesLayer = null;
 let overlaysLayer = null;
-let botsLayer = null;
 let graphData = null;
 let allClusters = [];      // marker objects
 let clusterDataMap = {};   // id -> { cluster, loc, mapCenter, marker }
 let locLookup = new Map(); // id -> location object (from albionLocations.json)
 let activeOverlays = new Map(); // id -> imageOverlay
 let loadingOverlays = new Set();
-let bots = [];             // array of bot state objects
-let botsAnimating = false;
 
 function getPvpColor(loc, cluster) {
     const pvp = (loc && loc.pvpCategory) || '';
@@ -152,7 +149,6 @@ async function initApp() {
         initMap();
         processData(graphData, locations);
         setupEventListeners();
-        initBots(15);
     } catch (error) {
         document.getElementById('loading').innerText = 'Error loading data: ' + error.message;
         console.error(error);
@@ -173,7 +169,6 @@ function initMap() {
     edgesLayer = L.layerGroup().addTo(map);
     overlaysLayer = L.layerGroup().addTo(map);
     markersLayer = L.layerGroup().addTo(map);
-    botsLayer = L.layerGroup().addTo(map);
 
     map.on('zoomend moveend', () => {
         updateMarkerSizes();
@@ -516,7 +511,7 @@ function setupEventListeners() {
         if (e.key === 'Enter') doSearch();
     });
 
-    ['filterWorld', 'filterCity', 'filterDungeon', 'filterBots'].forEach(id => {
+    ['filterWorld', 'filterCity', 'filterDungeon'].forEach(id => {
         document.getElementById(id).addEventListener('change', updateFilters);
     });
 }
@@ -544,7 +539,6 @@ function updateFilters() {
     const showWorld = document.getElementById('filterWorld').checked;
     const showCity = document.getElementById('filterCity').checked;
     const showDungeon = document.getElementById('filterDungeon').checked;
-    const showBots = document.getElementById('filterBots').checked;
 
     allClusters.forEach(m => {
         const type = m._clusterData.type;
@@ -559,176 +553,6 @@ function updateFilters() {
             markersLayer.removeLayer(m);
         }
     });
-
-    // Toggle bot layer
-    if (showBots && !map.hasLayer(botsLayer)) {
-        map.addLayer(botsLayer);
-    } else if (!showBots && map.hasLayer(botsLayer)) {
-        map.removeLayer(botsLayer);
-    }
-}
-
-// ─── OryxBot Roaming System ───
-
-function buildAdjacency() {
-    const adj = {};
-    if (!graphData || !graphData.edges) return adj;
-    graphData.edges.forEach(e => {
-        const from = e.fromClusterId;
-        const to = e.toClusterId;
-        if (clusterDataMap[from] && clusterDataMap[to]) {
-            if (!adj[from]) adj[from] = [];
-            if (!adj[to]) adj[to] = [];
-            adj[from].push(to);
-            adj[to].push(from);
-        }
-    });
-    return adj;
-}
-
-function getRoyalNodes(adj) {
-    // Royal Continent is the lower/southern portion of the map (more negative y)
-    // Exclude dungeon/island/expedition interior types that aren't on the world map
-    const excludeTypes = new Set(['DNG','ISL','EXP','TUNNEL_BLACK_LOW','TUNNEL_HIDEOUT',
-        'TUNNEL_ROYAL','TUNNEL_LOW','TUNNEL_BLACK_MEDIUM','TUNNEL_HIDEOUT_DEEP',
-        'TUNNEL_MEDIUM','TUNNEL_DEEP_RAID','TUNNEL_DEEP','TUNNEL_HIGH','TUNNEL_BLACK_HIGH',
-        'ARENA_STANDARD','ARENA_CUSTOM','ARENA_CRYSTAL','ARENA_CRYSTAL_NONLETHAL','ARENA_CRYSTAL_20VS20',
-        'HIDEOUT','HDO','HEL','HBS','COR','PGU','DBG','STT','TUTORIAL','SHOWROOMISLAND',
-        'PLAYERISLAND','GUILDISLAND']);
-    return Object.keys(adj).filter(id => {
-        const d = clusterDataMap[id];
-        if (!d || !d.mapCenter) return false;
-        if (excludeTypes.has(d.cluster.type)) return false;
-        return d.mapCenter.y < -130;
-    });
-}
-
-function pickStartNodes(royalNodes, count) {
-    // Uniformly distribute start positions across the Royal Continent
-    if (royalNodes.length <= count) return royalNodes.slice();
-
-    // Sort by position to spread them out, then pick evenly spaced
-    const sorted = royalNodes.slice().sort((a, b) => {
-        const da = clusterDataMap[a].mapCenter;
-        const db = clusterDataMap[b].mapCenter;
-        return (da.x + da.y * 1000) - (db.x + db.y * 1000);
-    });
-
-    const picks = [];
-    const step = sorted.length / count;
-    for (let i = 0; i < count; i++) {
-        picks.push(sorted[Math.floor(i * step)]);
-    }
-    return picks;
-}
-
-function initBots(count) {
-    const adj = buildAdjacency();
-    const royalNodes = getRoyalNodes(adj);
-
-    if (royalNodes.length < 2) return;
-
-    const startNodes = pickStartNodes(royalNodes, count);
-    const botIcon = L.icon({
-        iconUrl: ORYXBOT_ICON_URL,
-        iconSize: [32, 44],
-        iconAnchor: [16, 44],
-        className: 'oryxbot-marker'
-    });
-
-    startNodes.forEach(nodeId => {
-        const pos = clusterDataMap[nodeId].mapCenter;
-        const marker = L.marker([pos.y, pos.x], {
-            icon: botIcon,
-            interactive: true,
-            zIndexOffset: 1000
-        });
-        marker.bindTooltip('OryxBot', { direction: 'top', offset: [0, -46] });
-        botsLayer.addLayer(marker);
-
-        bots.push({
-            marker,
-            currentNode: nodeId,
-            prevNode: null,
-            targetNode: null,
-            fromPos: { lat: pos.y, lng: pos.x },
-            toPos: null,
-            startTime: 0,
-            duration: 0,
-            adj,
-            royalNodes: new Set(royalNodes)
-        });
-    });
-
-    // Start all bots with a random initial delay
-    bots.forEach(bot => {
-        setTimeout(() => pickNextAndAnimate(bot), Math.random() * 3000);
-    });
-
-    // Start animation loop
-    if (!botsAnimating) {
-        botsAnimating = true;
-        requestAnimationFrame(animateBots);
-    }
-}
-
-function pickNextNode(bot) {
-    const neighbors = bot.adj[bot.currentNode];
-    if (!neighbors || neighbors.length === 0) return null;
-
-    // Filter to royal nodes, prefer not backtracking
-    let candidates = neighbors.filter(n => bot.royalNodes.has(n) && n !== bot.prevNode);
-    if (candidates.length === 0) {
-        candidates = neighbors.filter(n => bot.royalNodes.has(n));
-    }
-    if (candidates.length === 0) {
-        candidates = neighbors.filter(n => n !== bot.prevNode);
-    }
-    if (candidates.length === 0) {
-        candidates = neighbors;
-    }
-
-    return candidates[Math.floor(Math.random() * candidates.length)];
-}
-
-function pickNextAndAnimate(bot) {
-    const nextId = pickNextNode(bot);
-    if (!nextId) return;
-
-    const nextPos = clusterDataMap[nextId].mapCenter;
-    bot.targetNode = nextId;
-    bot.fromPos = bot.marker.getLatLng();
-    bot.toPos = L.latLng(nextPos.y, nextPos.x);
-    bot.startTime = performance.now();
-    // 7-12 seconds per hop
-    bot.duration = 7000 + Math.random() * 5000;
-}
-
-function animateBots(now) {
-    bots.forEach(bot => {
-        if (!bot.toPos || !bot.startTime) return;
-
-        let t = (now - bot.startTime) / bot.duration;
-        if (t >= 1) {
-            t = 1;
-            bot.marker.setLatLng(bot.toPos);
-            bot.prevNode = bot.currentNode;
-            bot.currentNode = bot.targetNode;
-            bot.targetNode = null;
-            bot.toPos = null;
-            // Pick next hop
-            setTimeout(() => pickNextAndAnimate(bot), 500 + Math.random() * 1500);
-            return;
-        }
-
-        // Ease in-out for smooth movement
-        const ease = t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
-        const lat = bot.fromPos.lat + (bot.toPos.lat - bot.fromPos.lat) * ease;
-        const lng = bot.fromPos.lng + (bot.toPos.lng - bot.fromPos.lng) * ease;
-        bot.marker.setLatLng([lat, lng]);
-    });
-
-    requestAnimationFrame(animateBots);
 }
 
 // ─── Simulation Replay System ───
@@ -886,14 +710,25 @@ const Replay = {
             map.removeLayer(this.targetMarker);
         }
 
-        this.botMarker = L.circleMarker([0, 0], {
-            radius: 6,
-            color: '#fff',
-            weight: 2,
-            fillColor: '#2a9d8f',
-            fillOpacity: 1,
+        const botIcon = L.icon({
+            iconUrl: ORYXBOT_ICON_URL,
+            iconSize: [32, 44],
+            iconAnchor: [16, 44],
+            className: 'oryxbot-marker'
+        });
+
+        this.botMarker = L.marker([0, 0], {
+            icon: botIcon,
+            interactive: true,
             zIndexOffset: 2000
         }).addTo(map);
+
+        this.botMarker.bindTooltip('OryxBot', {
+            direction: 'top',
+            offset: [0, -46],
+            permanent: true,
+            className: 'oryxbot-replay-tooltip'
+        });
 
         this.targetMarker = L.circleMarker([0, 0], {
             radius: 4,
@@ -967,9 +802,7 @@ const Replay = {
             this.targetMarker.setStyle({ opacity: 0, fillOpacity: 0 });
         }
 
-        // Update state color
         const stateColor = this.STATE_COLORS[frame.state] || '#888';
-        this.botMarker.setStyle({ fillColor: stateColor });
 
         // Update UI
         document.getElementById('replayTick').textContent = frame.tick;

@@ -209,6 +209,21 @@ button:hover {
     background: rgba(100, 100, 100, 0.7);
 }
 
+.oryxbot-replay-tooltip {
+    background: rgba(30, 30, 30, 0.9);
+    border: 1px solid #d3c8a8;
+    color: #d3c8a8;
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    font-size: 0.8rem;
+    padding: 3px 8px;
+    border-radius: 4px;
+}
+
+.oryxbot-replay-tooltip::before {
+    border-top-color: #d3c8a8 !important;
+}
+
 /* ─── Replay Controls ─── */
 
 .replay-section {
