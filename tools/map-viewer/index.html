@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OryxBot Map Viewer</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div id="app-container">
+        <div id="sidebar">
+            <h1>OryxBot Map Viewer</h1>
+
+            <div class="controls">
+                <input type="text" id="searchInput" placeholder="Search clusters...">
+                <button id="searchBtn">Find</button>
+            </div>
+
+            <div class="filters">
+                <h3>Filters</h3>
+                <label><input type="checkbox" id="filterWorld" checked> World Zones</label>
+                <label><input type="checkbox" id="filterCity" checked> Cities</label>
+                <label><input type="checkbox" id="filterDungeon" checked> Dungeons</label>
+                <label><input type="checkbox" id="filterBots" checked> OryxBots</label>
+            </div>
+
+            <div id="infoPanel" class="hidden">
+                <h3>Cluster Info</h3>
+                <div id="clusterDetails"></div>
+            </div>
+
+            <div class="replay-section">
+                <h3>Simulation Replay</h3>
+                <label class="file-upload-btn">
+                    Load Recording
+                    <input type="file" id="replayFileInput" accept=".json" style="display:none">
+                </label>
+                <div id="replayControls" class="hidden">
+                    <div class="replay-info">
+                        <span id="replayTestName"></span>
+                        <span id="replayProfile"></span>
+                    </div>
+                    <div class="replay-timeline">
+                        <input type="range" id="replaySlider" min="0" max="100" value="0">
+                        <div class="replay-time">
+                            <span id="replayTick">0</span> / <span id="replayTotalTicks">0</span>
+                            <span id="replayTimeMs">0.0s</span>
+                        </div>
+                    </div>
+                    <div class="replay-buttons">
+                        <button id="replayStepBack" title="Step back">&lt;</button>
+                        <button id="replayPlayPause" title="Play/Pause">Play</button>
+                        <button id="replayStepForward" title="Step forward">&gt;</button>
+                        <select id="replaySpeed">
+                            <option value="0.25">0.25x</option>
+                            <option value="0.5">0.5x</option>
+                            <option value="1" selected>1x</option>
+                            <option value="2">2x</option>
+                            <option value="4">4x</option>
+                            <option value="10">10x</option>
+                        </select>
+                        <button id="replayClose" title="Close">Close</button>
+                    </div>
+                    <div class="replay-state">
+                        <span>State: </span><span id="replayStateName">-</span>
+                    </div>
+                    <div class="replay-position">
+                        <span id="replayCluster">-</span>
+                        <span id="replayPos">-</span>
+                    </div>
+                    <div id="replayLogPanel" class="replay-log-panel">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="map-container">
+            <div id="map"></div>
+            <div id="loading">Loading Map Data...</div>
+        </div>
+    </div>
+    <script src="app.js?v=12"></script>
+</body>
+</html>

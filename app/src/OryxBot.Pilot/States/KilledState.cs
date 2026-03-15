@@ -9,5 +9,5 @@ public class KilledState : INavigationState
     public NavigationStateName Name => NavigationStateName.Killed;
 
     public NavigationDecision Evaluate(RouteCursor cursor, ICharacterTracker tracker, TickContext tick) =>
-        throw new NotImplementedException("KilledState implementation is Phase 2");
+        new(NavAction.None, null, null, null, null, "Character killed");
 }

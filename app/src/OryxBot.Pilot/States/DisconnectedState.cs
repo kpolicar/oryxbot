@@ -9,5 +9,5 @@ public class DisconnectedState : INavigationState
     public NavigationStateName Name => NavigationStateName.Disconnected;
 
     public NavigationDecision Evaluate(RouteCursor cursor, ICharacterTracker tracker, TickContext tick) =>
-        throw new NotImplementedException("DisconnectedState implementation is Phase 2");
+        new(NavAction.None, null, null, null, null, "Connection lost");
 }

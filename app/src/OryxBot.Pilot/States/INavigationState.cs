@@ -8,4 +8,6 @@ public interface INavigationState
 {
     NavigationStateName Name { get; }
     NavigationDecision Evaluate(RouteCursor cursor, ICharacterTracker tracker, TickContext tick);
+    void OnEnter(TickContext tick) { }
+    void OnExit() { }
 }

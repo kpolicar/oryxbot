@@ -1,0 +1,8 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="OryxBot.GameDataExtractor.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/OryxBot.GameDataExtractor.Tests.csproj" />
+  </Folder>
+</Solution>

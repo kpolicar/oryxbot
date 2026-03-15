@@ -113,6 +113,12 @@ public sealed class RouteCursor
         return false;
     }
 
+    public Waypoint? Peek(int offset)
+    {
+        var i = _index + offset;
+        return i >= 0 && i < _waypoints.Count ? _waypoints[i] : null;
+    }
+
     public void Reset() => _index = 0;
 
     public void SetIndex(int index) => _index = Math.Clamp(index, 0, _waypoints.Count);

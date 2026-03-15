@@ -9,5 +9,5 @@ public class LostState : INavigationState
     public NavigationStateName Name => NavigationStateName.Lost;
 
     public NavigationDecision Evaluate(RouteCursor cursor, ICharacterTracker tracker, TickContext tick) =>
-        throw new NotImplementedException("LostState implementation is Phase 2");
+        new(NavAction.None, null, null, null, null, "Navigation failed — lost");
 }
