@@ -122,6 +122,8 @@ let clusterDataMap = {};   // id -> { cluster, loc, mapCenter, marker }
 let locLookup = new Map(); // id -> location object (from albionLocations.json)
 let activeOverlays = new Map(); // id -> imageOverlay
 let loadingOverlays = new Set();
+let roadPathsData = null;
+let showRoads = false;
 
 function getPvpColor(loc, cluster) {
     const pvp = (loc && loc.pvpCategory) || '';
@@ -132,9 +134,10 @@ document.addEventListener('DOMContentLoaded', () => initApp());
 
 async function initApp() {
     try {
-        const [graphResp, locResp] = await Promise.all([
+        const [graphResp, locResp, roadsResp] = await Promise.all([
             fetch('data/world-graph.json?v=3'),
-            fetch('data/albionLocations.json').catch(() => null)
+            fetch('data/albionLocations.json').catch(() => null),
+            fetch('data/roadPaths.json').catch(() => null)
         ]);
 
         if (!graphResp.ok) throw new Error(`Failed to load data: ${graphResp.statusText}`);
@@ -143,6 +146,9 @@ async function initApp() {
         let locations = null;
         if (locResp && locResp.ok) {
             locations = await locResp.json();
+        }
+        if (roadsResp && roadsResp.ok) {
+            roadPathsData = await roadsResp.json();
         }
 
         document.getElementById('loading').style.display = 'none';
@@ -424,6 +430,9 @@ function loadOverlay(marker) {
         // Exit markers (transitions to other zones/dungeons)
         addExitMarkers(labelGroup, loc, w, h);
 
+        // Road paths (if enabled and data available)
+        addRoadPaths(labelGroup, loc, w, h);
+
         overlaysLayer.addLayer(labelGroup);
         activeOverlays.set(id, labelGroup);
 
@@ -485,6 +494,36 @@ function addExitMarkers(layerGroup, loc, overlayW, overlayH) {
     (loc.portalEntrances || []).forEach(e => addMarker(e, 'Portal'));
 }
 
+function addRoadPaths(layerGroup, loc, overlayW, overlayH) {
+    if (!showRoads || !roadPathsData || !roadPathsData.roads) return;
+    const locRoads = roadPathsData.roads[loc.id];
+    if (!locRoads || !locRoads.paths) return;
+
+    const roadColors = ['#f5a623', '#e8593a', '#50c878', '#4a9eff', '#d45fd6', '#44d7d7'];
+
+    locRoads.paths.forEach((road, idx) => {
+        if (!road.points || road.points.length < 2) return;
+
+        const latlngs = road.points.map(pt => {
+            const pos = { x: pt[0], y: pt[1] };
+            return CoordTransform.localToMapCoords(pos, loc, overlayW, overlayH);
+        }).filter(c => c && !isNaN(c[0]) && !isNaN(c[1]));
+
+        if (latlngs.length < 2) return;
+
+        const color = roadColors[idx % roadColors.length];
+        const polyline = L.polyline(latlngs, {
+            color: color,
+            weight: 3,
+            opacity: 0.85,
+            smoothFactor: 1,
+            className: 'road-path'
+        });
+        polyline.bindTooltip(`${road.from} ↔ ${road.to}`, { sticky: true });
+        layerGroup.addLayer(polyline);
+    });
+}
+
 function showClusterInfo(cluster, loc) {
     const panel = document.getElementById('infoPanel');
     const details = document.getElementById('clusterDetails');
@@ -513,6 +552,17 @@ function setupEventListeners() {
 
     ['filterWorld', 'filterCity', 'filterDungeon'].forEach(id => {
         document.getElementById(id).addEventListener('change', updateFilters);
+    });
+
+    document.getElementById('filterRoads').addEventListener('change', (e) => {
+        showRoads = e.target.checked;
+        // Re-render all active overlays to add/remove road paths
+        const overlaysCopy = new Map(activeOverlays);
+        overlaysCopy.forEach((layer, id) => {
+            overlaysLayer.removeLayer(layer);
+            activeOverlays.delete(id);
+        });
+        updateOverlays();
     });
 }
 
