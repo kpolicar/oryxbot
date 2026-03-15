@@ -25,12 +25,12 @@ public class CourseCorrectionTests
     [Fact]
     public async Task StartingOffRoute_BotCorrects_ReturnsToFollowing()
     {
-        // Start 4 units off the route (route is along Y=0, start at Y=4)
+        // Start 16 units off the route (route is along Y=0, start at Y=16)
         var recording = await RunAndSave(
             new SimulatorBuilder()
                 .WithRoute(RouteFixtures.StraightLine())
                 .WithProfile<PerfectProfile>()
-                .StartingAt(new Position(0, 4))
+                .StartingAt(new Position(0, 16))
                 .WithSeed(42)
                 .WithMaxTicks(500),
             nameof(StartingOffRoute_BotCorrects_ReturnsToFollowing));
@@ -59,7 +59,7 @@ public class CourseCorrectionTests
         var recording = await RunAndSave(
             new SimulatorBuilder()
                 .WithRoute(RouteFixtures.StraightLine(200f, 20))
-                .WithProfile(new PositionJumpProfile(jumpAtTick: 30, jumpDistance: 10f))
+                .WithProfile(new PositionJumpProfile(jumpAtTick: 30, jumpDistance: 40f))
                 .StartingAt(new Position(0, 0))
                 .WithSeed(42)
                 .WithMaxTicks(1000),

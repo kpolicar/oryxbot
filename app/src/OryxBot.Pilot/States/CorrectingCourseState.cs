@@ -29,11 +29,18 @@ public class CorrectingCourseState(IOptions<NavigationOptions> options) : INavig
         if (cursor.IsAtEnd)
             return new(NavAction.Stop, null, null, null, NavigationStateName.FollowingRoute, "Route complete");
 
-        // Find nearest upcoming waypoint (look ahead up to 3)
-        var (bestTarget, bestDist) = FindNearestUpcoming(cursor, tracker.Position);
+        // Find the closest waypoint by direct distance — head straight for it
+        var (bestOffset, bestDist) = FindClosestWaypoint(cursor, tracker.Position);
 
-        if (bestTarget is null)
+        if (bestOffset < 0)
             return new(NavAction.None, null, null, null, NavigationStateName.FollowingRoute, "No upcoming waypoints");
+
+        // Snap the cursor to the closest waypoint so FollowingRoute resumes from there
+        if (bestOffset > 0)
+            cursor.SetIndex(cursor.Index + bestOffset);
+
+        var wp = (MoveWaypoint)cursor.Current!;
+        var target = new Position(wp.X, wp.Y);
 
         // Check if corrected enough to resume normal following
         if (bestDist < _options.CorrectionExitThreshold)
@@ -56,46 +63,32 @@ public class CorrectingCourseState(IOptions<NavigationOptions> options) : INavig
             _lostSince = null;
         }
 
-        return new(NavAction.MoveTowards, bestTarget.Value, null, null, null,
-            $"Correcting course, deviation {bestDist:F1}");
+        return new(NavAction.MoveTowards, target, null, null, null,
+            $"Correcting course toward waypoint {cursor.Index}, deviation {bestDist:F1}");
     }
 
-    private static (Position? Target, float Distance) FindNearestUpcoming(RouteCursor cursor, Position pos)
+    /// <summary>
+    /// Scans upcoming waypoints and returns the offset and distance of the closest one
+    /// by direct point distance. The bot should head straight for the nearest point
+    /// on the route rather than looking ahead along segments.
+    /// </summary>
+    private static (int Offset, float Distance) FindClosestWaypoint(RouteCursor cursor, Position pos)
     {
-        Position? bestTarget = null;
+        var bestOffset = -1;
         var bestDist = float.MaxValue;
 
-        // Collect upcoming waypoints
-        var waypoints = new List<(Position Pos, int Offset)>();
-        for (var offset = 0; offset <= 5; offset++)
+        for (var offset = 0; offset <= 10; offset++)
         {
-            if (cursor.Peek(offset) is MoveWaypoint wp)
-                waypoints.Add((new Position(wp.X, wp.Y), offset));
-            else break;
-        }
+            if (cursor.Peek(offset) is not MoveWaypoint wp) break;
 
-        // Check segment distances — target the endpoint of the closest segment
-        for (var i = 0; i < waypoints.Count - 1; i++)
-        {
-            var dist = Position.DistanceToSegment(pos, waypoints[i].Pos, waypoints[i + 1].Pos);
+            var dist = Position.Distance(pos, new Position(wp.X, wp.Y));
             if (dist < bestDist)
             {
                 bestDist = dist;
-                bestTarget = waypoints[i + 1].Pos;
+                bestOffset = offset;
             }
         }
 
-        // Also check distance to first waypoint
-        if (waypoints.Count > 0)
-        {
-            var dist = Position.Distance(pos, waypoints[0].Pos);
-            if (dist < bestDist)
-            {
-                bestDist = dist;
-                bestTarget = waypoints[0].Pos;
-            }
-        }
-
-        return (bestTarget, bestDist);
+        return (bestOffset, bestDist);
     }
 }

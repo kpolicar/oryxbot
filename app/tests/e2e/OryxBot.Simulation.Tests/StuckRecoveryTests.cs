@@ -26,10 +26,10 @@ public class StuckRecoveryTests
     [Fact]
     public async Task WallBlocksMovement_UnstickingTriggered()
     {
-        // Route goes through a wall
+        // Route goes through an obstacle
         var recording = await RunAndSave(
             new SimulatorBuilder()
-                .WithRoute(RouteFixtures.StraightLine(100f, 10))
+                .WithRoute(RouteFixtures.StraightLine())
                 .WithProfile<PerfectProfile>()
                 .StartingAt(new Position(0, 0))
                 .WithObstacle(new WallObstacle(20, -2, 22, 2)) // Rock at x=20
@@ -112,7 +112,7 @@ public class StuckRecoveryTests
         // but the escalated radius arc (r=5, ~9 unit height) can
         var recording = await RunAndSave(
             new SimulatorBuilder()
-                .WithRoute(RouteFixtures.StraightLine(100f, 10))
+                .WithRoute(RouteFixtures.StraightLine())
                 .WithProfile<PerfectProfile>()
                 .StartingAt(new Position(0, 0))
                 .WithObstacle(new WallObstacle(20, -6, 23, 6))

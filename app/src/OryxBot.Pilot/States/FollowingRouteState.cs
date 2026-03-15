@@ -24,7 +24,10 @@ public class FollowingRouteState(IOptions<NavigationOptions> options) : INavigat
         if (cursor.IsAtEnd)
             return new(NavAction.Stop, null, null, null, null, "Route complete");
 
-        cursor.TrySkipAhead(tracker.Position, _options.CorrectionEnterThreshold, 4);
+        // Only skip ahead when close to the route — don't skip while off-course
+        var deviationBeforeSkip = ComputeMinDeviation(cursor, tracker.Position);
+        if (deviationBeforeSkip <= _options.CorrectionExitThreshold)
+            cursor.TrySkipAhead(tracker.Position, _options.CorrectionEnterThreshold, 4);
 
         if (cursor.IsAtEnd)
             return new(NavAction.Stop, null, null, null, null, "Route complete after skip");
