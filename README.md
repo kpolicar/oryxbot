@@ -5,28 +5,38 @@ Autonomous navigation bot for the MMORPG Albion Online, plus the game-data tooli
 ## What it is
 
 - A bot that drives an Albion Online character to a destination on its own: it plans a route across the world map, follows it, corrects drift, gets unstuck, crosses zone portals and reacts to death or disconnects.
-- Fully external. It never touches the game process: game state comes from passively sniffing the game's Photon UDP traffic, and control goes back as mouse and keyboard input over VNC.
+- Fully external, on a separate machine. The player's own PC runs the game; the bot runs on a cloud server that receives the PC's game traffic through a tunnel, reads game state by passively sniffing the Photon UDP packets, and sends mouse and keyboard input back over VNC. Nothing is injected into the game.
 - A monorepo: the .NET bot (`app/`), a React site for oryxbot.com (`website/`), and Python/.NET tools that turn game files into a navigable world map (`tools/`).
 
 ## Background
 
 - Albion Online (Sandbox Interactive, 2017) is a free-to-play sandbox MMORPG for PC and mobile with a player-driven economy and full-loot PvP zones.
 - Its world is a graph of zones ("clusters") joined by portals, from safe blue zones to lawless black ones. Travel between cities is slow and repetitive; faction "transport missions", which haul cargo between cities for faction hearts and silver, are the classic example.
-- OryxBot started in 2021 as a trade-mission bot for exactly that. The 2026 rebuild on `main` generalises it into a "Pilot": give it a destination and it gets there. The original client lives on the `prod` branch.
+- OryxBot started in 2021 as a trade-mission bot for exactly that. The 2026 rebuild on `main` generalises it into a "Pilot" (give it a destination and it gets there), which the site pitches as the base for a scripting marketplace. The original client lives on the `prod` branch.
 
 ## How it works
 
 ```mermaid
 flowchart LR
-    Game["Albion Online client<br/>(Linux VM)"] -- "Photon UDP packets" --> Protocol["Protocol<br/>packet sniffer"]
-    Protocol --> State["GameState<br/>position, cluster, motion"]
-    State --> Pilot["Pilot<br/>navigation state machine"]
-    Graph["WorldGraph<br/>shortest path over clusters"] --> Pilot
-    Routes["Routes<br/>recorded waypoints"] --> Pilot
-    Pilot --> Input["Input<br/>world to screen coords"]
-    Input -- "HTTP" --> VNC["VNC bridge"] -- "mouse / keys" --> Game
+    subgraph PC["Player's PC (Windows)"]
+        Game["Albion Online client"]
+        VNCS["TightVNC server"]
+    end
+    subgraph Cloud["Bot server (cloud droplet)"]
+        Sniff["Packet sniffer<br/>Photon UDP 5055 / 5056 / 4535"]
+        Bot["OryxBot<br/>Pathfinder + Pilot"]
+        Bridge["VNC client bridge<br/>localhost:8010"]
+    end
+    Game -- "game traffic to Albion servers,<br/>routed through the tunnel" --> Sniff
+    Sniff --> Bot
+    Bot -- "HTTP" --> Bridge
+    Bridge -- "VNC input, back<br/>through the tunnel" --> VNCS
+    VNCS -. "mouse / keys" .-> Game
+    Bot <-->|"status API, commands"| Web["oryxbot.com"]
 ```
 
+- **Two machines, one tunnel.** In the legacy client the PC's built-in Windows VPN dials a PPTP server on the droplet, which forwards all of its traffic; the bot sniffs UDP ports 5055/5056/4535 on the droplet's interface, and `VncClient.jar` on the droplet connects to the PC's TightVNC server at its VPN address (`10.0.0.100:5900`), driven through an HTTP bridge on `localhost:8010`. The rebuild keeps the same shape (`appsettings.json`: `Protocol.Ports`, `Vnc: localhost:8010`).
+- **RailRip.** The 2026 site attributes the tunnel to [RailRip](https://railrip.com) ("anticheat bypass as a service": server-side execution, nothing injected); the player's setup script installs TightVNC plus the tunnel client. RailRip is a separate service and none of its code is in this repo.
 - **Pathfinder vs Pilot.** The Pathfinder is pure computation: a shortest-path search over a world graph of clusters and their portal exits, built from extracted game data. The Pilot executes: each tick it evaluates one state (`FollowingRoute`, `CorrectingCourse`, `Unsticking`, `Transitioning`, `Evading`, `Lost`, `Killed`, `Disconnected`) and emits a single serialisable `NavigationDecision`.
 - **Events and interfaces, no game coupling.** Game traffic becomes domain events (`CharacterMoved`, `ClusterChanged`, `CharacterDied`) on an in-process event bus; everything downstream depends on `ICharacterTracker`, `IGameController`, `IInputAdapter` and an injected `TimeProvider`.
 - **Simulation first.** A deterministic `GameSimulator` with profiles (perfect, realistic, high latency, adversarial, constant drift, position jumps) and wall obstacles runs end-to-end tests for route following, course correction, stuck recovery and death recovery. Runs are recorded to JSON and can be replayed in the map viewer.
